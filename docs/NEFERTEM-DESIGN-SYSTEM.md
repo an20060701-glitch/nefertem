@@ -1,8 +1,9 @@
-# NEFERTEM Design System
+# 香水人生 Design System
 
-> 狀態：草稿 v0.2（2026-10-05）・待 An 審閱
+> 狀態：v0.3（2026-10-05）
+> 網站名稱：**香水人生**（英文輔助：A LIFE IN SCENT）。NEFERTEM 是品牌的靈感來源與繆思，不是站名。
 > 定位：現代精品香氛品牌 × 古埃及神話（藍色睡蓮之神 Nefertem）
-> 主要 Art Direction：An 提供的 Nefertem 官方插畫（預期路徑 `/public/images/nefertem-reference.png`，尚未上傳）
+> 主要 Art Direction：NEFERTEM 官方 Key Visual（`/public/images/nefertem-key-visual.png`，已提供）
 > 語感參考：Aesop、Byredo、Le Labo、Diptyque、Maison Margiela Fragrances 的編輯感，以及 Awwwards 藝術型品牌網站。不複製任何一個。
 
 ---
@@ -14,7 +15,24 @@
 
 這不是電商、不是 dashboard，是一場**探索氣味的數位儀式**。當視覺品質與功能便利衝突時，優先維持品牌體驗。
 
-### 0.1 原則
+### 0.1 Key Visual 是視覺母體
+
+Key Visual 不是一張商品圖，而是整站視覺語言的來源。網站**只在首頁 Hero 使用這張圖本身**；其他頁面不重複貼同一張圖，而是延伸它的視覺語彙：
+
+| 從 Key Visual 提取 | 轉化為網站的 UI |
+|---|---|
+| 米白紙面與水彩暈染 | 全站 ivory 底色 + 低透明度 grain（§3.4），圖片以 `mix-blend-multiply` 印在紙上，而非貼成方塊 |
+| 藍色睡蓮 | 品牌 mark（單線蓮花 glyph）、底部導覽第一個 icon、`--lotus` / `--lotus-deep` 色票、散落的花瓣裝飾（`PetalScatter`） |
+| 金色金屬與拉的日輪 | `--gold` / `--gilt` / `--sun`；`SunDisc` 元件（日輪 + 不等長手繪光芒），用於 Loading、登入、理念段落 |
+| 香氣煙霧 | `SmokeLayer` 的細線煙霧，取圖中的藍紫與虹彩淡紫（`--vapour`） |
+| 古埃及符號（安卡、荷魯斯之眼、蓮花莖、Ra） | `EgyptianGlyph` 線稿，作為段落點綴，一個區塊最多三個 |
+| 手寫註記（Lotus / Aroma / Healing…） | `Annotation` 元件：襯線斜體直排詞列，用於區塊邊欄 |
+| 手繪線條 | 所有圖示線寬 1–1.25px，直角不加圓角，陰影一律不用 |
+| 人物與花朵比例、滿版構圖 | Hero 圖片突破容器右緣、左緣以 ivory 漸層融入紙面，讓標題可以壓在圖上 |
+
+禁止：把符號當成邊框或重複花紋、在每個區塊貼同一張圖、把插畫當成背景圖鋪滿再壓深色遮罩。
+
+### 0.2 原則
 
 | 原則 | 意思 | 具體做法 |
 |---|---|---|
@@ -24,7 +42,7 @@
 | 慢 | 電影感的節奏 | 動畫 0.8–1.5s、無 bounce、無 overshoot |
 | 少表單，多發現 | 每一步只問一件事 | 選項做成全幅大型字體，不用 checkbox／下拉 |
 
-### 0.2 禁止清單
+### 0.3 禁止清單
 
 Bootstrap 模板、Dashboard UI、大量圓角卡片、紫色 SaaS 漸層、霓虹、Cyberpunk、shadcn 預設外觀、過度玻璃擬態與 blur、大量 emoji、俗氣埃及紋樣、隨處金框、每樣東西都是卡片、過度動畫、低品質 stock 圖、模仿既有網站。
 
@@ -45,6 +63,20 @@ Bootstrap 模板、Dashboard UI、大量圓角卡片、紫色 SaaS 漸層、霓�
   --gold-light:           #D8C38A;
 }
 ```
+
+### 1.1b Key Visual 取樣色（插畫延伸色）
+
+直接從 Key Visual 取樣，只用於延伸插畫語彙的裝飾層，不承載介面資訊。
+
+| Token | 值 | 取自 |
+|---|---|---|
+| `--lotus` | `#7E91CB` | 藍色睡蓮花瓣（長春花藍） |
+| `--lotus-deep` | `#3E5A9E` | 項圈與頭飾的青金石條紋 |
+| `--sun` | `#E3C299` | 拉的日輪淡金 |
+| `--gilt` | `#D2A773` | 首飾金屬高光、手寫符號 |
+| `--vapour` | `#DFC3E4` | 香氣煙霧的虹彩淡紫 |
+
+底部導覽的 active 文字使用 `--lotus-deep`（對 ivory 對比 6.9:1，AA 通過）。
 
 ### 1.2 語意 Tokens（元件只用這一層）
 
@@ -119,7 +151,8 @@ v1 不做整站深色模式（品牌主調是 ivory 紙感）。改為「夜間�
 
 | Token | Mobile | Desktop | 行高 | 字距 | 字體 | 用途 |
 |---|---|---|---|---|---|---|
-| `hero` | 56px | 160px | 0.9 | -0.02em | Display 300 | NEFERTEM 主標、Hero 英文句 |
+| `hero` | 56px | 160px | 0.9 | -0.02em | Display 300 | Hero 英文大字 |
+| `hero-zh` | 52px | 136px | 1.05 | 0.12em | Serif TC 400 | 「香水人生」主標 |
 | `display` | 44px | 104px | 0.95 | -0.015em | Display 300 | 香水名（AVENTUS）、步驟大字選項 |
 | `h1` | 32px | 64px | 1.05 | -0.01em | Display 400 | 頁面標題（MY COLLECTION） |
 | `h1-zh` | 26px | 40px | 1.35 | 0.02em | Serif TC 400 | 中文標題（「你今天會去哪裡？」） |
@@ -239,11 +272,11 @@ v1 不做整站深色模式（品牌主調是 ivory 紙感）。改為「夜間�
 
 ## 5. 圖像與圖示
 
-- **主視覺**：使用 An 提供的 Nefertem 插畫。若檔案不存在，顯示等比例的 ivory 占位框 + 細線框 + 「NEFERTEM REFERENCE IMAGE」label，**不自行生成不同風格的圖**。
+- **主視覺**：Key Visual 只用於首頁 Hero，以 `mix-blend-multiply` 印在 ivory 紙面上，左緣加 ivory 漸層讓標題壓得上去。若檔案不存在，顯示 ivory 占位框 + 「NEFERTEM KEY VISUAL」label，**不自行生成不同風格的圖**。
 - **構圖**：圖片要有 cropping、mask（拱門形 `clip-path`、圓形太陽遮罩）、視差、突破容器，不全部做成背景圖。
 - **香水瓶**：優先去背圖，放在 off-white 底上；無圖時顯示極簡瓶身線稿 SVG + 品牌名，不用灰色方塊。
 - **圖示**：Lucide，線寬 1.25px（比預設細，接近線稿插畫）；底部導覽使用自繪三個 icon：蓮花（香水選擇）、瓶身（香水櫃）、羅盤（搜尋購物）。
-- **Logo**：文字 Logo `NEFERTEM`（Cormorant Garamond 400，字距 0.24em）+ 下方 `SCENT • RITUAL • MEMORY`（label）；brand mark 為單線蓮花 glyph。
+- **Logo**：文字 Logo `香水人生`（Noto Serif TC 400，字距 0.32em）+ 下方 `SCENT • RITUAL • MEMORY`（label）；brand mark 為單線蓮花 glyph（`--lotus-deep`）。英文 `A Life in Scent` 以 Cormorant 斜體作輔助，只在 Hero 出現。
 
 ---
 
@@ -254,7 +287,7 @@ v1 不做整站深色模式（品牌主調是 ivory 紙感）。改為「夜間�
 ```
 components/
 ├─ ui/            # 無品牌語意的基礎元件（可包 shadcn/Radix 行為，但全部重寫樣式）
-├─ brand/         # NefertemLogo、LotusGlyph、GrainOverlay、EditorialNumber、HairlineHeading
+├─ brand/         # NefertemLogo、LotusGlyph、SunDisc、EgyptianGlyph、PetalScatter、Annotation、GrainOverlay、EditorialNumber、HairlineHeading、Manifesto
 ├─ navigation/    # BottomNavigation、DesktopNav、PageTransition、CustomCursor
 ├─ hero/          # Hero、SmokeLayer、GoldParticles、LoadingRitual
 ├─ recommendation/# WeatherContext、OccasionSelector、MoodSelector、RecommendationResult、WhyThisScent、FortuneWheel

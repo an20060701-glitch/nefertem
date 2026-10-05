@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PetalScatter } from "@/components/brand/PetalScatter";
 import { ButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -34,7 +35,8 @@ export default function CollectionPage() {
           </dl>
         }
       />
-      <section className="page-x pb-24" aria-label="香水櫃">
+      <section className="page-x relative pb-24" aria-label="香水櫃">
+        <PetalScatter side="right" />
         <EmptyState
           title="你的香水櫃還是空的。"
           description="登入後，就能把擁有的香水放進來，記錄前調、中調與後調，以及每一次的使用。"

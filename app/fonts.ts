@@ -1,6 +1,6 @@
 import { Cormorant_Garamond, Inter, Noto_Sans_TC, Noto_Serif_TC } from "next/font/google";
 
-/** Display serif — NEFERTEM wordmark, perfume names, English headlines. */
+/** Display serif — perfume names, English headlines. */
 export const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500"],

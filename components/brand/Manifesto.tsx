@@ -1,16 +1,36 @@
+import { EgyptianGlyph } from "./EgyptianGlyph";
 import { LotusGlyph } from "./LotusGlyph";
+import { SunDisc } from "./SunDisc";
 import { Reveal } from "@/components/ui/Reveal";
 
 /** The design statement, set on midnight indigo — the blue lotus at night. */
 export function Manifesto() {
   return (
     <section
-      aria-label="NEFERTEM 理念"
+      aria-label="香水人生 理念"
       className="page-x relative overflow-hidden bg-surface-inverse py-28 text-inverse desk:py-48"
     >
+      <EgyptianGlyph
+        name="ankh"
+        size={30}
+        className="absolute left-[8%] top-[18%] text-gold-light opacity-45 desk:left-[14%]"
+      />
+      <EgyptianGlyph
+        name="eye"
+        size={34}
+        className="absolute right-[8%] top-[24%] text-gold-light opacity-40 desk:right-[14%]"
+      />
+      <EgyptianGlyph
+        name="stalk"
+        size={30}
+        className="absolute bottom-[14%] left-[12%] text-gold-light opacity-40 desk:left-[20%]"
+      />
       <div className="mx-auto max-w-5xl text-center">
         <Reveal>
-          <LotusGlyph size={40} strokeWidth={1} className="mx-auto text-gold-light" />
+          <div className="relative mx-auto flex h-36 w-36 items-center justify-center">
+            <SunDisc id="manifesto-sun" className="absolute inset-0 opacity-85" />
+            <LotusGlyph size={52} strokeWidth={1} className="relative text-surface-inverse" />
+          </div>
         </Reveal>
         <Reveal className="mt-12">
           <p className="font-display text-display font-light leading-[1.02]">

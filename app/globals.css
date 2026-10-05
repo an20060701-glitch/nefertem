@@ -15,6 +15,13 @@
   --gold: #b99652;
   --gold-light: #d8c38a;
 
+  /* Illustration accents — sampled from the official Nefertem artwork */
+  --lotus: #7e91cb; /* blue-lotus petal (periwinkle) */
+  --lotus-deep: #3e5a9e; /* lapis stripes in the collar and headdress */
+  --sun: #e3c299; /* Ra's pale-gold disc */
+  --gilt: #d2a773; /* polished jewellery highlights */
+  --vapour: #dfc3e4; /* iridescent lilac in the perfume smoke */
+
   /* Semantic */
   --surface: var(--background);
   --surface-raised: var(--background-secondary);
@@ -64,6 +71,11 @@
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
   --color-gold-text: var(--gold-text);
+  --color-lotus: var(--lotus);
+  --color-lotus-deep: var(--lotus-deep);
+  --color-sun: var(--sun);
+  --color-gilt: var(--gilt);
+  --color-vapour: var(--vapour);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-danger: var(--danger);
@@ -77,6 +89,8 @@
   --text-hero: clamp(3.5rem, 11vw + 0.5rem, 10rem);
   --text-hero--line-height: 0.9;
   --text-hero--letter-spacing: -0.02em;
+  --text-hero-zh: clamp(3.25rem, 7.5vw + 0.5rem, 8.5rem);
+  --text-hero-zh--line-height: 1.05;
   --text-display: clamp(2.75rem, 7vw + 0.5rem, 6.5rem);
   --text-display--line-height: 0.95;
   --text-display--letter-spacing: -0.015em;

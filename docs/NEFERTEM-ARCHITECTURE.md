@@ -1,6 +1,7 @@
-# NEFERTEM Architecture
+# 香水人生 Architecture
 
-> 狀態：草稿 v0.2（2026-10-05）・待 An 審閱
+> 狀態：v0.3（2026-10-05）
+> 網站名稱：**香水人生**（A LIFE IN SCENT）。NEFERTEM 為品牌靈感來源。
 > 搭配文件：[NEFERTEM-DESIGN-SYSTEM.md](./NEFERTEM-DESIGN-SYSTEM.md)
 > 第一版目標：一個真正能跑、漂亮、流暢、穩定的 MVP。不為未來的 AI、爬蟲、推薦模型、聯盟行銷預先建複雜後端。
 
@@ -8,7 +9,7 @@
 
 ## 1. 產品範圍
 
-NEFERTEM 幫使用者找到「今天最適合自己的氣味」，三個主要區塊：
+香水人生 幫使用者找到「今天最適合自己的氣味」，三個主要區塊：
 
 | 區塊 | Route | 核心 |
 |---|---|---|

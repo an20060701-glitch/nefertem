@@ -33,7 +33,7 @@ export function BottomNavigation() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex h-full flex-col items-center justify-center gap-1 transition-colors duration-300",
-                  active ? "text-blue" : "text-muted hover:text-ink",
+                  active ? "text-lotus-deep" : "text-muted hover:text-ink",
                 )}
               >
                 <NavIcon name={item.key} size={24} />
