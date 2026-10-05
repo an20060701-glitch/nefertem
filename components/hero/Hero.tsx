@@ -71,6 +71,28 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           <motion.p variants={item} className="mt-6 font-serif-zh text-h1-zh text-ink desk:mt-10">
             {BRAND.coverLine}
           </motion.p>
+
+          {/* English statement right under the Chinese line, then the way in */}
+          <p className="mt-6 font-display text-h2 font-light italic leading-[1.15] text-ink/90 desk:mt-8">
+            {EN_LINES.map((line) => (
+              <motion.span key={line} variants={item} className="block">
+                {line}
+              </motion.span>
+            ))}
+          </p>
+          <motion.a
+            variants={item}
+            href="#todays-choice"
+            className="group mt-10 inline-flex w-fit items-center gap-4 text-blue desk:mt-12"
+          >
+            <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
+              BEGIN TODAY&apos;S RITUAL
+            </span>
+            <span
+              aria-hidden
+              className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20"
+            />
+          </motion.a>
         </motion.div>
 
         {/* The official illustration, printed onto the ivory page (multiply), with Ra's sun, vapour and motes */}
@@ -109,29 +131,6 @@ export function Hero({ hasReferenceImage }: HeroProps) {
         </motion.figure>
 
         {/* English statement + way in */}
-        <motion.div
-          variants={staggerChildren(0, 0.08)}
-          className="relative z-10 flex flex-col gap-10 desk:col-span-4 desk:col-start-1 desk:row-start-2 desk:self-end"
-        >
-          <p className="font-display text-h2 font-light italic leading-[1.15] text-ink/90">
-            {EN_LINES.map((line) => (
-              <motion.span key={line} variants={item} className="block">
-                {line}
-              </motion.span>
-            ))}
-          </p>
-          <motion.a
-            variants={item}
-            href="#todays-choice"
-            className="group inline-flex w-fit items-center gap-4 text-blue"
-          >
-            <span className="label gold-underline">BEGIN TODAY&apos;S RITUAL</span>
-            <span
-              aria-hidden
-              className="h-px w-10 bg-blue transition-[width] duration-500 group-hover:w-16"
-            />
-          </motion.a>
-        </motion.div>
       </motion.div>
     </section>
   );
