@@ -134,16 +134,24 @@ v1 不做整站深色模式（品牌主調是 ivory 紙感）。改為「夜間�
 
 | 角色 | 字體 | 載入 |
 |---|---|---|
-| Display（英文標題、Logo、香水名） | **Cormorant Garamond**（300 / 400 / 500，含 italic） | `next/font/google` |
-| 中文標題 | **Noto Serif TC**（400 / 600） | `next/font/google`，只做 subset 常用字 |
-| Body（中英文內文、UI） | **Inter** + **Noto Sans TC**（400 / 500） | `next/font/google` |
-| Label（uppercase 小字） | Inter 500，字距加寬 | 同上 |
+| **全站中文（標題、Logo、內文）** | **02流線形 Ryusenkei**（200 / 400 / 700）— An 指定的主字體 | 自託管 WOFF2，`public/fonts/ryusenkei/` |
+| Display（英文標題、香水名） | **Cormorant Garamond**（300 / 400 / 500，含 italic） | `next/font/google` |
+| UI 拉丁文字與 Label | **Inter**（400 / 500），uppercase 字距加寬 | `next/font/google` |
+| 缺字備援 | Noto Serif TC → Noto Sans TC | `next/font/google`，不 preload |
 
 ```css
---font-display: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
---font-serif-zh: "Noto Serif TC", "Songti TC", serif;
---font-sans: "Inter", "Noto Sans TC", -apple-system, "PingFang TC", sans-serif;
+--font-display: "Cormorant Garamond", "Ryusenkei", "Noto Serif TC", Georgia, serif;
+--font-serif-zh: "Ryusenkei", "Noto Serif TC", "Songti TC", serif;
+--font-sans: "Inter", "Ryusenkei", "Noto Serif TC", "Noto Sans TC", -apple-system, "PingFang TC", sans-serif;
 ```
+
+**02流線形**：Flop Design 以源ノ明朝為基礎改作的流線斜體明朝，SIL OFL 1.1 授權（可嵌入網頁、可子集化）。它帶有向右前傾的速度感，正好呼應香氣「飄散」的意象，所以中文一律用它；拉丁字母仍交給 Cormorant 與 Inter，避免兩種斜體互相打架。
+
+**子集化**：原始 TTF 每個字重約 24MB，不能直接上線。`scripts/build-ryusenkei.py` 把它切成以 `unicode-range` 分段的 WOFF2：
+- 第 00 段收錄網站自身文案用到的全部字元 + ASCII + 中文標點（約 110KB／字重），幾乎每頁只需要它，並在 `<head>` preload 400 字重。
+- 第 01–09 段是 Big5 常用字其餘部分，只有動態內容（香水名、香調）用到時才會下載。
+- 字型缺的 122 個常用字（如「啟」）自動落到 Noto Serif TC。
+- **新增中文文案後要重跑腳本**，讓第 00 段保持完整：`python3 scripts/build-ryusenkei.py <02Ryusenkei-*.ttf 所在資料夾>`。
 
 選 Cormorant Garamond 而非 DM Serif Display：它字重更細、對比更高，大尺寸時更接近精品印刷刊物；DM Serif 偏粗，較適合海報。
 
@@ -276,7 +284,7 @@ v1 不做整站深色模式（品牌主調是 ivory 紙感）。改為「夜間�
 - **構圖**：圖片要有 cropping、mask（拱門形 `clip-path`、圓形太陽遮罩）、視差、突破容器，不全部做成背景圖。
 - **香水瓶**：優先去背圖，放在 off-white 底上；無圖時顯示極簡瓶身線稿 SVG + 品牌名，不用灰色方塊。
 - **圖示**：Lucide，線寬 1.25px（比預設細，接近線稿插畫）；底部導覽使用自繪三個 icon：蓮花（香水選擇）、瓶身（香水櫃）、羅盤（搜尋購物）。
-- **Logo**：文字 Logo `香水人生`（Noto Serif TC 400，字距 0.32em）+ 下方 `SCENT • RITUAL • MEMORY`（label）；brand mark 為單線蓮花 glyph（`--lotus-deep`）。英文 `A Life in Scent` 以 Cormorant 斜體作輔助，只在 Hero 出現。
+- **Logo**：文字 Logo `香水人生`（02流線形 400，字距 0.32em）+ 下方 `SCENT • RITUAL • MEMORY`（label）；brand mark 為單線蓮花 glyph（`--lotus-deep`）。英文 `A Life in Scent` 以 Cormorant 斜體作輔助，只在 Hero 出現。
 
 ---
 

@@ -81,9 +81,12 @@
   --color-danger: var(--danger);
 
   /* Fonts (variables come from app/fonts.ts) */
-  --font-display: var(--font-cormorant), var(--font-noto-serif-tc), Georgia, serif;
-  --font-serif-zh: var(--font-noto-serif-tc), "Songti TC", serif;
-  --font-sans: var(--font-inter), var(--font-noto-sans-tc), -apple-system, "PingFang TC", sans-serif;
+  /* 02流線形 (Ryusenkei) is the site's Chinese typeface everywhere — headings and body.
+     Latin keeps Cormorant (display) and Inter (UI); Noto TC fills glyphs Ryusenkei lacks. */
+  --font-display: var(--font-cormorant), "Ryusenkei", var(--font-noto-serif-tc), Georgia, serif;
+  --font-serif-zh: "Ryusenkei", var(--font-noto-serif-tc), "Songti TC", serif;
+  --font-sans: var(--font-inter), "Ryusenkei", var(--font-noto-serif-tc), var(--font-noto-sans-tc), -apple-system,
+    "PingFang TC", sans-serif;
 
   /* Type scale — mobile → desktop via clamp() */
   --text-hero: clamp(3.5rem, 11vw + 0.5rem, 10rem);

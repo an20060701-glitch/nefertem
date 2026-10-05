@@ -55,7 +55,7 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           <motion.h1
             id="hero-title"
             variants={item}
-            className="mt-6 font-serif-zh text-hero-zh font-normal tracking-[0.12em] text-ink desk:mt-10"
+            className="mt-6 font-serif-zh text-hero-zh font-extralight tracking-[0.12em] text-ink desk:mt-10"
           >
             {BRAND.name}
           </motion.h1>
