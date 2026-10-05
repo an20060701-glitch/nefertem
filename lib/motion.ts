@@ -1,7 +1,7 @@
 import type { Transition, Variants } from "motion/react";
 
 /**
- * 香水人生 motion language — see docs/NEFERTEM-DESIGN-SYSTEM.md §4.
+ * Nefertem motion language — see docs/NEFERTEM-DESIGN-SYSTEM.md §4.
  * Slow, elegant, cinematic. No springs, no bounce, no overshoot.
  * Every animated component should pull its timing from here.
  */
