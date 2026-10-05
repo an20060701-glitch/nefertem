@@ -21,7 +21,7 @@ export function EditorialNumber({ index, label, className }: EditorialNumberProp
 interface HairlineHeadingProps {
   children: React.ReactNode;
   className?: string;
-  as?: "h2" | "h3" | "p";
+  as?: "h2" | "h3" | "h4" | "p";
 }
 
 /** "WHERE TO FIND IT ─────────" — a label followed by a hairline to the edge. */

@@ -3,7 +3,7 @@ import path from "node:path";
 import { Manifesto } from "@/components/brand/Manifesto";
 import { Hero } from "@/components/hero/Hero";
 import { REFERENCE_IMAGE_PATH } from "@/components/hero/ReferenceImage";
-import { ChoicePreview } from "@/components/recommendation/ChoicePreview";
+import { TodaysChoice } from "@/components/recommendation/TodaysChoice";
 
 /** Use the official illustration when it has been added to /public/images. */
 function hasReferenceImage() {
@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       <Hero hasReferenceImage={hasReferenceImage()} />
-      <ChoicePreview />
+      <TodaysChoice />
       <Manifesto />
     </>
   );

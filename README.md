@@ -35,7 +35,7 @@ NEFERTEM 官方 Key Visual 位於 `public/images/nefertem-key-visual.png`，是�
 ## 目前進度
 
 - [x] Phase 1：專案骨架、Design tokens、字體、紙感 grain、motion 系統、手機底部導覽、桌面 editorial 導覽、Loading 儀式、Hero、頁面轉場、Firebase 架構與 Security Rules
-- [ ] Phase 2：Today's Choice 完整流程（天氣 → 場合 → 印象 → 推薦 → 輪盤 → 使用紀錄）
+- [x] Phase 2：Today's Choice 完整流程（天氣 → 場合 → 印象 → 推薦 → 輪盤 → 使用紀錄；訪客紀錄暫存在這台裝置，Phase 3 登入後改存 Firestore）
 - [ ] Phase 3：My Collection 與 Google 登入
 - [ ] Phase 4：Shopping
 - [ ] Phase 5：智能建檔 provider

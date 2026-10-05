@@ -9,6 +9,7 @@ import { fadeUp, reducedFade, scaleIn, staggerChildren, transition } from "@/lib
 import { GoldParticles } from "./GoldParticles";
 import { ReferenceImage } from "./ReferenceImage";
 import { SmokeLayer } from "./SmokeLayer";
+import { SpeechBubble } from "./SpeechBubble";
 
 interface HeroProps {
   hasReferenceImage: boolean;
@@ -55,9 +56,9 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           <motion.h1
             id="hero-title"
             variants={item}
-            className="mt-6 font-serif-zh text-hero-zh font-extralight tracking-[0.12em] text-ink desk:mt-10"
+            className="mt-6 font-display text-[clamp(3.75rem,8.5vw,8rem)] font-light leading-[0.95] tracking-[0.01em] text-ink desk:mt-10"
           >
-            {BRAND.name}
+            {BRAND.coverTitle}
           </motion.h1>
           <motion.p variants={item} className="mt-3 font-display text-h2 font-light italic text-lotus-deep">
             A Life in Scent
@@ -67,20 +68,44 @@ export function Hero({ hasReferenceImage }: HeroProps) {
             aria-hidden
             className="mt-6 block h-px w-24 origin-left bg-gold desk:mt-10 desk:w-40"
           />
-          <motion.p
-            variants={item}
-            className="mt-6 font-serif-zh text-h1-zh text-ink desk:mt-10"
-          >
-            <span className="block">香氣</span>
-            <span className="block">是你今天選擇成為誰的方式</span>
+          <motion.p variants={item} className="mt-6 font-serif-zh text-h1-zh text-ink desk:mt-10">
+            {BRAND.coverLine}
           </motion.p>
+
+          {/* English statement right under the Chinese line, then the way in */}
+          <p className="mt-6 font-display text-h2 font-light italic leading-[1.15] text-ink/90 desk:mt-8">
+            {EN_LINES.map((line) => (
+              <motion.span key={line} variants={item} className="block">
+                {line}
+              </motion.span>
+            ))}
+          </p>
+          <motion.a
+            variants={item}
+            href="#todays-choice"
+            className="group mt-10 inline-flex w-fit items-center gap-4 text-blue desk:mt-12"
+          >
+            <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
+              BEGIN TODAY&apos;S RITUAL
+            </span>
+            <span
+              aria-hidden
+              className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20"
+            />
+          </motion.a>
         </motion.div>
 
         {/* The official illustration, printed onto the ivory page (multiply), with Ra's sun, vapour and motes */}
         <motion.figure
           variants={reduce ? reducedFade : scaleIn}
-          className="relative -mx-[var(--gutter)] desk:col-span-7 desk:col-start-6 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:ml-0 desk:self-center"
+          className="relative -mx-[var(--gutter)] mt-24 md:mt-28 desk:col-span-7 desk:col-start-6 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:ml-0 desk:mt-[14vh] desk:self-center"
         >
+          <SpeechBubble
+            delay={delay + 1.4}
+            className="absolute -top-16 left-[12%] z-10 w-[min(16rem,62%)] md:-top-24 desk:-top-28 desk:left-[14%] desk:w-[19rem]"
+          >
+            {BRAND.coverVoice}
+          </SpeechBubble>
           <div className="relative aspect-[4/3] overflow-hidden">
             <motion.div className="absolute inset-[-2%]" style={{ y: imageY }}>
               <ReferenceImage
@@ -106,29 +131,6 @@ export function Hero({ hasReferenceImage }: HeroProps) {
         </motion.figure>
 
         {/* English statement + way in */}
-        <motion.div
-          variants={staggerChildren(0, 0.08)}
-          className="relative z-10 flex flex-col gap-10 desk:col-span-4 desk:col-start-1 desk:row-start-2 desk:self-end"
-        >
-          <p className="font-display text-h2 font-light italic leading-[1.15] text-ink/90">
-            {EN_LINES.map((line) => (
-              <motion.span key={line} variants={item} className="block">
-                {line}
-              </motion.span>
-            ))}
-          </p>
-          <motion.a
-            variants={item}
-            href="#todays-choice"
-            className="group inline-flex w-fit items-center gap-4 text-blue"
-          >
-            <span className="label gold-underline">BEGIN TODAY&apos;S RITUAL</span>
-            <span
-              aria-hidden
-              className="h-px w-10 bg-blue transition-[width] duration-500 group-hover:w-16"
-            />
-          </motion.a>
-        </motion.div>
       </motion.div>
     </section>
   );
