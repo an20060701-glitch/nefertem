@@ -1,15 +1,29 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { signInWithGoogle } from "@/lib/firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
+import { useCollection } from "./CollectionProvider";
 
 export function GoogleSignInButton() {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useCollection();
+
+  if (user) {
+    return (
+      <div className="flex flex-col items-center gap-6">
+        <p className="text-muted">你已登入：{user.displayName ?? user.email}</p>
+        <Link href="/collection" className="gold-underline label text-blue">
+          前往我的香水櫃 →
+        </Link>
+      </div>
+    );
+  }
 
   async function handleClick() {
     setPending(true);

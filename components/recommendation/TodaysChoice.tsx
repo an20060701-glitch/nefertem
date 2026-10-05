@@ -1,14 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useCollection } from "@/components/collection/CollectionProvider";
 import { PetalScatter } from "@/components/brand/PetalScatter";
 import { Button } from "@/components/ui/Button";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
-import { getLocalUsage, getServerUsage, logLocalUsage, subscribeLocalUsage } from "@/lib/usage/local";
 import { FortuneWheel } from "./FortuneWheel";
 import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
@@ -34,7 +34,10 @@ export function TodaysChoice() {
   const flow = useChoiceFlow();
   const { step, selection, weather } = flow;
   const reduce = useReducedMotion();
-  const usage = useSyncExternalStore(subscribeLocalUsage, getLocalUsage, getServerUsage);
+  const { items, usage, repo } = useCollection();
+  // Recommend from the member's own cabinet; the demo catalogue until it has a scent.
+  const fromCollection = items.length > 0;
+  const candidates = fromCollection ? items : DEMO_FRAGRANCES;
 
   const selectionKey = `${weather?.city}|${selection.occasion}|${selection.moods.join(",")}`;
   const [featured, setFeatured] = useState<{ key: string; id: string }>();
@@ -47,29 +50,36 @@ export function TodaysChoice() {
       weather,
       occasion: selection.occasion,
       moods: selection.moods,
-      candidates: DEMO_FRAGRANCES,
+      candidates,
       usage,
     });
-  }, [weather, selection.occasion, selection.moods, usage]);
+  }, [weather, selection.occasion, selection.moods, usage, candidates]);
 
   const confirmedHere = confirmed?.key === selectionKey ? confirmed : undefined;
   const featuredId =
     confirmedHere?.id ?? (featured?.key === selectionKey ? featured.id : ranked[0]?.fragrance.id);
   const top = ranked.find((r) => r.fragrance.id === featuredId) ?? ranked[0];
 
-  const confirm = (fragranceId: string, viaWheel: boolean) => {
+  const [saveError, setSaveError] = useState<string>();
+  const confirm = async (fragranceId: string, viaWheel: boolean) => {
     if (!weather || !selection.occasion) return;
-    logLocalUsage({
-      fragranceId,
-      weather: weather.condition,
-      temperature: weather.temperature,
-      city: weather.city,
-      occasion: selection.occasion,
-      mood: selection.moods,
-      viaWheel,
-    });
-    setConfirmed({ key: selectionKey, id: fragranceId, viaWheel });
+    setSaveError(undefined);
     setWheelOpen(false);
+    try {
+      await repo.logUsage({
+        fragranceId,
+        weather: weather.condition,
+        temperature: weather.temperature,
+        city: weather.city,
+        occasion: selection.occasion,
+        mood: selection.moods,
+        viaWheel,
+      });
+      setConfirmed({ key: selectionKey, id: fragranceId, viaWheel });
+    } catch (error) {
+      console.error("[usage] log failed", error);
+      setSaveError("紀錄沒有完成，請再試一次。");
+    }
   };
 
   // Move focus and view to the new step after user navigation (not on first paint).
@@ -194,12 +204,21 @@ export function TodaysChoice() {
                   })}
                   alternatives={ranked.filter((r) => r !== top).slice(0, ALTERNATIVES)}
                   canSpin={ranked.length >= WHEEL_MIN}
+                  source={
+                    fromCollection
+                      ? `從你的 ${items.length} 款收藏中挑選`
+                      : "目前從示範目錄推薦，把你的香水放進香水櫃後，就會從你的收藏挑選。"
+                  }
                   confirmed={
                     confirmedHere && {
                       viaWheel: confirmedHere.viaWheel,
                       count: usage.filter((u) => u.fragranceId === confirmedHere.id).length,
+                      savedTo: repo.kind,
+                      inCollection: items.some((i) => i.id === confirmedHere.id),
                     }
                   }
+                  saveError={saveError}
+                  onAddToCollection={() => void repo.add({ ...top.fragrance }, { id: top.fragrance.id })}
                   onFeature={(id) => {
                     setFeatured({ key: selectionKey, id });
                     stageRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });

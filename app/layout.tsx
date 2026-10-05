@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { GrainOverlay } from "@/components/brand/GrainOverlay";
+import { CollectionProvider } from "@/components/collection/CollectionProvider";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { LoadingRitual } from "@/components/hero/LoadingRitual";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
@@ -59,13 +60,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           跳到主要內容
         </a>
         <LoadingRitual />
-        <DesktopNav />
-        <MobileTopBar />
-        <main id="main" className="pb-[calc(var(--nav-mobile-height)+env(safe-area-inset-bottom))] md:pb-0">
-          {children}
-          <SiteFooter />
-        </main>
-        <BottomNavigation />
+        <CollectionProvider>
+          <DesktopNav />
+          <MobileTopBar />
+          <main id="main" className="pb-[calc(var(--nav-mobile-height)+env(safe-area-inset-bottom))] md:pb-0">
+            {children}
+            <SiteFooter />
+          </main>
+          <BottomNavigation />
+        </CollectionProvider>
         <CustomCursor />
         <GrainOverlay />
       </body>
