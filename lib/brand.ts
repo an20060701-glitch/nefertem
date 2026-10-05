@@ -4,5 +4,9 @@ export const BRAND = {
   nameEn: "A LIFE IN SCENT",
   tagline: "SCENT • RITUAL • MEMORY",
   muse: "NEFERTEM",
+  /** Home cover title (An, 2026-10-05). */
+  coverTitle: "Nefertem",
+  coverLine: "今天，你想成為誰？",
+  coverVoice: "讓香氣定義此刻的自己",
   museLine: "INSPIRED BY NEFERTEM, THE GOD OF PERFUME",
 } as const;
