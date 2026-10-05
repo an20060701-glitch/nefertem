@@ -351,7 +351,7 @@ Mobile                              Desktop
 | 頁面 | 重點 |
 |---|---|
 | Loading | §4.4 Loading Ritual |
-| `/` Hero + Today's Choice | Hero 文案：`NEFERTEM`／「香氣，是你今天選擇成為誰的方式。」／SCENT IS A WAY OF CHOOSING WHO YOU BECOME TODAY.；往下捲進入 STEP 01 |
+| `/` Hero + Today's Choice | Hero 文案：`香水人生`／「香氣」換行「是你今天選擇成為誰的方式」（不加標點）／SCENT IS A WAY OF CHOOSING WHO YOU BECOME TODAY.；往下捲進入 STEP 01 |
 | STEP 01 天氣 | 大字顯示 `TAIPEI · 26°C · RAINY`；拒絕定位時列出 台北／台中／高雄／台南／新竹 五個大字選項 |
 | STEP 02 場合 | 整屏只有兩個巨大選項 `INDOOR 涼爽的室內` / `OUTDOOR 戶外活動`，上下（手機）或左右（Desktop）各半 |
 | STEP 03 印象 | 七個 Large Typography Tags（MYSTERIOUS 神秘…BOLD 侵略性），最多選 2 個，選中時文字轉深藍、前方出現金色小圓點 |

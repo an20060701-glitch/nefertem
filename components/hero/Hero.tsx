@@ -69,9 +69,10 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           />
           <motion.p
             variants={item}
-            className="mt-6 max-w-[18em] font-serif-zh text-h1-zh text-ink desk:mt-10"
+            className="mt-6 font-serif-zh text-h1-zh text-ink desk:mt-10"
           >
-            香氣，是你今天選擇成為誰的方式。
+            <span className="block">香氣</span>
+            <span className="block">是你今天選擇成為誰的方式</span>
           </motion.p>
         </motion.div>
 
