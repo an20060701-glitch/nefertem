@@ -2,14 +2,13 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
-import { LotusGlyph } from "@/components/brand/LotusGlyph";
-import { SunDisc } from "@/components/brand/SunDisc";
+import { NefertemEmblem } from "@/components/brand/NefertemEmblem";
 import { INTRO_DONE_EVENT, INTRO_DURATION, INTRO_STORAGE_KEY, hasSeenIntro } from "@/lib/intro";
 import { ease } from "@/lib/motion";
 
 /**
- * First-visit ritual (design system §4.4): on midnight indigo a lotus is drawn
- * in ink, "FOLLOW THE SCENT" appears, then the veil lifts. Plays once per
+ * First-visit ritual (design system §4.4): on midnight indigo the gilt Nefertem
+ * emblem rises into view, "FOLLOW THE SCENT" appears, then the veil lifts. Plays once per
  * session; reduced motion shortens it to a brief still.
  */
 export function LoadingRitual() {
@@ -39,27 +38,26 @@ export function LoadingRitual() {
           key="ritual"
           className="loading-ritual fixed inset-0 z-[80] flex flex-col items-center justify-center bg-surface-inverse text-inverse"
           role="status"
-          aria-label="香水人生 載入中"
+          aria-label="Nefertem 載入中"
           exit={{ opacity: 0, transition: { duration: reduce ? 0.2 : 1, ease: ease.cinematic } }}
         >
           <span className="relative flex items-center justify-center">
             <motion.span
-              className="absolute"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 0.55, scale: 1 }}
-              transition={{ duration: reduce ? 0.2 : 1.8, ease: ease.editorial }}
+              className="relative"
+              initial={{ opacity: 0, y: reduce ? 0 : 10, filter: reduce ? "none" : "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: reduce ? 0.2 : 1.4, ease: ease.editorial }}
             >
-              <SunDisc id="ritual-sun" rays={false} className="w-[180px]" />
+              <NefertemEmblem className="h-[150px] w-auto" />
             </motion.span>
-            <LotusGlyph size={88} strokeWidth={1} draw drawDuration={1.4} className="relative text-lotus" />
           </span>
           <motion.p
-            className="mt-12 font-serif-zh text-[1.375rem] tracking-[0.4em] text-inverse"
+            className="mt-10 font-display text-[2rem] tracking-[0.08em] text-inverse"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: reduce ? 0 : 0.8, duration: 1, ease: ease.editorial }}
           >
-            香水人生
+            Nefertem
           </motion.p>
           <motion.p
             className="label mt-5 text-[0.6875rem] tracking-[0.42em] text-inverse/80"

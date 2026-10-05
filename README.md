@@ -1,4 +1,4 @@
-# 香水人生 A Life in Scent
+# Nefertem · A Life in Scent
 
 現代精品香氛 × 古埃及藍色睡蓮之神 Nefertem。幫使用者依天氣、場合與想留下的印象，找到今天最適合自己的香氣。
 

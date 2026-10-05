@@ -1,8 +1,10 @@
-/** Brand naming in one place. 香水人生 is the site; Nefertem is its muse. */
+/** Brand naming in one place. The site is Nefertem, named for the Egyptian god of perfume (An, 2026-10-05). */
 export const BRAND = {
-  name: "香水人生",
+  name: "Nefertem",
   nameEn: "A LIFE IN SCENT",
   tagline: "SCENT • RITUAL • MEMORY",
+  /** Line under the wordmark in the brand logo. */
+  logoLine: "A Life in Scent",
   muse: "NEFERTEM",
   /** Home cover title (An, 2026-10-05). */
   coverTitle: "Nefertem",

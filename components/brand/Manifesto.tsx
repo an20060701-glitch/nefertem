@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export function Manifesto() {
   return (
     <section
-      aria-label="香水人生 理念"
+      aria-label="Nefertem 理念"
       className="page-x relative overflow-hidden bg-surface-inverse py-28 text-inverse desk:py-48"
     >
       <EgyptianGlyph
