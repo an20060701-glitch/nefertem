@@ -1,0 +1,117 @@
+import type { FragranceFamily } from "@/types";
+
+/**
+ * Fragrance-note dictionary: Chinese name and scent family for each note
+ * used by the demo catalogue. Keys are lowercase English with hyphens.
+ * The family drives note-level matching in the recommendation engine.
+ */
+export interface NoteDefinition {
+  en: string;
+  zh: string;
+  family: FragranceFamily;
+}
+
+export const NOTES = {
+  // citrus
+  bergamot: { en: "Bergamot", zh: "佛手柑", family: "citrus" },
+  grapefruit: { en: "Grapefruit", zh: "葡萄柚", family: "citrus" },
+  lemon: { en: "Lemon", zh: "檸檬", family: "citrus" },
+  lime: { en: "Lime", zh: "萊姆", family: "citrus" },
+  mandarin: { en: "Mandarin", zh: "橘子", family: "citrus" },
+  orange: { en: "Orange", zh: "柳橙", family: "citrus" },
+  neroli: { en: "Neroli", zh: "橙花油", family: "citrus" },
+  // fresh / green
+  mint: { en: "Mint", zh: "薄荷", family: "fresh" },
+  "fig-leaf": { en: "Fig Leaf", zh: "無花果葉", family: "fresh" },
+  "green-notes": { en: "Green Notes", zh: "綠葉", family: "fresh" },
+  rhubarb: { en: "Rhubarb", zh: "大黃", family: "fresh" },
+  pine: { en: "Pine Needles", zh: "松針", family: "fresh" },
+  // marine / mineral
+  "sea-notes": { en: "Sea Notes", zh: "海洋調", family: "marine" },
+  calone: { en: "Calone", zh: "海風酮", family: "marine" },
+  "sea-salt": { en: "Sea Salt", zh: "海鹽", family: "mineral" },
+  flint: { en: "Flint", zh: "燧石", family: "mineral" },
+  // aromatic (fougère)
+  lavender: { en: "Lavender", zh: "薰衣草", family: "fougere" },
+  geranium: { en: "Geranium", zh: "天竺葵", family: "fougere" },
+  rosemary: { en: "Rosemary", zh: "迷迭香", family: "fougere" },
+  sage: { en: "Sage", zh: "鼠尾草", family: "fougere" },
+  juniper: { en: "Juniper", zh: "杜松", family: "fougere" },
+  // floral
+  jasmine: { en: "Jasmine", zh: "茉莉", family: "floral" },
+  rose: { en: "Rose", zh: "玫瑰", family: "floral" },
+  iris: { en: "Iris", zh: "鳶尾", family: "floral" },
+  violet: { en: "Violet", zh: "紫羅蘭", family: "floral" },
+  "lily-of-the-valley": { en: "Lily of the Valley", zh: "鈴蘭", family: "floral" },
+  "orange-blossom": { en: "Orange Blossom", zh: "橙花", family: "floral" },
+  freesia: { en: "Freesia", zh: "小蒼蘭", family: "floral" },
+  "ylang-ylang": { en: "Ylang-Ylang", zh: "依蘭", family: "floral" },
+  // fruity
+  pineapple: { en: "Pineapple", zh: "鳳梨", family: "fruity" },
+  blackcurrant: { en: "Blackcurrant", zh: "黑醋栗", family: "fruity" },
+  apple: { en: "Apple", zh: "蘋果", family: "fruity" },
+  pear: { en: "Pear", zh: "西洋梨", family: "fruity" },
+  peach: { en: "Peach", zh: "水蜜桃", family: "fruity" },
+  litchi: { en: "Lychee", zh: "荔枝", family: "fruity" },
+  melon: { en: "Melon", zh: "甜瓜", family: "fruity" },
+  fig: { en: "Fig", zh: "無花果", family: "fruity" },
+  // chypre
+  oakmoss: { en: "Oakmoss", zh: "橡木苔", family: "chypre" },
+  // spicy
+  pepper: { en: "Black Pepper", zh: "黑胡椒", family: "spicy" },
+  "pink-pepper": { en: "Pink Pepper", zh: "粉紅胡椒", family: "spicy" },
+  "sichuan-pepper": { en: "Sichuan Pepper", zh: "花椒", family: "spicy" },
+  ginger: { en: "Ginger", zh: "薑", family: "spicy" },
+  nutmeg: { en: "Nutmeg", zh: "肉豆蔻", family: "spicy" },
+  cardamom: { en: "Cardamom", zh: "小豆蔻", family: "spicy" },
+  clove: { en: "Clove", zh: "丁香", family: "spicy" },
+  // woody
+  cedar: { en: "Cedar", zh: "雪松", family: "woody" },
+  sandalwood: { en: "Sandalwood", zh: "檀香", family: "woody" },
+  vetiver: { en: "Vetiver", zh: "岩蘭草", family: "woody" },
+  patchouli: { en: "Patchouli", zh: "廣藿香", family: "woody" },
+  "guaiac-wood": { en: "Guaiac Wood", zh: "愈創木", family: "woody" },
+  rosewood: { en: "Rosewood", zh: "花梨木", family: "woody" },
+  oud: { en: "Oud", zh: "沉香", family: "woody" },
+  papyrus: { en: "Papyrus", zh: "紙莎草", family: "woody" },
+  // amber / resins
+  amber: { en: "Amber", zh: "琥珀", family: "amber" },
+  ambroxan: { en: "Ambroxan", zh: "龍涎香醚", family: "amber" },
+  labdanum: { en: "Labdanum", zh: "岩薔薇", family: "amber" },
+  incense: { en: "Incense", zh: "焚香", family: "amber" },
+  elemi: { en: "Elemi", zh: "欖香脂", family: "amber" },
+  opoponax: { en: "Opoponax", zh: "紅沒藥", family: "amber" },
+  benzoin: { en: "Benzoin", zh: "安息香", family: "amber" },
+  "peru-balsam": { en: "Peru Balsam", zh: "秘魯香脂", family: "amber" },
+  // gourmand
+  vanilla: { en: "Vanilla", zh: "香草", family: "gourmand" },
+  tonka: { en: "Tonka Bean", zh: "零陵香豆", family: "gourmand" },
+  coffee: { en: "Coffee", zh: "咖啡", family: "gourmand" },
+  "bitter-almond": { en: "Bitter Almond", zh: "苦杏仁", family: "gourmand" },
+  licorice: { en: "Licorice", zh: "甘草", family: "gourmand" },
+  chestnut: { en: "Chestnut", zh: "栗子", family: "gourmand" },
+  coconut: { en: "Coconut", zh: "椰子", family: "gourmand" },
+  // musk
+  musk: { en: "Musk", zh: "麝香", family: "musky" },
+  "white-musk": { en: "White Musk", zh: "白麝香", family: "musky" },
+  ambrette: { en: "Ambrette", zh: "黃葵籽", family: "musky" },
+  ambergris: { en: "Ambergris", zh: "龍涎香", family: "musky" },
+  cashmeran: { en: "Cashmeran", zh: "開司米酮", family: "musky" },
+  "cashmere-wood": { en: "Cashmere Wood", zh: "喀什米爾木", family: "musky" },
+  // leather
+  leather: { en: "Leather", zh: "皮革", family: "leather" },
+  birch: { en: "Birch", zh: "樺木", family: "leather" },
+  // avant-garde
+  "iso-e-super": { en: "Iso E Super", zh: "超級龍涎", family: "avantgarde" },
+  aldehydes: { en: "Aldehydes", zh: "醛", family: "avantgarde" },
+} as const satisfies Record<string, NoteDefinition>;
+
+export type NoteKey = keyof typeof NOTES;
+
+export function noteInfo(key: string): NoteDefinition | undefined {
+  return (NOTES as Record<string, NoteDefinition>)[key];
+}
+
+export function noteLabel(key: string): string {
+  return noteInfo(key)?.zh ?? key;
+}
