@@ -13,7 +13,7 @@ export interface NoteDefinition {
 
 export const NOTES = {
   // citrus
-  bergamot: { en: "Bergamot", zh: "佛手柑", family: "citrus" },
+  bergamot: { en: "Bergamot", zh: "香檸檬", family: "citrus" },
   grapefruit: { en: "Grapefruit", zh: "葡萄柚", family: "citrus" },
   lemon: { en: "Lemon", zh: "檸檬", family: "citrus" },
   lime: { en: "Lime", zh: "萊姆", family: "citrus" },
@@ -94,7 +94,7 @@ export const NOTES = {
   // musk
   musk: { en: "Musk", zh: "麝香", family: "musky" },
   "white-musk": { en: "White Musk", zh: "白麝香", family: "musky" },
-  ambrette: { en: "Ambrette", zh: "黃葵籽", family: "musky" },
+  ambrette: { en: "Ambrette", zh: "秋葵籽", family: "musky" },
   ambergris: { en: "Ambergris", zh: "龍涎香", family: "musky" },
   cashmeran: { en: "Cashmeran", zh: "開司米酮", family: "musky" },
   "cashmere-wood": { en: "Cashmere Wood", zh: "喀什米爾木", family: "musky" },
@@ -104,6 +104,31 @@ export const NOTES = {
   // avant-garde
   "iso-e-super": { en: "Iso E Super", zh: "超級龍涎", family: "avantgarde" },
   aldehydes: { en: "Aldehydes", zh: "醛", family: "avantgarde" },
+  // added with An's fragrance-family guide (data/family-guide.ts)
+  hinoki: { en: "Hinoki", zh: "檜木", family: "woody" },
+  tea: { en: "Tea", zh: "茶", family: "fresh" },
+  basil: { en: "Basil", zh: "羅勒", family: "fougere" },
+  petitgrain: { en: "Petitgrain", zh: "苦橙葉", family: "citrus" },
+  "blood-orange": { en: "Blood Orange", zh: "血橙", family: "citrus" },
+  "bitter-orange": { en: "Bitter Orange", zh: "苦橙", family: "citrus" },
+  watermelon: { en: "Watermelon", zh: "西瓜", family: "fruity" },
+  tuberose: { en: "Tuberose", zh: "晚香玉", family: "floral" },
+  peony: { en: "Peony", zh: "牡丹", family: "floral" },
+  frankincense: { en: "Frankincense", zh: "乳香", family: "amber" },
+  saffron: { en: "Saffron", zh: "番紅花", family: "spicy" },
+  cinnamon: { en: "Cinnamon", zh: "肉桂", family: "spicy" },
+  rum: { en: "Rum", zh: "蘭姆酒", family: "gourmand" },
+  whisky: { en: "Whisky", zh: "威士忌", family: "gourmand" },
+  pistachio: { en: "Pistachio", zh: "開心果", family: "gourmand" },
+  hazelnut: { en: "Hazelnut", zh: "榛果", family: "gourmand" },
+  caramel: { en: "Caramel", zh: "焦糖", family: "gourmand" },
+  rice: { en: "Rice", zh: "大米", family: "gourmand" },
+  "soy-milk": { en: "Soy Milk", zh: "豆漿", family: "gourmand" },
+  pumpkin: { en: "Pumpkin", zh: "南瓜", family: "gourmand" },
+  butter: { en: "Butter", zh: "奶油", family: "gourmand" },
+  seaweed: { en: "Seaweed", zh: "海藻", family: "marine" },
+  ink: { en: "Ink", zh: "墨水", family: "mineral" },
+  metallic: { en: "Metallic Notes", zh: "金屬", family: "mineral" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;

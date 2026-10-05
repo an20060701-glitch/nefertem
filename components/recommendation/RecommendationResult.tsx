@@ -6,6 +6,7 @@ import { SunDisc } from "@/components/brand/SunDisc";
 import { FamilyDot } from "@/components/fragrance/FamilyDot";
 import { FragranceBottle } from "@/components/fragrance/FragranceBottle";
 import { Button } from "@/components/ui/Button";
+import { guideForFamily } from "@/data/family-guide";
 import { noteInfo } from "@/data/notes";
 import { cn } from "@/lib/cn";
 import { fadeUp, reducedFade, reveal, staggerChildren } from "@/lib/motion";
@@ -46,6 +47,7 @@ export function RecommendationResult({
   const reduce = useReducedMotion();
   const item = reduce ? reducedFade : fadeUp;
   const f = featured.fragrance;
+  const guide = guideForFamily(f.family);
 
   return (
     <motion.article
@@ -119,6 +121,26 @@ export function RecommendationResult({
             ) : null,
           )}
         </motion.dl>
+
+        {guide && (
+          <motion.aside
+            variants={item}
+            aria-label={`關於${guide.zh}`}
+            className="mt-10 bg-surface-raised p-6 desk:p-8"
+          >
+            <p className="label text-gold-text">
+              {guide.zh} <span className="text-faint">· {guide.en}</span>
+            </p>
+            <p className="mt-3 text-small text-muted">{guide.description}</p>
+            <ul aria-label="氣味特性" className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
+              {guide.traits.map((t) => (
+                <li key={t} className="font-serif-zh text-small text-lotus-deep">
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </motion.aside>
+        )}
 
         <motion.section variants={item} aria-labelledby="why-title" className="mt-14">
           <HairlineHeading as="h4">

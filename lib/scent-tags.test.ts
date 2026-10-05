@@ -41,3 +41,15 @@ describe("demo catalogue", () => {
     expect(DEMO_FRAGRANCES.length).toBeLessThanOrEqual(20);
   });
 });
+
+describe("family guide", () => {
+  it("covers every family exactly once and only uses known notes", async () => {
+    const { FAMILY_GUIDES } = await import("@/data/family-guide");
+    const { FAMILIES } = await import("@/lib/fragrance/families");
+    const covered = FAMILY_GUIDES.flatMap((g) => g.families);
+    expect(new Set(covered).size).toBe(covered.length);
+    expect(covered.sort()).toEqual(Object.keys(FAMILIES).sort());
+    for (const g of FAMILY_GUIDES)
+      for (const m of g.materials) expect(NOTES, `${g.key}: ${m}`).toHaveProperty(m);
+  });
+});
