@@ -22,14 +22,14 @@ export function GoldParticles({ className }: { className?: string }) {
       {MOTES.map((m) => (
         <span
           key={`${m.left}-${m.top}`}
-          className="gold-particle absolute rounded-full bg-gold-light"
+          className="gold-particle absolute rounded-full bg-sun"
           style={
             {
               left: m.left,
               top: m.top,
               width: m.size,
               height: m.size,
-              boxShadow: "0 0 6px rgb(216 195 138 / 0.8)",
+              boxShadow: "0 0 6px rgb(227 194 153 / 0.9)",
               "--particle-duration": `${m.duration}s`,
               "--particle-delay": `${m.delay}s`,
               "--drift-x": `${m.drift}px`,

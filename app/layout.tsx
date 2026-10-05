@@ -6,21 +6,23 @@ import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { CustomCursor } from "@/components/navigation/CustomCursor";
 import { DesktopNav } from "@/components/navigation/DesktopNav";
 import { MobileTopBar } from "@/components/navigation/MobileTopBar";
+import { BRAND } from "@/lib/brand";
 import { introFlagScript } from "@/lib/intro";
 import { fontVariables } from "./fonts";
+import "./ryusenkei.css";
 import "./globals.css";
 
-const title = "NEFERTEM — 找到今天適合你的香氣";
+const title = `${BRAND.name} — 找到今天適合你的香氣`;
 const description = "探索你的香水收藏，根據天氣、場合與氣味印象，找到今天最適合你的香氣。";
 
 export const metadata: Metadata = {
-  title: { default: title, template: "%s — NEFERTEM" },
+  title: { default: title, template: `%s — ${BRAND.name}` },
   description,
-  applicationName: "NEFERTEM",
+  applicationName: BRAND.name,
   openGraph: {
     title,
     description,
-    siteName: "NEFERTEM",
+    siteName: BRAND.name,
     locale: "zh_TW",
     type: "website",
   },
@@ -40,6 +42,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         {/* Sets data-intro-seen before paint so the loading ritual never flashes for returning visitors. */}
         <script dangerouslySetInnerHTML={{ __html: introFlagScript }} />
+        {/* The Ryusenkei slice holding every character of the site's own copy. */}
+        <link
+          rel="preload"
+          href="/fonts/ryusenkei/ryusenkei-400-00.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
       </head>
       <body className="min-h-svh bg-surface">
         <a

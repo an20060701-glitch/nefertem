@@ -1,4 +1,4 @@
-# NEFERTEM
+# 香水人生 A Life in Scent
 
 現代精品香氛 × 古埃及藍色睡蓮之神 Nefertem。幫使用者依天氣、場合與想留下的印象，找到今天最適合自己的香氣。
 
@@ -24,9 +24,13 @@ npm run dev                  # http://localhost:3000
 | `npm test` | Vitest 單元測試 |
 | `npm run check` | 以上三項一次跑完 |
 
-## 官方插畫
+## 字體
 
-把 Nefertem 官方視覺放到 `public/images/nefertem-reference.png`，Hero 會自動改用它（需重新 build）；沒有時顯示占位框。
+全站中文使用 **02流線形**（Flop Design，SIL OFL 1.1），以 `unicode-range` 切片自託管在 `public/fonts/ryusenkei/`。新增中文文案後請重跑 `python3 scripts/build-ryusenkei.py <TTF 資料夾>`（需要 `pip install fonttools brotli`），讓文案用到的字都在第一個切片裡。
+
+## Key Visual
+
+NEFERTEM 官方 Key Visual 位於 `public/images/nefertem-key-visual.png`，是整站視覺語言的母體：只在首頁 Hero 使用圖片本身，其餘頁面延伸它的色彩、睡蓮、日輪、聖符與煙霧語彙。
 
 ## 目前進度
 

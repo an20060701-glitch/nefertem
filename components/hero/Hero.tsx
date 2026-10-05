@@ -2,9 +2,10 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { LotusGlyph } from "@/components/brand/LotusGlyph";
+import { SunDisc } from "@/components/brand/SunDisc";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
-import { ease, fadeUp, reducedFade, scaleIn, staggerChildren, transition } from "@/lib/motion";
+import { BRAND } from "@/lib/brand";
+import { fadeUp, reducedFade, scaleIn, staggerChildren, transition } from "@/lib/motion";
 import { GoldParticles } from "./GoldParticles";
 import { ReferenceImage } from "./ReferenceImage";
 import { SmokeLayer } from "./SmokeLayer";
@@ -38,7 +39,7 @@ export function Hero({ hasReferenceImage }: HeroProps) {
       className="page-x relative overflow-x-clip pb-20 pt-4 md:pt-[calc(var(--nav-desktop-height)+2rem)] desk:min-h-svh desk:pb-28"
     >
       <motion.div
-        className="relative grid grid-cols-1 gap-10 desk:grid-cols-12 desk:gap-6"
+        className="relative grid grid-cols-1 gap-8 desk:grid-cols-12 desk:gap-6"
         initial="hidden"
         animate="visible"
         variants={staggerChildren(delay + 0.2, 0.12)}
@@ -46,18 +47,21 @@ export function Hero({ hasReferenceImage }: HeroProps) {
         {/* Wordmark + Chinese line */}
         <motion.div
           style={{ y: titleY }}
-          className="relative z-10 flex flex-col desk:col-span-7 desk:col-start-1 desk:row-start-1 desk:pt-[12vh]"
+          className="relative z-10 flex flex-col desk:col-span-5 desk:col-start-1 desk:row-start-1 desk:pt-[9vh]"
         >
           <motion.p variants={item} className="label text-muted">
-            SCENT • RITUAL • MEMORY
+            {BRAND.museLine}
           </motion.p>
           <motion.h1
             id="hero-title"
             variants={item}
-            className="mt-5 font-display text-hero font-light text-ink desk:mt-8"
+            className="mt-6 font-serif-zh text-hero-zh font-extralight tracking-[0.12em] text-ink desk:mt-10"
           >
-            NEFERTEM
+            {BRAND.name}
           </motion.h1>
+          <motion.p variants={item} className="mt-3 font-display text-h2 font-light italic text-lotus-deep">
+            A Life in Scent
+          </motion.p>
           <motion.span
             variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: transition.slow } }}
             aria-hidden
@@ -65,45 +69,46 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           />
           <motion.p
             variants={item}
-            className="mt-6 max-w-[18em] font-serif-zh text-h1-zh text-ink desk:mt-10"
+            className="mt-6 font-serif-zh text-h1-zh text-ink desk:mt-10"
           >
-            香氣，是你今天選擇成為誰的方式。
+            <span className="block">香氣</span>
+            <span className="block">是你今天選擇成為誰的方式</span>
           </motion.p>
         </motion.div>
 
-        {/* Arched illustration with vapour and gold motes */}
+        {/* The official illustration, printed onto the ivory page (multiply), with Ra's sun, vapour and motes */}
         <motion.figure
           variants={reduce ? reducedFade : scaleIn}
-          className="relative mx-auto w-full max-w-[26rem] desk:col-span-6 desk:col-start-7 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:max-w-none"
+          className="relative -mx-[var(--gutter)] desk:col-span-7 desk:col-start-6 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:ml-0 desk:self-center"
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-t-full desk:aspect-[5/6]">
-            <motion.div className="absolute inset-[-3%]" style={{ y: imageY }}>
+          <div className="relative aspect-[4/3] overflow-hidden">
+            <motion.div className="absolute inset-[-2%]" style={{ y: imageY }}>
               <ReferenceImage
                 available={hasReferenceImage}
                 priority
-                sizes="(min-width: 1200px) 50vw, 26rem"
+                sizes="(min-width: 1200px) 66vw, 100vw"
+                className="mix-blend-multiply"
               />
             </motion.div>
             <GoldParticles />
+            {/* Ivory veil at the left edge so the headline stays legible where it crosses the artwork */}
+            <div
+              aria-hidden
+              className="absolute inset-y-0 left-0 hidden w-[22%] bg-gradient-to-r from-surface to-transparent desk:block"
+            />
           </div>
-          <SmokeLayer className="absolute -top-[18%] left-[8%] h-[70%] w-[55%] desk:-left-[12%]" />
-          <motion.div
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 text-blue desk:bottom-10"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: delay + 0.6, duration: 1.5, ease: ease.editorial }}
-          >
-            <span className="lotus-float block">
-              <LotusGlyph size={56} strokeWidth={1} draw={!reduce} delay={delay + 0.6} drawDuration={1.6} />
-            </span>
-          </motion.div>
-          <figcaption className="sr-only">Nefertem — 藍色睡蓮之神</figcaption>
+          <SunDisc
+            id="hero-sun"
+            className="absolute -top-[7%] right-[8%] w-[16%] opacity-70 desk:-top-[9%] desk:right-[14%] desk:w-[12%]"
+          />
+          <SmokeLayer className="absolute bottom-[8%] left-[14%] h-[60%] w-[30%] opacity-80" />
+          <figcaption className="sr-only">Nefertem：香氣與療癒之神，手持藍色睡蓮與香水瓶</figcaption>
         </motion.figure>
 
         {/* English statement + way in */}
         <motion.div
           variants={staggerChildren(0, 0.08)}
-          className="relative z-10 mt-6 flex flex-col gap-10 desk:col-span-5 desk:col-start-1 desk:row-start-2 desk:mt-0 desk:self-end"
+          className="relative z-10 flex flex-col gap-10 desk:col-span-4 desk:col-start-1 desk:row-start-2 desk:self-end"
         >
           <p className="font-display text-h2 font-light italic leading-[1.15] text-ink/90">
             {EN_LINES.map((line) => (

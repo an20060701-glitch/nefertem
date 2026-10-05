@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HairlineHeading } from "@/components/brand/EditorialHeading";
+import { EgyptianGlyph } from "@/components/brand/EgyptianGlyph";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {
@@ -41,7 +42,10 @@ export default function ShoppingPage() {
           <p className="mt-4 text-small text-faint">搜尋功能即將開放。</p>
         </div>
 
-        <HairlineHeading className="mt-24 desk:mt-32">WHERE TO FIND IT</HairlineHeading>
+        <div className="mt-24 flex items-center gap-5 desk:mt-32">
+          <EgyptianGlyph name="stalk" size={26} className="shrink-0" />
+          <HairlineHeading className="flex-1">WHERE TO FIND IT</HairlineHeading>
+        </div>
         <ul className="mt-4">
           {STORES.map((store) => (
             <li key={store.name} className="group border-b border-line py-8 desk:py-10">
