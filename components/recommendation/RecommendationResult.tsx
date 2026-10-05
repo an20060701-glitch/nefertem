@@ -23,7 +23,11 @@ interface RecommendationResultProps {
   explanation: Explanation;
   alternatives: Recommendation[];
   canSpin: boolean;
-  confirmed?: { count: number; viaWheel: boolean };
+  /** Where the candidates came from, in one line. */
+  source: string;
+  confirmed?: { count: number; viaWheel: boolean; savedTo: "device" | "account"; inCollection: boolean };
+  saveError?: string;
+  onAddToCollection: () => void;
   onFeature: (id: string) => void;
   onConfirm: () => void;
   onOpenWheel: () => void;
@@ -37,7 +41,10 @@ export function RecommendationResult({
   explanation,
   alternatives,
   canSpin,
+  source,
   confirmed,
+  saveError,
+  onAddToCollection,
   onFeature,
   onConfirm,
   onOpenWheel,
@@ -82,6 +89,9 @@ export function RecommendationResult({
         </motion.p>
         <motion.p variants={item} className="mt-4 font-serif-zh text-h2 text-ink">
           今天，這款香氣很適合你。
+        </motion.p>
+        <motion.p variants={item} className="mt-2 text-small text-faint">
+          {source}
         </motion.p>
         <motion.p variants={item} className="label mt-10 text-muted">
           {f.brand}
@@ -169,13 +179,26 @@ export function RecommendationResult({
             <div className="border-l border-gold pl-6">
               <p className="font-serif-zh text-h2 text-ink">今天，就是 {f.name}。</p>
               <p className="mt-3 text-muted">
-                已記在這台裝置{confirmed.count > 1 ? `，這是你第 ${confirmed.count} 次選擇它` : ""}
-                。登入後，紀錄會同步到你的香水櫃。
+                {confirmed.savedTo === "account" ? "已記在你的帳號" : "已記在這台裝置"}
+                {confirmed.count > 1 ? `，這是你第 ${confirmed.count} 次選擇它` : ""}。
               </p>
+              {!confirmed.inCollection && (
+                <p className="mt-4 text-small text-muted">
+                  它還不在你的香水櫃裡。
+                  <button type="button" onClick={onAddToCollection} className="gold-underline ml-3 text-blue">
+                    加入你的香水櫃
+                  </button>
+                </p>
+              )}
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
               <Button onClick={onConfirm}>就決定是你了</Button>
+              {saveError && (
+                <p role="alert" className="w-full text-small text-danger">
+                  {saveError}
+                </p>
+              )}
               {canSpin && (
                 <Button variant="text" onClick={onOpenWheel}>
                   選擇障礙？CAN&apos;T DECIDE?

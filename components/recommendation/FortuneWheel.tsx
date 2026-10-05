@@ -4,6 +4,7 @@ import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion } fr
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LotusGlyph } from "@/components/brand/LotusGlyph";
+import { modalKeyDown, useModal } from "@/hooks/useModal";
 import { SunDisc } from "@/components/brand/SunDisc";
 import { FAMILIES } from "@/lib/fragrance/families";
 import { ease, fadeUp, reducedFade, staggerChildren } from "@/lib/motion";
@@ -39,45 +40,13 @@ export function FortuneWheel({ candidates, onClose, onConfirm }: FortuneWheelPro
   const n = candidates.length;
   const slice = 360 / n;
 
-  // Lock page scroll, make the page behind inert, move focus in; undo all on close.
+  useModal(dialogRef, spinRef);
   useEffect(() => {
-    const previous = document.activeElement as HTMLElement | null;
-    const root = document.documentElement;
-    const overflow = root.style.overflow;
-    root.style.overflow = "hidden";
-    const behind = [...document.body.children].filter(
-      (el): el is HTMLElement => el instanceof HTMLElement && el !== dialogRef.current && !el.inert,
-    );
-    behind.forEach((el) => (el.inert = true));
-    spinRef.current?.focus();
     const pending = timers.current;
-    return () => {
-      root.style.overflow = overflow;
-      behind.forEach((el) => (el.inert = false));
-      pending.forEach((t) => window.clearTimeout(t));
-      previous?.focus();
-    };
+    return () => pending.forEach((t) => window.clearTimeout(t));
   }, []);
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      e.stopPropagation();
-      onClose();
-      return;
-    }
-    if (e.key !== "Tab" || !dialogRef.current) return;
-    const focusable = dialogRef.current.querySelectorAll<HTMLElement>("button:not([disabled])");
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
+  const onKeyDown = (e: React.KeyboardEvent) => modalKeyDown(e, dialogRef.current, onClose);
 
   const spin = () => {
     const index = pickWheelIndex(n);
