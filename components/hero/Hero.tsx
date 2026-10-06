@@ -103,8 +103,9 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           <SpeechBubble
             delay={delay + 1.4}
             tail="left"
-            // Upper right of the figure, beside the head (An, 2026-10-06).
-            className="absolute -top-16 right-[4%] z-10 w-[min(16rem,62%)] md:-top-24 desk:-top-28 desk:right-[3%] desk:w-[19rem]"
+            // Upper right of the figure (An, 2026-10-06); on desktop its left edge sits
+            // above the rightmost petal of the lotus crown, at ~52% of the illustration.
+            className="absolute -top-16 right-[4%] z-10 w-[min(16rem,62%)] md:-top-24 desk:-top-28 desk:right-auto desk:left-[52%] desk:w-[19rem]"
           >
             {BRAND.coverVoice}
           </SpeechBubble>
