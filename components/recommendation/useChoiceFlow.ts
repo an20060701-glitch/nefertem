@@ -15,6 +15,7 @@ export const STEPS = ["weather", "occasion", "mood", "result"] as const;
 export type Step = (typeof STEPS)[number];
 export type Place = CityKey | "here";
 export const MAX_MOODS = 2;
+const PERMISSION_WAIT_MS = 10_000;
 
 export interface Selection {
   place?: Place;
@@ -115,14 +116,23 @@ export function useChoiceFlow() {
     }
     setLocating(true);
     setLocateFailed(false);
+    // The browser's own timeout only starts once permission is given; don't sit on
+    // 「正在確認你的位置…」 while the prompt is ignored. A late answer still counts.
+    const unanswered = window.setTimeout(() => {
+      setLocating(false);
+      setLocateFailed(true);
+    }, PERMISSION_WAIT_MS);
     navigator.geolocation.getCurrentPosition(
       ({ coords: c }) => {
+        window.clearTimeout(unanswered);
         setLocating(false);
+        setLocateFailed(false);
         setCoords({ lat: c.latitude, lon: c.longitude });
         if (parse(window.location.search).selection.place !== "here")
           update({ place: "here" }, "weather", "replace");
       },
       () => {
+        window.clearTimeout(unanswered);
         setLocating(false);
         setLocateFailed(true);
         if (parse(window.location.search).selection.place === "here")

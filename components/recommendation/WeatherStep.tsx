@@ -96,6 +96,27 @@ export function WeatherStep({
               {Math.round(weather.humidity)}%
             </p>
             {weather.source === "mock" && <p className="label mt-3 text-faint">示範天氣 · DEMO WEATHER</p>}
+            {weather.source === "open-meteo" && (
+              <p className="mt-3 text-small text-faint">
+                天氣資料{" "}
+                <a href="https://open-meteo.com/" target="_blank" rel="noreferrer" className="underline">
+                  Open-Meteo.com
+                </a>
+                {weather.place && place === "here" && (
+                  <>
+                    {" "}· 地名 ©{" "}
+                    <a
+                      href="https://www.openstreetmap.org/copyright"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline"
+                    >
+                      OpenStreetMap contributors
+                    </a>
+                  </>
+                )}
+              </p>
+            )}
           </div>
         )}
       </div>
