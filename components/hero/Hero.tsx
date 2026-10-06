@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
 import { BRAND } from "@/lib/brand";
+import { GoldParticles } from "./GoldParticles";
+import { SmokeLayer } from "./SmokeLayer";
 import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/motion";
 
 const EN_LINES = ["SCENT IS A WAY", "OF CHOOSING", "WHO YOU BECOME TODAY."];
@@ -25,8 +27,8 @@ export function Hero() {
   const delay = useIntroDelay();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  // Slow parallax: the art sinks a touch, the wordmark drifts the other way.
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "3%"]);
+  // Slow parallax (1–2%, §4.4): the art sinks a touch, the wordmark drifts the other way.
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "2%"]);
   const titleY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "-6%"]);
 
   const item = reduce ? reducedFade : fadeUp;
@@ -54,6 +56,14 @@ export function Hero() {
             className="object-cover object-[94%_50%] md:object-[70%_40%] desk:object-[72%_top]"
           />
         </motion.div>
+        {/* Ivory wash on the left edge so the type sits on paper, not on the watercolour (§0.1) */}
+        <div
+          aria-hidden
+          className="absolute inset-y-0 left-0 hidden w-[58%] bg-linear-to-r from-surface via-surface/80 to-transparent desk:block"
+        />
+        {/* Vapour rising from the bottle in Nefertem's hand, and a few gold motes (§4.4) */}
+        <SmokeLayer className="absolute bottom-[18%] left-[50%] hidden h-[62%] w-auto opacity-70 desk:block" />
+        <GoldParticles className="hidden desk:block" />
       </motion.div>
 
       <motion.div
