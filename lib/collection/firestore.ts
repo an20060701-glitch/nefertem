@@ -93,11 +93,13 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
       const target = options?.id ? doc(fragrances, options.id) : doc(fragrances);
       const now = Date.now();
       const imageUrl = options?.image ? await uploadCover(target.id, options.image) : draft.imageUrl;
+      const imageSource = options?.image ? undefined : draft.imageSource;
       const item: UserFragrance = {
         ...draft,
         id: target.id,
         origin: draft.origin ?? "manual",
         imageUrl,
+        imageSource,
         createdAt: now,
         addedAt: now,
         usageCount: 0,
@@ -115,6 +117,8 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
       }
       const data: Record<string, unknown> = clean({ ...patch, imageUrl, updatedAt: serverTimestamp() });
       if (options?.image === null) data.imageUrl = null;
+      // A member's own photo, or none, replaces the official picture and its credit.
+      if (options?.image !== undefined) data.imageSource = null;
       await updateDoc(doc(fragrances, id), data);
     },
 
