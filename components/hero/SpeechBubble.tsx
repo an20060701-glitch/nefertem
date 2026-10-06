@@ -9,23 +9,13 @@ import { ease } from "@/lib/motion";
  * its tail pointing down toward the figure. Drawn like the illustration's
  * hand-lettered notes, not a chat UI.
  */
-const OUTLINE = {
-  // tail at the lower right, for a bubble left of the figure's head
-  right: "M24 6 H296 Q314 6 314 24 V78 Q314 96 296 96 H214 L236 118 L188 96 H24 Q6 96 6 78 V24 Q6 6 24 6 Z",
-  // tail at the lower left, for a bubble right of the figure's head
-  left: "M24 6 H296 Q314 6 314 24 V78 Q314 96 296 96 H132 L84 118 L106 96 H24 Q6 96 6 78 V24 Q6 6 24 6 Z",
-} as const;
-
 export function SpeechBubble({
   children,
   delay = 0,
-  tail = "right",
   className,
 }: {
   children: React.ReactNode;
   delay?: number;
-  /** Which lower corner the tail points from, toward the speaker. */
-  tail?: keyof typeof OUTLINE;
   className?: string;
 }) {
   const reduce = useReducedMotion();
@@ -43,8 +33,9 @@ export function SpeechBubble({
           preserveAspectRatio="none"
           className="absolute inset-0 h-full w-full overflow-visible"
         >
+          {/* bubble with a tail toward the lower right, where the figure is */}
           <path
-            d={OUTLINE[tail]}
+            d="M24 6 H296 Q314 6 314 24 V78 Q314 96 296 96 H214 L236 118 L188 96 H24 Q6 96 6 78 V24 Q6 6 24 6 Z"
             fill="var(--surface)"
             fillOpacity="0.92"
             stroke="var(--gold)"
