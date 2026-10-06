@@ -24,7 +24,7 @@ export function OccasionStep({
   return (
     <div className="flex flex-col gap-12 desk:gap-16">
       <StepHeading
-        index={2}
+        index={1}
         label="THE OCCASION"
         question="你今天會去哪裡？"
         glyph="ankh"
@@ -33,7 +33,7 @@ export function OccasionStep({
       <div
         role="radiogroup"
         aria-labelledby="step-occasion"
-        className="grid border-y border-line md:grid-cols-2"
+        className="grid grid-cols-2 border-y border-line"
       >
         {OPTIONS.map((option, i) => {
           const checked = occasion === option.key;
@@ -47,8 +47,9 @@ export function OccasionStep({
               whileHover={reduce ? undefined : { y: -4 }}
               transition={transition.base}
               className={cn(
-                "group relative flex min-h-[15rem] flex-col justify-between gap-10 py-10 text-left md:min-h-[24rem] md:px-10 desk:py-14",
-                i === 1 && "border-t border-line md:border-l md:border-t-0",
+                // Phones: two compact squares side by side (An, 2026-10-06), not a tall stack.
+                "group relative flex min-h-[12rem] flex-col justify-between gap-6 px-4 py-6 text-left md:min-h-[24rem] md:gap-10 md:px-10 md:py-10 desk:min-h-[22rem] desk:px-8 desk:py-12",
+                i === 1 && "border-l border-line",
               )}
             >
               <div className="flex items-start justify-between gap-6">
@@ -57,18 +58,19 @@ export function OccasionStep({
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <EgyptianGlyph name={option.glyph} size={28} className="opacity-60" />
+                <EgyptianGlyph name={option.glyph} size={28} className="size-5 opacity-60 md:size-7" />
               </div>
               <div>
                 <span
                   className={cn(
-                    "block font-display text-display font-light italic transition-colors duration-700",
+                    // Desktop: the cards share the right column, so the word scales with the viewport.
+                    "block font-display text-[clamp(1.75rem,8vw,2.25rem)] font-light italic leading-none transition-colors duration-700 md:text-display desk:text-[clamp(2.5rem,4.2vw,6.5rem)]",
                     checked ? "text-blue" : "text-ink group-hover:text-lotus-deep",
                   )}
                 >
                   {option.en}
                 </span>
-                <span className="mt-3 flex items-center gap-3 font-serif-zh text-h1-zh text-ink">
+                <span className="mt-3 flex items-center gap-2 font-serif-zh text-lead text-ink md:gap-3 md:text-h1-zh">
                   <span
                     aria-hidden
                     className={cn(
@@ -78,12 +80,12 @@ export function OccasionStep({
                   />
                   {option.zh}
                 </span>
-                <span className="mt-4 block text-muted">{option.note}</span>
+                <span className="mt-2 block text-small text-muted md:mt-4 md:text-body">{option.note}</span>
               </div>
               <span
                 aria-hidden
                 className={cn(
-                  "absolute bottom-0 left-0 h-px w-full origin-left bg-gold transition-transform duration-700 ease-[var(--ease-editorial)] md:left-10 md:w-[calc(100%-5rem)]",
+                  "absolute bottom-0 left-4 h-px w-[calc(100%-2rem)] origin-left bg-gold transition-transform duration-700 ease-[var(--ease-editorial)] md:left-10 md:w-[calc(100%-5rem)] desk:left-8 desk:w-[calc(100%-4rem)]",
                   checked ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                 )}
               />
