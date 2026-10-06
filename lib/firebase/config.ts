@@ -12,6 +12,9 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+/** A named Firestore database (e.g. "nefertem"); empty means the project's "(default)" one. */
+export const firestoreDatabaseId = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_ID || undefined;
+
 /** The site must keep working without Firebase; features check this first. */
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId,
