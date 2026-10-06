@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { isCityKey } from "@/lib/weather/cities";
 import { MOODS } from "@/lib/fragrance/families";
 import type { CityKey, Mood, Occasion, WeatherSnapshot } from "@/types";
@@ -132,6 +132,15 @@ export function useChoiceFlow() {
     );
   }, [update]);
 
+  // Today's weather starts from where the visitor is (An, 2026-10-06): ask once,
+  // the first time the weather step is seen with no place chosen yet.
+  const autoLocated = useRef(false);
+  const autoLocate = useCallback(() => {
+    if (autoLocated.current || parse(window.location.search).selection.place) return;
+    autoLocated.current = true;
+    locate();
+  }, [locate]);
+
   // Restoring "here" after a reload: ask the browser again (it remembers the permission).
   const needsCoords = selection.place === "here" && !coords;
   useEffect(() => {
@@ -172,6 +181,7 @@ export function useChoiceFlow() {
     weatherStatus,
     locateFailed,
     locate,
+    autoLocate,
     goTo: (next: Step) => update({}, next),
     chooseCity: (city: CityKey) => {
       setLocateFailed(false);

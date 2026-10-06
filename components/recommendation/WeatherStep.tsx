@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { CITIES, CITY_KEYS, cityLabel } from "@/lib/weather/cities";
@@ -7,7 +8,6 @@ import { CONDITION_LABELS } from "@/lib/weather/labels";
 import type { CityKey, WeatherSnapshot } from "@/types";
 import { StepHeading } from "./StepHeading";
 import type { Place, WeatherStatus } from "./useChoiceFlow";
-import { useState } from "react";
 
 interface WeatherStepProps {
   place?: Place;
@@ -15,81 +15,114 @@ interface WeatherStepProps {
   status: WeatherStatus;
   locateFailed: boolean;
   onLocate: () => void;
+  onAutoLocate: () => void;
   onChooseCity: (city: CityKey) => void;
   onContinue: () => void;
 }
 
-/** STEP 01 — today's weather, from the browser's location or a default city. */
+/**
+ * STEP 01 — today's weather where the visitor is. The site locates them as soon
+ * as this step comes into view and fetches the local forecast; 「更改位置」 lets
+ * them pick a city (or locate again) when the place is wrong.
+ */
 export function WeatherStep({
   place,
   weather,
   status,
   locateFailed,
   onLocate,
+  onAutoLocate,
   onChooseCity,
   onContinue,
 }: WeatherStepProps) {
   const [changing, setChanging] = useState(false);
-  const failed = locateFailed || status === "error";
-  const showCities = !weather || changing || failed;
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Ask for the location when the step is actually on screen, not on page load.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || place) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        onAutoLocate();
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [place, onAutoLocate]);
+
+  const busy = status === "locating" || status === "loading";
+  const failed = !busy && (status === "error" || (locateFailed && !place));
+  const ready = status === "ready" && !!weather && !failed;
+  const showPicker = changing || failed;
+  const placeZh = weather ? (weather.place ?? cityLabel(weather.city)) : "";
 
   return (
-    <div className="flex flex-col gap-12 desk:gap-16">
+    <div ref={rootRef} className="flex flex-col gap-12 desk:gap-16">
       <StepHeading index={1} label="THE WEATHER" question="今天的天氣如何？" glyph="ra" id="step-weather" />
 
       <div aria-live="polite" className="empty:hidden">
-        {(status === "locating" || status === "loading") && (
+        {(busy || (status === "idle" && !failed)) && (
           <div className="flex flex-col gap-4">
             <span className="skeleton block h-14 w-full max-w-[34rem] desk:h-24" />
             <p className="label text-muted">
-              {status === "locating" ? "正在確認你的位置…" : "正在感受今天的空氣…"}
+              {status === "loading" ? "正在查詢當地今天的天氣…" : "正在確認你的位置…"}
             </p>
           </div>
         )}
-        {failed && status !== "locating" && status !== "loading" && (
+        {failed && (
           <p className="font-serif-zh text-h2 text-ink">
-            暫時無法取得天氣。
-            <span className="mt-2 block text-body text-muted">請選擇離你最近的城市。</span>
+            {status === "error" ? "暫時無法取得天氣。" : "沒有取得你的位置。"}
+            <span className="mt-2 block text-body text-muted">
+              {status === "error"
+                ? "請選擇離你最近的城市。"
+                : "請選擇離你最近的城市，或允許網站使用位置後重新定位。"}
+            </span>
           </p>
         )}
-        {status === "ready" && weather && !failed && (
+        {ready && (
           <div>
-            <p className="font-display text-display font-light text-ink lining-nums">
+            <p className="label text-muted">{place === "here" ? "你的位置 · YOUR LOCATION" : "選擇的城市 · CITY"}</p>
+            <p className="mt-4 font-display text-display font-light text-ink lining-nums">
               {weather.city} <span className="text-gold">·</span> {Math.round(weather.temperature)}°C{" "}
               <span className="text-gold">·</span>{" "}
               <span className="italic">{CONDITION_LABELS[weather.condition].en}</span>
             </p>
             <p className="mt-4 font-serif-zh text-lead text-muted">
-              {cityLabel(weather.city)} · {Math.round(weather.temperature)}°C ·{" "}
-              {CONDITION_LABELS[weather.condition].zh} · 濕度 {Math.round(weather.humidity)}%
+              {placeZh} · {Math.round(weather.temperature)}°C · {CONDITION_LABELS[weather.condition].zh} · 濕度{" "}
+              {Math.round(weather.humidity)}%
             </p>
             {weather.source === "mock" && <p className="label mt-3 text-faint">示範天氣 · DEMO WEATHER</p>}
           </div>
         )}
       </div>
 
-      {status === "ready" && weather && !failed && (
+      {ready && (
         <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
           <Button onClick={onContinue}>繼續 · CONTINUE</Button>
-          {!changing && (
-            <Button variant="text" onClick={() => setChanging(true)}>
-              換一個城市
-            </Button>
-          )}
+          <Button variant="text" aria-expanded={changing} onClick={() => setChanging((open) => !open)}>
+            {changing ? "收起" : "更改位置 · CHANGE LOCATION"}
+          </Button>
         </div>
       )}
 
-      {showCities && status !== "locating" && (
+      {showPicker && !busy && (
         <div className="flex flex-col gap-8">
-          {!failed && (
-            <Button variant="ghost" className="w-fit" onClick={onLocate}>
-              使用目前位置 · USE MY LOCATION
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            className="w-fit"
+            onClick={() => {
+              setChanging(false);
+              onLocate();
+            }}
+          >
+            重新定位 · USE MY LOCATION
+          </Button>
           <div>
-            <p className="label text-muted">
-              {failed ? "預設城市 · DEFAULT CITIES" : "或選擇城市 · OR CHOOSE A CITY"}
-            </p>
+            <p className="label text-muted">或選擇城市 · OR CHOOSE A CITY</p>
             <div
               role="radiogroup"
               aria-label="選擇城市"

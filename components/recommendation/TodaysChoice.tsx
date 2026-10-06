@@ -68,7 +68,7 @@ export function TodaysChoice() {
         fragranceId,
         weather: weather.condition,
         temperature: weather.temperature,
-        city: weather.city,
+        city: weather.place ?? weather.city,
         occasion: selection.occasion,
         mood: selection.moods,
         viaWheel,
@@ -177,6 +177,7 @@ export function TodaysChoice() {
                 status={flow.weatherStatus}
                 locateFailed={flow.locateFailed}
                 onLocate={flow.locate}
+                onAutoLocate={flow.autoLocate}
                 onChooseCity={flow.chooseCity}
                 onContinue={() => flow.goTo("occasion")}
               />
