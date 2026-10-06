@@ -83,11 +83,16 @@ export function TodaysChoice() {
   // Move focus and view to the new step after user navigation (not on first paint).
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLElement>(null);
   const previousStep = useRef(step);
   useEffect(() => {
     if (previousStep.current === step) return;
     previousStep.current = step;
-    stageRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    // A question opens at the progress line above it; the result at its own stage.
+    (step === "result" ? stageRef : progressRef).current?.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      block: "start",
+    });
     const id = window.setTimeout(() => {
       document
         .getElementById(step === "result" ? "todays-scent" : `step-${step}`)
@@ -97,6 +102,7 @@ export function TodaysChoice() {
   }, [step, reduce]);
 
   const stepIndex = STEPS.indexOf(step);
+  const asking = step !== "result";
 
   return (
     <section
@@ -107,8 +113,15 @@ export function TodaysChoice() {
     >
       <PetalScatter side="left" />
 
-      <header className="relative grid gap-10 desk:grid-cols-12 desk:items-end desk:gap-6">
-        <div className="desk:col-span-5">
+      {/* Two columns on desktop (An, 2026-10-06): the title and today's weather on the left,
+          the progress line and the question being asked on the right; the result spans both. */}
+      <div className="relative grid gap-10 desk:grid-cols-12 desk:gap-x-6 desk:gap-y-0">
+        <header
+          className={cn(
+            "desk:col-span-5",
+            asking && "desk:sticky desk:top-28 desk:row-span-2 desk:self-start",
+          )}
+        >
           <p className="label text-muted">TODAY&apos;S CHOICE</p>
           <h2 id="choice-title" className="mt-5 font-serif-zh text-h1-zh text-ink">
             兩個問題
@@ -124,8 +137,12 @@ export function TodaysChoice() {
             onAutoLocate={flow.autoLocate}
             onChooseCity={flow.chooseCity}
           />
-        </div>
-        <nav aria-label="儀式進度" className="desk:col-span-7 desk:col-start-6">
+        </header>
+        <nav
+          ref={progressRef}
+          aria-label="儀式進度"
+          className="scroll-mt-24 desk:col-span-7 desk:col-start-6 desk:scroll-mt-28 desk:pt-1"
+        >
           <ol className="grid grid-cols-3 gap-3 desk:gap-6">
             {STEPS.map((s, i) => {
               const done = i < stepIndex;
@@ -165,86 +182,96 @@ export function TodaysChoice() {
             })}
           </ol>
         </nav>
-      </header>
 
-      <div ref={stageRef} className="relative mt-16 min-h-[70svh] scroll-mt-24 desk:mt-24 desk:scroll-mt-28">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, y: reduce ? 0 : 30 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0.2 : 0.9, ease: ease.editorial } }}
-            exit={{
-              opacity: 0,
-              y: reduce ? 0 : -16,
-              transition: { duration: reduce ? 0.15 : 0.45, ease: ease.editorial },
-            }}
-          >
-            {step === "occasion" && (
-              <OccasionStep occasion={selection.occasion} onChoose={flow.chooseOccasion} />
-            )}
-            {step === "mood" && (
-              <MoodStep
-                moods={selection.moods}
-                onToggle={flow.toggleMood}
-                onReveal={() => flow.goTo("result")}
-              />
-            )}
-            {step === "result" &&
-              (emptyCabinet ? (
-                <div className="flex max-w-[44rem] flex-col items-start gap-6">
-                  <p className="font-serif-zh text-h2 text-ink">你的香水櫃還是空的。</p>
-                  <p className="text-muted">
-                    今日選香只從你自己的收藏推薦。先把手邊的香水放進香水櫃，再回來找今天的香氣。
-                  </p>
-                  <ButtonLink href="/collection">前往香水櫃 · MY COLLECTION</ButtonLink>
-                </div>
-              ) : top && weather && selection.occasion ? (
-                <RecommendationResult
-                  featured={top}
-                  explanation={explain(top, {
-                    weather,
-                    occasion: selection.occasion,
-                    moods: selection.moods,
-                  })}
-                  alternatives={ranked.filter((r) => r !== top).slice(0, ALTERNATIVES)}
-                  canSpin={ranked.length >= WHEEL_MIN}
-                  source={`從你的 ${items.length} 款收藏中挑選`}
-                  confirmed={
-                    confirmedHere && {
-                      viaWheel: confirmedHere.viaWheel,
-                      count: usage.filter((u) => u.fragranceId === confirmedHere.id).length,
-                      savedTo: repo.kind,
-                      inCollection: items.some((i) => i.id === confirmedHere.id),
-                    }
-                  }
-                  saveError={saveError}
-                  onAddToCollection={() => void repo.add({ ...top.fragrance }, { id: top.fragrance.id })}
-                  onFeature={(id) => {
-                    setFeatured({ key: selectionKey, id });
-                    stageRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-                  }}
-                  onConfirm={() => confirm(top.fragrance.id, false)}
-                  onOpenWheel={() => setWheelOpen(true)}
-                  onEditMood={() => flow.goTo("mood")}
-                  onRestart={() => {
-                    setConfirmed(undefined);
-                    setFeatured(undefined);
-                    flow.restart();
-                  }}
+        <div
+          ref={stageRef}
+          className={cn(
+            "relative min-h-[70svh] scroll-mt-24 desk:scroll-mt-28",
+            asking ? "mt-4 desk:col-span-7 desk:col-start-6 desk:mt-16" : "mt-16 desk:col-span-12 desk:mt-24",
+          )}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: reduce ? 0 : 30 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: reduce ? 0.2 : 0.9, ease: ease.editorial },
+              }}
+              exit={{
+                opacity: 0,
+                y: reduce ? 0 : -16,
+                transition: { duration: reduce ? 0.15 : 0.45, ease: ease.editorial },
+              }}
+            >
+              {step === "occasion" && (
+                <OccasionStep occasion={selection.occasion} onChoose={flow.chooseOccasion} />
+              )}
+              {step === "mood" && (
+                <MoodStep
+                  moods={selection.moods}
+                  onToggle={flow.toggleMood}
+                  onReveal={() => flow.goTo("result")}
                 />
-              ) : flow.weatherStatus === "error" || (flow.locateFailed && !selection.place) ? (
-                <p className="font-serif-zh text-h2 text-ink">
-                  還不知道今天的天氣。
-                  <span className="mt-2 block text-body text-muted">請在上方選擇離你最近的城市。</span>
-                </p>
-              ) : (
-                <div className="flex flex-col gap-4" aria-live="polite">
-                  <span className="skeleton block h-24 w-full max-w-[40rem]" />
-                  <p className="label text-muted">正在調配今天的香氣…</p>
-                </div>
-              ))}
-          </motion.div>
-        </AnimatePresence>
+              )}
+              {step === "result" &&
+                (emptyCabinet ? (
+                  <div className="flex max-w-[44rem] flex-col items-start gap-6">
+                    <p className="font-serif-zh text-h2 text-ink">你的香水櫃還是空的。</p>
+                    <p className="text-muted">
+                      今日選香只從你自己的收藏推薦。先把手邊的香水放進香水櫃，再回來找今天的香氣。
+                    </p>
+                    <ButtonLink href="/collection">前往香水櫃 · MY COLLECTION</ButtonLink>
+                  </div>
+                ) : top && weather && selection.occasion ? (
+                  <RecommendationResult
+                    featured={top}
+                    explanation={explain(top, {
+                      weather,
+                      occasion: selection.occasion,
+                      moods: selection.moods,
+                    })}
+                    alternatives={ranked.filter((r) => r !== top).slice(0, ALTERNATIVES)}
+                    canSpin={ranked.length >= WHEEL_MIN}
+                    source={`從你的 ${items.length} 款收藏中挑選`}
+                    confirmed={
+                      confirmedHere && {
+                        viaWheel: confirmedHere.viaWheel,
+                        count: usage.filter((u) => u.fragranceId === confirmedHere.id).length,
+                        savedTo: repo.kind,
+                        inCollection: items.some((i) => i.id === confirmedHere.id),
+                      }
+                    }
+                    saveError={saveError}
+                    onAddToCollection={() => void repo.add({ ...top.fragrance }, { id: top.fragrance.id })}
+                    onFeature={(id) => {
+                      setFeatured({ key: selectionKey, id });
+                      stageRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+                    }}
+                    onConfirm={() => confirm(top.fragrance.id, false)}
+                    onOpenWheel={() => setWheelOpen(true)}
+                    onEditMood={() => flow.goTo("mood")}
+                    onRestart={() => {
+                      setConfirmed(undefined);
+                      setFeatured(undefined);
+                      flow.restart();
+                    }}
+                  />
+                ) : flow.weatherStatus === "error" || (flow.locateFailed && !selection.place) ? (
+                  <p className="font-serif-zh text-h2 text-ink">
+                    還不知道今天的天氣。
+                    <span className="mt-2 block text-body text-muted">請在上方選擇離你最近的城市。</span>
+                  </p>
+                ) : (
+                  <div className="flex flex-col gap-4" aria-live="polite">
+                    <span className="skeleton block h-24 w-full max-w-[40rem]" />
+                    <p className="label text-muted">正在調配今天的香氣…</p>
+                  </div>
+                ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       <AnimatePresence>
