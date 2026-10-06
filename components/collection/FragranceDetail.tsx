@@ -103,6 +103,14 @@ export function FragranceDetail({ id }: { id: string }) {
           {f.origin === "demo" && (
             <figcaption className="label mt-6 text-center text-faint">示範資料 · DEMO DATA</figcaption>
           )}
+          {f.origin === "lookup" && (
+            <figcaption className="mt-6 text-center">
+              <span className="label block text-faint">智能建檔 · SMART LOOKUP</span>
+              {f.sources?.length ? (
+                <span className="mt-2 block text-small text-faint">資料來源：{f.sources.join("、")}</span>
+              ) : null}
+            </figcaption>
+          )}
         </figure>
 
         <div className="desk:col-span-6 desk:col-start-7">
