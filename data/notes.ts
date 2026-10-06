@@ -190,6 +190,16 @@ export const NOTES = {
   wormwood: { en: "Wormwood", zh: "艾草", family: "fougere" },
   grass: { en: "Grass", zh: "青草", family: "fresh" },
   mahogany: { en: "Mahogany", zh: "桃花心木", family: "woody" },
+  carnation: { en: "Carnation", zh: "康乃馨", family: "floral" },
+  cyclamen: { en: "Cyclamen", zh: "仙客來", family: "floral" },
+  frangipani: { en: "Frangipani", zh: "雞蛋花", family: "floral" },
+  hawthorn: { en: "Hawthorn", zh: "山楂花", family: "floral" },
+  narcissus: { en: "Narcissus", zh: "水仙", family: "floral" },
+  "water-lily": { en: "Water Lily", zh: "睡蓮", family: "floral" },
+  tiare: { en: "Tiare", zh: "大溪地梔子花", family: "floral" },
+  praline: { en: "Praline", zh: "果仁糖", family: "gourmand" },
+  "red-berries": { en: "Red Berries", zh: "紅莓果", family: "fruity" },
+  pomelo: { en: "Pomelo", zh: "柚子", family: "citrus" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;

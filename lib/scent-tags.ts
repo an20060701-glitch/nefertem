@@ -168,6 +168,16 @@ export const NOTE_TAGS: Record<string, string[]> = {
   wormwood: ["神秘", "清冷"],
   grass: ["清新", "活力"],
   mahogany: ["成熟", "溫暖"],
+  carnation: ["溫柔", "辛香"],
+  cyclamen: ["清新", "柔和"],
+  frangipani: ["度假", "甜美"],
+  hawthorn: ["柔和", "粉感"],
+  narcissus: ["清冷", "優雅"],
+  "water-lily": ["清透", "寧靜"],
+  tiare: ["度假", "奶香"],
+  praline: ["甜美", "溫暖"],
+  "red-berries": ["甜美", "活潑"],
+  pomelo: ["清新", "明亮"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;
