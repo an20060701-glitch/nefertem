@@ -6,7 +6,7 @@ import { cleanKeyword } from "@/lib/shopping/links";
 
 export const metadata: Metadata = {
   title: "搜尋購物",
-  description: "輸入品牌或香水名稱，前往蝦皮、momo 或品牌官方網站。",
+  description: "輸入品牌或香水名稱，前往蝦皮、momo、香水1976 或品牌官方網站。",
 };
 
 export default async function ShoppingPage({ searchParams }: PageProps<"/shopping">) {
