@@ -103,7 +103,7 @@ export function TodaysChoice() {
       ref={sectionRef}
       id="todays-choice"
       aria-labelledby="choice-title"
-      className="page-x relative scroll-mt-20 border-t border-line py-20 desk:scroll-mt-16 desk:py-28"
+      className="page-x relative scroll-mt-20 pb-20 pt-6 md:pt-[calc(var(--nav-desktop-height)+3rem)] desk:scroll-mt-16 desk:pb-28"
     >
       <PetalScatter side="left" />
 

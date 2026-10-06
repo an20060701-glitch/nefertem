@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV_ITEMS, isActive } from "@/lib/navigation";
+import { NAV_ITEMS, isActive, showsSections } from "@/lib/navigation";
 import { cn } from "@/lib/cn";
 import { NefertemLogo } from "@/components/brand/NefertemLogo";
 
@@ -36,7 +36,7 @@ export function DesktopNav() {
         withTagline={!condensed}
         className="transition-all duration-500"
       />
-      <nav aria-label="主要導覽">
+      <nav aria-label="主要導覽" hidden={!showsSections(pathname)}>
         <ul className="flex items-center gap-10 desk:gap-14">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item, pathname);

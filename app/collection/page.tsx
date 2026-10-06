@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AccountGate } from "@/components/collection/AccountGate";
 import { CollectionView } from "@/components/collection/CollectionView";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function CollectionPage() {
-  return <CollectionView />;
+  return (
+    <AccountGate>
+      <CollectionView />
+    </AccountGate>
+  );
 }

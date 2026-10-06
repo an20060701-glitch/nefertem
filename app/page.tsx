@@ -1,12 +1,11 @@
 import { Manifesto } from "@/components/brand/Manifesto";
 import { Hero } from "@/components/hero/Hero";
-import { TodaysChoice } from "@/components/recommendation/TodaysChoice";
 
+/** The cover. Today's Choice lives on /choice, opened from BEGIN TODAY'S RITUAL. */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <TodaysChoice />
       <Manifesto />
     </>
   );

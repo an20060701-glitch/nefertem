@@ -2,9 +2,13 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
+import { useCollection } from "@/components/collection/CollectionProvider";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
+import { loginHref, RITUAL_HOME } from "@/lib/account";
 import { BRAND } from "@/lib/brand";
+import { isFirebaseConfigured } from "@/lib/firebase/config";
 import { GoldParticles } from "./GoldParticles";
 import { SmokeLayer } from "./SmokeLayer";
 import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/motion";
@@ -25,6 +29,8 @@ const COVER_ALT =
 export function Hero() {
   const reduce = useReducedMotion();
   const delay = useIntroDelay();
+  const { user } = useCollection();
+  const beginHref = user || !isFirebaseConfigured ? RITUAL_HOME : loginHref();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   // Slow parallax (1–2%, §4.4): the art sinks a touch, the wordmark drifts the other way.
@@ -101,16 +107,18 @@ export function Hero() {
             </motion.span>
           ))}
         </p>
-        <motion.a
-          variants={item}
-          href="#todays-choice"
-          className="group mt-10 inline-flex w-fit items-center gap-4 text-blue desk:mt-14"
-        >
-          <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
-            BEGIN TODAY&apos;S RITUAL
-          </span>
-          <span aria-hidden className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20" />
-        </motion.a>
+        <motion.div variants={item} className="mt-10 desk:mt-14">
+          {/* Signed in: straight into the ritual. Otherwise sign in first, then continue there. */}
+          <Link href={beginHref} className="group inline-flex w-fit items-center gap-4 text-blue">
+            <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
+              BEGIN TODAY&apos;S RITUAL
+            </span>
+            <span aria-hidden className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20" />
+          </Link>
+          {!user && isFirebaseConfigured && (
+            <p className="mt-4 text-small text-muted">使用 Google 或 LINE 帳號登入後開始。</p>
+          )}
+        </motion.div>
       </motion.div>
     </section>
   );
