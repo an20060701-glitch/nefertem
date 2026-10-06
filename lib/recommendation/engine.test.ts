@@ -3,7 +3,7 @@ import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import type { WeatherSnapshot } from "@/types";
 import { recommend, type UsageEntry } from "./engine";
 import { explain } from "./explain";
-import { pickWheelIndex, wheelCandidates } from "./wheel";
+import { pickWeightedIndex, pickWheelIndex, wheelCandidates, wheelWeights } from "./wheel";
 
 const NOW = new Date(2026, 9, 5, 9, 0).getTime();
 const DAY = 86_400_000;
@@ -204,6 +204,23 @@ describe("wheel", () => {
       now: NOW,
     });
     expect(ids(wheelCandidates(ranked))).toEqual(ids(ranked.slice(0, 6)));
+  });
+
+  it("leans toward the better match but keeps every candidate in play", () => {
+    const ranked = recommend({
+      weather: hot,
+      occasion: "outdoor",
+      moods: ["fresh"],
+      candidates: DEMO_FRAGRANCES,
+      now: NOW,
+    });
+    const weights = wheelWeights(wheelCandidates(ranked));
+    for (let i = 1; i < weights.length; i++) expect(weights[i - 1]).toBeGreaterThanOrEqual(weights[i]!);
+    expect(Math.min(...weights)).toBeGreaterThan(0);
+    // A draw at the very start lands on the first; one at the very end on the last.
+    expect(pickWeightedIndex(weights, (a) => ((a[0] = 0), a))).toBe(0);
+    expect(pickWeightedIndex([1, 3], (a) => ((a[0] = 4_293_999_999), a))).toBe(1);
+    expect(pickWeightedIndex([5])).toBe(0);
   });
 
   it("picks uniformly without modulo bias", () => {

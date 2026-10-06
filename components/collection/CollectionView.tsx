@@ -3,7 +3,7 @@
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { PetalScatter } from "@/components/brand/PetalScatter";
-import { Button } from "@/components/ui/Button";
+import { Button, ButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
@@ -72,6 +72,17 @@ export function CollectionView() {
             </Button>
           )}
         </div>
+
+        {ready && items.length > 0 && usage.length === 0 && (
+          // First use (An, 2026-10-06): scents are in, so the next step is today's choice.
+          <div className="relative mb-12 flex flex-wrap items-center justify-between gap-6 border border-gold px-6 py-5">
+            <p className="text-ink">
+              香水櫃準備好了。
+              <span className="text-muted">接下來回答兩個問題，從這 {items.length} 款裡找到今天的香氣。</span>
+            </p>
+            <ButtonLink href="/choice">開始今天的香氣選擇 →</ButtonLink>
+          </div>
+        )}
 
         {error ? (
           <EmptyState title={error} description="請重新整理頁面，或稍後再試。" />

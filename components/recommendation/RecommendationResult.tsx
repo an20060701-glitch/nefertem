@@ -29,7 +29,8 @@ interface RecommendationResultProps {
   saveError?: string;
   onAddToCollection: () => void;
   onFeature: (id: string) => void;
-  onConfirm: () => void;
+  /** Opens 「今天想噴哪一瓶？」. */
+  onChoose: () => void;
   onOpenWheel: () => void;
   onEditMood: () => void;
   onRestart: () => void;
@@ -46,7 +47,7 @@ export function RecommendationResult({
   saveError,
   onAddToCollection,
   onFeature,
-  onConfirm,
+  onChoose,
   onOpenWheel,
   onEditMood,
   onRestart,
@@ -192,17 +193,22 @@ export function RecommendationResult({
               )}
             </div>
           ) : (
-            <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
-              <Button onClick={onConfirm}>就決定是你了</Button>
+            // Pick today's bottle from the whole cabinet; below it, a smaller way out for undecided days.
+            <div className="flex flex-col items-start gap-4">
+              <Button onClick={onChoose}>選擇今天要噴的香水 · CHOOSE TODAY&apos;S SCENT</Button>
+              {canSpin && (
+                <button
+                  type="button"
+                  onClick={onOpenWheel}
+                  className="label gold-underline min-h-11 text-[0.6875rem] text-blue"
+                >
+                  選擇障礙？讓系統依你的習慣替你選 · CAN&apos;T DECIDE?
+                </button>
+              )}
               {saveError && (
-                <p role="alert" className="w-full text-small text-danger">
+                <p role="alert" className="text-small text-danger">
                   {saveError}
                 </p>
-              )}
-              {canSpin && (
-                <Button variant="text" onClick={onOpenWheel}>
-                  選擇障礙？CAN&apos;T DECIDE?
-                </Button>
               )}
             </div>
           )}

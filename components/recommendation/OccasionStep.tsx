@@ -8,7 +8,7 @@ import type { Occasion } from "@/types";
 import { StepHeading } from "./StepHeading";
 
 const OPTIONS = [
-  { key: "indoor", en: "INDOOR", zh: "涼爽的室內", note: "辦公室、咖啡廳、晚餐與會議", glyph: "eye" },
+  { key: "indoor", en: "INDOOR", zh: "室內活動", note: "辦公室、咖啡廳、晚餐與會議", glyph: "eye" },
   { key: "outdoor", en: "OUTDOOR", zh: "戶外活動", note: "散步、旅行、陽光與風", glyph: "ra" },
 ] as const;
 
