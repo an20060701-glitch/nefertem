@@ -239,6 +239,17 @@
   }
 }
 
+/* Loose petals drifting on air: uses `translate` so each petal keeps its own rotation. */
+@keyframes petal-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 6px -12px;
+  }
+}
+
 @keyframes skeleton-sheen {
   from {
     background-position: 200% 0;
@@ -263,6 +274,11 @@
   animation: lotus-float 7s var(--ease-drift) infinite;
 }
 
+.petal-drift {
+  animation: petal-drift var(--petal-duration, 12s) var(--ease-drift) infinite;
+  animation-delay: var(--petal-delay, 0s);
+}
+
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -284,6 +300,7 @@ html[data-intro-seen] .loading-ritual {
   .smoke-path,
   .gold-particle,
   .lotus-float,
+  .petal-drift,
   .skeleton {
     animation: none !important;
   }
@@ -308,10 +325,5 @@ html.has-custom-cursor * {
 .cover-wash {
   mask-image: linear-gradient(to bottom, #000 90%, transparent);
 }
-/* …and the illustration feathers out at its left, top and bottom edges so no rectangle shows. */
-.cover-figure {
-  mask-image:
-    linear-gradient(to right, transparent, #000 22%),
-    linear-gradient(to bottom, transparent, #000 7%, #000 66%, transparent);
-  mask-composite: intersect;
-}
+/* The illustration's ragged watercolour edge is baked into its alpha
+   (scripts/watercolor/figure.py), so it needs no mask here. */

@@ -1,11 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "motion/react";
 import { useRef } from "react";
-import { SunDisc } from "@/components/brand/SunDisc";
+import { PetalScatter } from "@/components/brand/PetalScatter";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
 import { BRAND } from "@/lib/brand";
-import { fadeUp, reducedFade, scaleIn, staggerChildren, transition } from "@/lib/motion";
+import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/motion";
 import { CoverWash } from "./CoverWash";
 import { GoldParticles } from "./GoldParticles";
 import { ReferenceImage } from "./ReferenceImage";
@@ -18,10 +18,17 @@ interface HeroProps {
 
 const EN_LINES = ["SCENT IS A WAY", "OF CHOOSING", "WHO YOU BECOME TODAY."];
 
+/** The figure surfaces from the wash: a very slow fade and a slight rise, no zoom. */
+const figureIn: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 2.4, ease: ease.editorial } },
+};
+
 /**
- * Immersive opening (design system §4.4, architecture §6).
- * Mobile: a vertical editorial stack. Desktop: the wordmark overlaps an arched
- * illustration that breaks out of the right edge of the grid.
+ * Immersive opening (design system §4.4, architecture §6; An's cover spec, 2026-10-06).
+ * Desktop: ~42% quiet text on near-white paper at the left, ~58% art at the right,
+ * where the figure dissolves into the watercolour and runs off the right edge.
+ * Mobile: the figure first, then the wordmark, slogan and the way in.
  */
 export function Hero({ hasReferenceImage }: HeroProps) {
   const reduce = useReducedMotion();
@@ -41,7 +48,8 @@ export function Hero({ hasReferenceImage }: HeroProps) {
       className="page-x relative overflow-x-clip pb-20 pt-4 md:pt-[calc(var(--nav-desktop-height)+2rem)] desk:min-h-svh desk:pb-28"
     >
       {/* Watercolour wash (An, 2026-10-06): white margin top-left → lavender mist → blue-violet → indigo ink. */}
-      <CoverWash />
+      <CoverWash delay={delay} />
+      <PetalScatter side="hero" drift={!reduce} className="hidden md:block" />
       <motion.div
         className="relative grid grid-cols-1 gap-8 desk:grid-cols-12 desk:gap-6"
         initial="hidden"
@@ -98,10 +106,12 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           </motion.a>
         </motion.div>
 
-        {/* The official illustration, its paper made transparent so the wash runs through it, with Ra's sun, vapour and motes */}
+        {/* The official illustration, its paper made transparent so the wash runs through it, with vapour and motes */}
         <motion.figure
-          variants={reduce ? reducedFade : scaleIn}
-          className="relative -mx-[var(--gutter)] mt-24 md:mt-28 desk:col-span-7 desk:col-start-6 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:ml-0 desk:mt-[14vh] desk:self-center"
+          variants={reduce ? reducedFade : figureIn}
+          // Phones: first in the stack, under the top bar. Desktop: from the 5th of 12
+          // columns to past the right edge, so it can cross into the text's margin.
+          className="relative order-first -mx-[var(--gutter)] mt-24 md:mt-28 desk:order-none desk:col-span-8 desk:col-start-5 desk:row-span-2 desk:row-start-1 desk:-mr-[calc(var(--gutter)+2vw)] desk:ml-0 desk:-mb-28 desk:mt-[12vh] desk:w-[calc(100%-1.5vw)] desk:max-w-[112svh] desk:self-end desk:justify-self-end"
         >
           <SpeechBubble
             delay={delay + 1.4}
@@ -112,22 +122,17 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           >
             {BRAND.coverVoice}
           </SpeechBubble>
-          <div className="relative aspect-[4/3] overflow-hidden">
+          <div className="relative aspect-[4/3]">
             <motion.div className="absolute inset-[-2%]" style={{ y: imageY }}>
               <ReferenceImage
                 available={hasReferenceImage}
                 transparent
                 priority
                 sizes="(min-width: 1200px) 66vw, 100vw"
-                className="cover-figure"
               />
             </motion.div>
             <GoldParticles />
           </div>
-          <SunDisc
-            id="hero-sun"
-            className="absolute -top-[7%] right-[8%] w-[16%] opacity-70 desk:-top-[9%] desk:right-[14%] desk:w-[12%]"
-          />
           <SmokeLayer className="absolute bottom-[8%] left-[14%] h-[60%] w-[30%] opacity-80" />
           <figcaption className="sr-only">Nefertem：香氣與療癒之神，手持藍色睡蓮與香水瓶</figcaption>
         </motion.figure>

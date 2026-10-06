@@ -43,10 +43,11 @@ export function NefertemEmblem({ tone = "gilt", className, title }: NefertemEmbl
       {tone === "gilt" ? (
         <defs>
           <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#C9A66B" />
-            <stop offset="0.45" stopColor="#A9864E" />
-            <stop offset="0.7" stopColor="#C7A76E" />
-            <stop offset="1" stopColor="#8C6B3A" />
+            {/* Muted champagne gold (An, 2026-10-06): an accent, never brassy. */}
+            <stop offset="0" stopColor="#D3C08F" />
+            <stop offset="0.45" stopColor="#B9A06A" />
+            <stop offset="0.7" stopColor="#C8B27C" />
+            <stop offset="1" stopColor="#A58E5C" />
           </linearGradient>
         </defs>
       ) : null}

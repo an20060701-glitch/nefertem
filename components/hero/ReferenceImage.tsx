@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 
 export const REFERENCE_IMAGE_PATH = "/images/nefertem-key-visual.png";
 /** Same artwork with its white paper made transparent, so it sits on any background. */
-export const REFERENCE_IMAGE_ALPHA_PATH = "/images/nefertem-key-visual-alpha.webp";
+export const REFERENCE_IMAGE_ALPHA_PATH = "/images/nefertem-key-visual-watercolor.webp";
 
 interface ReferenceImageProps {
   available: boolean;

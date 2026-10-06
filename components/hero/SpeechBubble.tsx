@@ -1,13 +1,15 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { useId } from "react";
 import { cn } from "@/lib/cn";
 import { ease } from "@/lib/motion";
 
 /**
- * Nefertem speaking to the visitor: an ink-line speech bubble on ivory,
- * its tail pointing down toward the figure. Drawn like the illustration's
- * hand-lettered notes, not a chat UI.
+ * Nefertem speaking to the visitor: a sheer watercolour bubble, near-clear white
+ * at the top left deepening through lavender to pale blue-violet at the bottom
+ * right, with a thin champagne-gold line. No heavy shadow, no frosted glass.
+ * Its tail points down toward the figure.
  */
 const OUTLINE = {
   // tail at the lower right, for a bubble left of the figure's head
@@ -29,6 +31,7 @@ export function SpeechBubble({
   className?: string;
 }) {
   const reduce = useReducedMotion();
+  const fillId = useId();
   return (
     <motion.div
       initial={{ opacity: 0, y: reduce ? 0 : 12 }}
@@ -43,19 +46,25 @@ export function SpeechBubble({
           preserveAspectRatio="none"
           className="absolute inset-0 h-full w-full overflow-visible"
         >
+          <defs>
+            <linearGradient id={fillId} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#FFFDF8" stopOpacity="0.28" />
+              <stop offset="0.5" stopColor="#F3F1FA" stopOpacity="0.5" />
+              <stop offset="1" stopColor="#B8C6EA" stopOpacity="0.62" />
+            </linearGradient>
+          </defs>
           <path
             d={OUTLINE[tail]}
-            fill="var(--surface)"
-            fillOpacity="0.92"
-            stroke="var(--gold)"
+            fill={`url(#${fillId})`}
+            stroke="#B9A06A"
             strokeWidth="1"
             vectorEffect="non-scaling-stroke"
           />
           <path
             d="M30 12 H290"
-            stroke="var(--gold-light)"
+            stroke="#C8B27C"
             strokeWidth="1"
-            opacity="0.6"
+            opacity="0.45"
             vectorEffect="non-scaling-stroke"
           />
         </svg>

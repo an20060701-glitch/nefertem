@@ -1,7 +1,9 @@
 <!doctype html>
 <!--
   Nefertem cover wash (An, 2026-10-06): white margin → lavender mist → blue-violet
-  watercolour → indigo ink, top-left to bottom-right. Rendered once to WebP by
+  watercolour → indigo ink, top-left to bottom-right, with the pigment gathered around
+  the figure (centre-right), the top-right and bottom-right, and the left kept near white.
+  Palette: #FFFDF8 #F8F7F4 #F3F1FA #E5E6F5 #D4DCF3 #B8C6EA #91A6DD #7186C4. Rendered once to WebP by
   render.mjs; the page uses the images, not this SVG, so nothing is filtered at runtime.
   ?w=2400&h=1500 sets the canvas; ?seed= varies the pigment.
 -->
@@ -18,12 +20,12 @@ let r = seed * 9301 + 49297;
 const rand = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
 function drops() {
   let out = "";
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < 220; i++) {
     const x = rand() * W, y = rand() * H;
-    if (x / W + y / H < 1.05) continue;
+    if (x / W + y / H < 0.85) continue;
     const big = rand() < 0.08;
     const rad = (big ? 6 + rand() * 10 : 1 + rand() * 4) * s;
-    const fill = rand() < 0.6 ? "#7186C4" : "#B8C4EA";
+    const fill = rand() < 0.6 ? "#7186C4" : "#B8C6EA";
     out += `<circle cx="${x}" cy="${y}" r="${rad}" fill="${fill}" opacity="${0.25 + rand() * 0.5}"/>`;
   }
   return out;
@@ -34,19 +36,38 @@ document.body.innerHTML = `
   <defs>
     <linearGradient id="wash" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
       <stop offset="0" stop-color="#FFFDF8"/>
-      <stop offset="0.30" stop-color="#FFFDF8"/>
-      <stop offset="0.46" stop-color="#F3F0FA"/>
-      <stop offset="0.62" stop-color="#D9DDF3"/>
-      <stop offset="0.78" stop-color="#B8C4EA"/>
+      <stop offset="0.26" stop-color="#FFFDF8"/>
+      <stop offset="0.36" stop-color="#F8F7F4"/>
+      <stop offset="0.46" stop-color="#F3F1FA"/>
+      <stop offset="0.56" stop-color="#E5E6F5"/>
+      <stop offset="0.66" stop-color="#D4DCF3"/>
+      <stop offset="0.78" stop-color="#B8C6EA"/>
+      <stop offset="0.9" stop-color="#91A6DD"/>
       <stop offset="1" stop-color="#7186C4"/>
     </linearGradient>
     <!-- where pigment may sit: none in the white margin, most toward the ink corner -->
     <linearGradient id="reach" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
-      <stop offset="0.34" stop-color="#000"/>
-      <stop offset="0.6" stop-color="#666"/>
-      <stop offset="0.85" stop-color="#fff"/>
+      <stop offset="0.3" stop-color="#000"/>
+      <stop offset="0.52" stop-color="#777"/>
+      <stop offset="0.75" stop-color="#fff"/>
     </linearGradient>
-    <mask id="reachMask"><rect width="${W}" height="${H}" fill="url(#reach)"/></mask>
+    <!-- plus a pool of reach around the figure, so colour gathers there, not only in the corner -->
+    <!-- (on phones the figure sits near the top of the cover, so the pool rises with it) -->
+    <radialGradient id="pool" gradientUnits="userSpaceOnUse" cx="${W * (H > W ? 0.6 : 0.68)}" cy="${H * (H > W ? 0.22 : 0.55)}" r="${Math.max(W, H) * (H > W ? 0.3 : 0.42)}">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="0.6" stop-color="#fff" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="reachMask"><rect width="${W}" height="${H}" fill="url(#reach)"/><rect width="${W}" height="${H}" fill="url(#pool)"/></mask>
+
+    <!-- mottled patches: pigment settling unevenly, broken by flecks of bare paper -->
+    <filter id="blotch" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="${0.005 / s} ${0.009 / s}" numOctaves="5" seed="${seed + 11}"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -22 12.1" result="a"/>
+      <feGaussianBlur in="a" stdDeviation="${3 * s}" result="b"/>
+      <feComposite in="a" in2="b" operator="arithmetic" k2="1.5" k3="-0.6" result="edge"/>
+      <feComposite in="SourceGraphic" in2="edge" operator="in"/>
+    </filter>
 
     <!-- wet edges: the smooth wash is pushed around by low-frequency noise -->
     <filter id="wet" x="-10%" y="-10%" width="120%" height="120%">
@@ -56,8 +77,8 @@ document.body.innerHTML = `
 
     <!-- brush streaks: noise stretched along one axis, thresholded into dry-brush strokes -->
     <filter id="streak" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="${0.0011 / s} ${0.009 / s}" numOctaves="6" seed="${seed + 3}"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -16 9.2" result="a"/>
+      <feTurbulence type="fractalNoise" baseFrequency="${0.0014 / s} ${0.012 / s}" numOctaves="6" seed="${seed + 3}"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -26 14.6" result="a"/>
       <!-- pigment collects at the drying edge: darker rim, lighter middle -->
       <feGaussianBlur in="a" stdDeviation="${4 * s}" result="b"/>
       <feComposite in="a" in2="b" operator="arithmetic" k2="1.7" k3="-1" result="edge"/>
@@ -85,15 +106,18 @@ document.body.innerHTML = `
   <g mask="url(#reachMask)">
     <!-- 2. blooms of blue-violet and indigo -->
     <g filter="url(#bloom)">
-      <ellipse cx="${W * 0.74}" cy="${H * 0.36}" rx="${W * 0.16}" ry="${H * 0.09}" fill="#B8C4EA" opacity="0.55" transform="rotate(-32 ${W * 0.74} ${H * 0.36})"/>
-      <ellipse cx="${W * 0.6}" cy="${H * 0.78}" rx="${W * 0.2}" ry="${H * 0.1}" fill="#B8C4EA" opacity="0.5" transform="rotate(-32 ${W * 0.6} ${H * 0.78})"/>
-      <ellipse cx="${W * 0.92}" cy="${H * 0.62}" rx="${W * 0.14}" ry="${H * 0.16}" fill="#7186C4" opacity="0.55"/>
+      <ellipse cx="${W * 0.66}" cy="${H * 0.5}" rx="${W * 0.2}" ry="${H * 0.24}" fill="#D4DCF3" opacity="0.7"/>
+      <ellipse cx="${W * 0.74}" cy="${H * 0.3}" rx="${W * 0.16}" ry="${H * 0.09}" fill="#B8C6EA" opacity="0.6" transform="rotate(-32 ${W * 0.74} ${H * 0.3})"/>
+      <ellipse cx="${W * 0.5}" cy="${H * 0.82}" rx="${W * 0.2}" ry="${H * 0.1}" fill="#B8C6EA" opacity="0.55" transform="rotate(-32 ${W * 0.5} ${H * 0.82})"/>
+      <ellipse cx="${W * 0.92}" cy="${H * 0.08}" rx="${W * 0.14}" ry="${H * 0.12}" fill="#91A6DD" opacity="0.5"/>
+      <ellipse cx="${W * 0.92}" cy="${H * 0.6}" rx="${W * 0.12}" ry="${H * 0.16}" fill="#91A6DD" opacity="0.55"/>
       <ellipse cx="${W * 0.86}" cy="${H * 0.95}" rx="${W * 0.22}" ry="${H * 0.14}" fill="#7186C4" opacity="0.7"/>
-      <ellipse cx="${W * 0.98}" cy="${H * 0.2}" rx="${W * 0.08}" ry="${H * 0.14}" fill="#D9DDF3" opacity="0.6"/>
     </g>
-    <!-- 3. dry-brush streaks running across the wash, lower-left to upper-right -->
+    <!-- 3a. mottled patches -->
+    <rect width="${W}" height="${H}" fill="#91A6DD" opacity="0.5" filter="url(#blotch)"/>
+    <!-- 3b. dry-brush streaks running across the wash, lower-left to upper-right -->
     <g transform="rotate(-33 ${W / 2} ${H / 2})">
-      <rect x="${-W * 0.4}" y="${-H * 0.4}" width="${W * 1.8}" height="${H * 1.8}" fill="#7186C4" opacity="0.58" filter="url(#streak)"/>
+      <rect x="${-W * 0.4}" y="${-H * 0.4}" width="${W * 1.8}" height="${H * 1.8}" fill="#7186C4" opacity="0.42" filter="url(#streak)"/>
     </g>
     <g transform="rotate(-36 ${W / 2} ${H / 2}) translate(0 ${H * 0.07})">
       <rect x="${-W * 0.4}" y="${-H * 0.4}" width="${W * 1.8}" height="${H * 1.8}" fill="#FFFDF8" opacity="0.78" filter="url(#streak)"/>
