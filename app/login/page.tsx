@@ -9,7 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
-  const raw = (await searchParams).next;
+  const params = await searchParams;
+  const raw = params.next;
   const next = safeNext(Array.isArray(raw) ? raw[0] : raw);
 
   return (
@@ -19,7 +20,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       <h1 className="mt-5 font-serif-zh text-h1-zh text-ink">進入你的香氣收藏。</h1>
       <p className="mt-4 text-muted">登入後，開始今天的香氣儀式。</p>
       <div className="mt-14 w-full max-w-sm">
-        <SignInOptions next={next} />
+        <SignInOptions next={next} lineFailed={params.error === "line"} />
       </div>
     </section>
   );

@@ -7,7 +7,9 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signInWithRedirect,
+  signInWithCustomToken,
   signOut as firebaseSignOut,
+  updateProfile,
   type User,
 } from "firebase/auth";
 import { firebaseAuth } from "./client";
@@ -30,6 +32,18 @@ export function signInWithGoogle(): Promise<User | null> {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   return signInWith(provider);
+}
+
+/** LINE through our own server (lib/line/server.ts) when NEXT_PUBLIC_LINE_LOGIN=server; otherwise Firebase OIDC. */
+export const LINE_SERVER_LOGIN = process.env.NEXT_PUBLIC_LINE_LOGIN === "server";
+
+/** Finishes a server-side LINE sign-in with the custom token it issued. */
+export async function signInWithLineToken(token: string, name?: string): Promise<User> {
+  const auth = firebaseAuth();
+  if (!auth) throw new FirebaseNotConfiguredError();
+  const { user } = await signInWithCustomToken(auth, token);
+  if (name && user.displayName !== name) await updateProfile(user, { displayName: name });
+  return user;
 }
 
 export function signInWithLine(): Promise<User | null> {
