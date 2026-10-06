@@ -34,11 +34,13 @@ export function SignInOptions({ next }: { next: string }) {
     } catch (e) {
       const code = (e as { code?: string }).code;
       if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return;
-      setError(
+      console.error(`[auth] ${provider} sign-in failed`, e);
+      const message =
         provider === "line" && (code === "auth/operation-not-allowed" || code === "auth/invalid-provider-id")
           ? "LINE 登入尚未開通，請先使用 Google 帳號。"
-          : "登入沒有完成，請再試一次。",
-      );
+          : "登入沒有完成，請再試一次。";
+      // The code helps while setting up providers; visitors only see the sentence.
+      setError(process.env.NODE_ENV === "development" && code ? `${message} (${code})` : message);
     } finally {
       setPending(undefined);
     }
