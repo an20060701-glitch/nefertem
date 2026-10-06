@@ -10,7 +10,7 @@ import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/mo
 const EN_LINES = ["SCENT IS A WAY", "OF CHOOSING", "WHO YOU BECOME TODAY."];
 
 /** An's cover art (2026-10-06), with its baked-in text painted out by scripts/cover/clean.py. */
-const COVER_IMAGE = "/images/cover.webp";
+const COVER_IMAGE = "/images/cover-hd.webp";
 const COVER_ALT =
   "Nefertem 封面：藍紫水彩中，頭戴藍色睡蓮的香氣之神手持香水瓶與睡蓮，對話框寫著「讓香氣定義此刻的自己」";
 
