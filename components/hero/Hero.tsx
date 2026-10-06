@@ -102,7 +102,9 @@ export function Hero({ hasReferenceImage }: HeroProps) {
         >
           <SpeechBubble
             delay={delay + 1.4}
-            className="absolute -top-16 left-[12%] z-10 w-[min(16rem,62%)] md:-top-24 desk:-top-28 desk:left-[14%] desk:w-[19rem]"
+            tail="left"
+            // Upper right of the figure, beside the head (An, 2026-10-06).
+            className="absolute -top-16 right-[4%] z-10 w-[min(16rem,62%)] md:-top-24 desk:-top-28 desk:right-[3%] desk:w-[19rem]"
           >
             {BRAND.coverVoice}
           </SpeechBubble>
