@@ -47,7 +47,7 @@ export function OccasionStep({
               whileHover={reduce ? undefined : { y: -4 }}
               transition={transition.base}
               className={cn(
-                "group relative flex min-h-[15rem] flex-col justify-between gap-10 py-10 text-left md:min-h-[24rem] md:px-10 desk:py-14",
+                "group relative flex min-h-[15rem] flex-col justify-between gap-10 py-10 text-left md:min-h-[24rem] md:px-10 desk:min-h-[22rem] desk:px-8 desk:py-12",
                 i === 1 && "border-t border-line md:border-l md:border-t-0",
               )}
             >
@@ -62,7 +62,8 @@ export function OccasionStep({
               <div>
                 <span
                   className={cn(
-                    "block font-display text-display font-light italic transition-colors duration-700",
+                    // Desktop: the cards share the right column, so the word scales with the viewport.
+                    "block font-display text-display font-light italic transition-colors duration-700 desk:text-[clamp(2.5rem,4.2vw,6.5rem)]",
                     checked ? "text-blue" : "text-ink group-hover:text-lotus-deep",
                   )}
                 >
@@ -83,7 +84,7 @@ export function OccasionStep({
               <span
                 aria-hidden
                 className={cn(
-                  "absolute bottom-0 left-0 h-px w-full origin-left bg-gold transition-transform duration-700 ease-[var(--ease-editorial)] md:left-10 md:w-[calc(100%-5rem)]",
+                  "absolute bottom-0 left-0 h-px w-full origin-left bg-gold transition-transform duration-700 ease-[var(--ease-editorial)] md:left-10 md:w-[calc(100%-5rem)] desk:left-8 desk:w-[calc(100%-4rem)]",
                   checked ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                 )}
               />
