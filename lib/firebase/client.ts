@@ -29,5 +29,10 @@ export function firestore(): Firestore | null {
 
 export function storage(): FirebaseStorage | null {
   const a = app();
-  return a ? getStorage(a) : null;
+  if (!a) return null;
+  const store = getStorage(a);
+  // Fail within seconds rather than minutes when Storage is missing or unreachable.
+  store.maxOperationRetryTime = 15_000;
+  store.maxUploadRetryTime = 30_000;
+  return store;
 }
