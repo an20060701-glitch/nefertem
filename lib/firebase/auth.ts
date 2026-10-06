@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  type AuthProvider,
   GoogleAuthProvider,
+  OAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signInWithRedirect,
@@ -17,12 +19,30 @@ export class FirebaseNotConfiguredError extends Error {
   }
 }
 
-/** Popup first; mobile browsers that block popups fall back to a redirect. */
-export async function signInWithGoogle(): Promise<User | null> {
-  const auth = firebaseAuth();
-  if (!auth) throw new FirebaseNotConfiguredError();
+/**
+ * LINE signs in through Firebase's OpenID Connect support (Identity Platform):
+ * add an OIDC provider with the LINE Login channel's ID and secret, issuer
+ * https://access.line.me, and put its provider ID here (default "oidc.line").
+ */
+export const LINE_PROVIDER_ID = process.env.NEXT_PUBLIC_FIREBASE_LINE_PROVIDER_ID || "oidc.line";
+
+export function signInWithGoogle(): Promise<User | null> {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
+  return signInWith(provider);
+}
+
+export function signInWithLine(): Promise<User | null> {
+  const provider = new OAuthProvider(LINE_PROVIDER_ID);
+  provider.addScope("openid");
+  provider.addScope("profile");
+  return signInWith(provider);
+}
+
+/** Popup first; mobile browsers that block popups fall back to a redirect. */
+async function signInWith(provider: AuthProvider): Promise<User | null> {
+  const auth = firebaseAuth();
+  if (!auth) throw new FirebaseNotConfiguredError();
   try {
     const result = await signInWithPopup(auth, provider);
     return result.user;

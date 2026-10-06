@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
-import { NAV_ITEMS, isActive } from "@/lib/navigation";
+import { NAV_ITEMS, isActive, showsSections } from "@/lib/navigation";
 import { cn } from "@/lib/cn";
 import { transition } from "@/lib/motion";
 import { NavIcon } from "./NavIcons";
@@ -16,6 +16,7 @@ import { NavIcon } from "./NavIcons";
 export function BottomNavigation() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
+  if (!showsSections(pathname)) return null;
 
   return (
     <nav

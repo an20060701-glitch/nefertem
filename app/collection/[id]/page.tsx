@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AccountGate } from "@/components/collection/AccountGate";
 import { FragranceDetail } from "@/components/collection/FragranceDetail";
 
 export const metadata: Metadata = {
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 
 export default async function FragrancePage({ params }: PageProps<"/collection/[id]">) {
   const { id } = await params;
-  return <FragranceDetail id={decodeURIComponent(id)} />;
+  return (
+    <AccountGate>
+      <FragranceDetail id={decodeURIComponent(id)} />
+    </AccountGate>
+  );
 }

@@ -12,7 +12,7 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   {
     key: "choice",
-    href: "/",
+    href: "/choice",
     labelZh: "香水選擇",
     labelEn: "TODAY'S CHOICE",
     labelEnShort: "TODAY'S CHOICE",
@@ -28,6 +28,10 @@ export const NAV_ITEMS: readonly NavItem[] = [
 ];
 
 export function isActive(item: NavItem, pathname: string): boolean {
-  if (item.href === "/") return pathname === "/" || pathname.startsWith("/choice");
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
+
+/** The cover and sign-in are the threshold: the three sections appear once inside. */
+export function showsSections(pathname: string): boolean {
+  return pathname !== "/" && pathname !== "/login";
 }
