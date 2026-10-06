@@ -50,6 +50,10 @@ export function signInWithLine(): Promise<User | null> {
   const provider = new OAuthProvider(LINE_PROVIDER_ID);
   provider.addScope("openid");
   provider.addScope("profile");
+  // On phones LINE hands the login to the LINE app, which returns in a new browser
+  // tab without the sign-in state, so Firebase fails with "missing initial state"
+  // (An, 2026-10-07). Keep the whole login in the browser page instead.
+  provider.setCustomParameters({ disable_auto_login: "true", disable_ios_auto_login: "true" });
   return signInWith(provider);
 }
 
