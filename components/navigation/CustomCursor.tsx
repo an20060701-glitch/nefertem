@@ -46,7 +46,8 @@ export function CustomCursor() {
   if (!enabled || reduce) return null;
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[70]">
+    // Above every overlay (sheets and the wheel sit at z-80): the native cursor is hidden, so this must never be covered.
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[100]">
       <motion.div
         className="absolute left-0 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue"
         style={{ x, y }}

@@ -4,7 +4,7 @@ import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
-import { firebaseConfig, isFirebaseConfigured } from "./config";
+import { firebaseConfig, firestoreDatabaseId, isFirebaseConfigured } from "./config";
 
 /*
  * Lazily initialised so pages that never touch Firebase don't pay for it,
@@ -23,7 +23,8 @@ export function firebaseAuth(): Auth | null {
 
 export function firestore(): Firestore | null {
   const a = app();
-  return a ? getFirestore(a) : null;
+  if (!a) return null;
+  return firestoreDatabaseId ? getFirestore(a, firestoreDatabaseId) : getFirestore(a);
 }
 
 export function storage(): FirebaseStorage | null {
