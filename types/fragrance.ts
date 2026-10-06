@@ -31,6 +31,8 @@ export interface Fragrance {
   concentration?: "EDC" | "EDT" | "EDP" | "Parfum" | "Extrait";
   volumeMl?: number;
   imageUrl?: string;
+  /** The brand's product page when `imageUrl` is its official picture (shown as the credit). */
+  imageSource?: string;
   family: FragranceFamily;
   subFamilies?: FragranceFamily[];
   topNotes: string[];

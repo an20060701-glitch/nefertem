@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
+import { imageCredit } from "@/lib/fragrance/image/credit";
 import type { FragranceDraft } from "@/lib/collection/types";
 import { FAMILIES, MOODS } from "@/lib/fragrance/families";
 import { deriveMoods, tagToMood } from "@/lib/scent-tags";
@@ -47,6 +48,13 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
   );
   const [description, setDescription] = useState(initial?.description ?? "");
   const [image, setImage] = useState<File | null | undefined>(undefined);
+  // The brand's own picture, found by smart lookup; the member can decline it.
+  const official =
+    initial?.imageUrl && initial.imageSource
+      ? { url: initial.imageUrl, source: initial.imageSource }
+      : undefined;
+  const [useOfficial, setUseOfficial] = useState(true);
+  const showOfficial = official && useOfficial;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string>();
@@ -87,11 +95,13 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
           baseNotes,
           tags: [...moods, ...customTags],
           description: description.trim() || undefined,
-          imageUrl: initial?.imageUrl,
+          imageUrl: official ? (useOfficial ? official.url : undefined) : initial?.imageUrl,
+          imageSource: showOfficial ? official.source : undefined,
           origin: initial?.origin,
           sources: initial?.sources,
         },
-        image,
+        // Declining the official picture clears it on a saved scent too.
+        image: official && !useOfficial && image === undefined ? null : image,
       });
     } catch (error) {
       console.error("[collection] save failed", error);
@@ -238,7 +248,14 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
 
       <div className="desk:col-span-2">
         <p className="label text-ink">照片 PHOTO</p>
-        {allowImage ? (
+        {showOfficial ? (
+          <OfficialPicture
+            url={official.url}
+            source={official.source}
+            alt={`${brand} ${name}`}
+            onDecline={() => setUseOfficial(false)}
+          />
+        ) : allowImage ? (
           <div className="mt-3 flex flex-wrap items-center gap-6">
             <input
               type="file"
@@ -299,5 +316,47 @@ function Field({
         </span>
       )}
     </label>
+  );
+}
+
+/** The bottle as the brand shows it, credited to the page it came from. */
+function OfficialPicture({
+  url,
+  source,
+  alt,
+  onDecline,
+}: {
+  url: string;
+  source: string;
+  alt: string;
+  onDecline: () => void;
+}) {
+  const credit = imageCredit(source);
+  return (
+    <div className="mt-3 flex flex-wrap items-end gap-6">
+      {/* Linked from the brand's own site, never copied; next/image would proxy and store it. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url} alt={alt} className="h-40 w-32 border border-line object-contain" />
+      <div className="text-small text-muted">
+        <p>
+          圖片來源：
+          {credit ? (
+            <a
+              href={credit.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gold-underline text-ink"
+            >
+              {credit.label} 官網
+            </a>
+          ) : (
+            "品牌官網"
+          )}
+        </p>
+        <button type="button" onClick={onDecline} className="gold-underline mt-3 text-muted">
+          不使用這張圖
+        </button>
+      </div>
+    </div>
   );
 }

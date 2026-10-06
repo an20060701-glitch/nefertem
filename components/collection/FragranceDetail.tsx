@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Sheet } from "@/components/ui/Sheet";
 import { guideForFamily } from "@/data/family-guide";
 import { noteInfo } from "@/data/notes";
+import { imageCredit } from "@/lib/fragrance/image/credit";
 import { MOODS } from "@/lib/fragrance/families";
 import { tagToMood } from "@/lib/scent-tags";
 import { cityLabel } from "@/lib/weather/cities";
@@ -66,6 +67,7 @@ export function FragranceDetail({ id }: { id: string }) {
   const history = usage.filter((u) => u.fragranceId === f.id).sort((a, b) => b.timestamp - a.timestamp);
   const moods = f.tags.map(tagToMood).filter(Boolean);
   const guide = guideForFamily(f.family);
+  const credit = f.imageUrl ? imageCredit(f.imageSource) : undefined;
 
   async function remove() {
     setRemoving(true);
@@ -100,6 +102,14 @@ export function FragranceDetail({ id }: { id: string }) {
               <FragranceVisual fragrance={f} className="w-[52%]" />
             </div>
           </div>
+          {credit && (
+            <figcaption className="mt-6 text-center text-small text-faint">
+              圖片來源：
+              <a href={credit.href} target="_blank" rel="noopener noreferrer" className="gold-underline">
+                {credit.label} 官網
+              </a>
+            </figcaption>
+          )}
           {f.origin === "demo" && (
             <figcaption className="label mt-6 text-center text-faint">示範資料 · DEMO DATA</figcaption>
           )}

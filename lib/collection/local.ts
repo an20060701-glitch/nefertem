@@ -67,7 +67,8 @@ export const deviceRepo: CollectionRepo = {
       ...draft,
       id,
       origin: draft.origin ?? "manual",
-      imageUrl: undefined,
+      // No uploads on this device; an official picture is only a link, so it stays.
+      imageUrl: draft.imageSource ? draft.imageUrl : undefined,
       createdAt: now,
       addedAt: now,
       usageCount: getLocalUsage().filter((u) => u.fragranceId === id).length,

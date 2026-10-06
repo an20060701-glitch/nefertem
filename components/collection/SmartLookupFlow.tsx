@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import type { OfficialImage } from "@/lib/fragrance/image/types";
 import type { FragranceLookupResult } from "@/lib/fragrance/lookup/types";
 import { MAX_QUERY_LENGTH } from "@/lib/fragrance/lookup/types";
 import type { Fragrance } from "@/types";
@@ -19,6 +20,21 @@ const CONFIDENCE: Record<FragranceLookupResult["confidence"], string> = {
 const fieldClass =
   "mt-2 h-12 w-full border-b border-line-strong bg-transparent text-ink outline-none transition-colors placeholder:text-faint focus:border-blue";
 
+/** The brand's own picture for this scent; a slow or failed search just means no picture. */
+async function findImage(params: URLSearchParams): Promise<OfficialImage | null> {
+  try {
+    const res = await fetch(`/api/fragrance/image?${params}`, { signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) return null;
+    return ((await res.json()) as { image: OfficialImage | null }).image;
+  } catch {
+    return null;
+  }
+}
+
+function imageFields(image: OfficialImage | null): Partial<Fragrance> {
+  return image ? { imageUrl: image.imageUrl, imageSource: image.pageUrl } : {};
+}
+
 /** The form edits a whole Fragrance; fill what we know, leave the rest empty for the user. */
 function prefill(fields: Partial<Fragrance>): Fragrance {
   return {
@@ -35,6 +51,7 @@ function prefill(fields: Partial<Fragrance>): Fragrance {
 /**
  * 智能建檔 (architecture §7): brand + name → /api/fragrance/lookup on the server →
  * 「找到以下資料，請確認。」 with its source → editable form → save as origin "lookup".
+ * The bottle picture comes from the brand's own site (/api/fragrance/image), found in parallel.
  * Nothing found → offer manual entry with what was typed already filled in.
  */
 export function SmartLookupFlow({
@@ -51,6 +68,7 @@ export function SmartLookupFlow({
   const [step, setStep] = useState<Step>({ kind: "query" });
   const [searching, setSearching] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [image, setImage] = useState<OfficialImage | null>(null);
 
   async function search(e: React.FormEvent) {
     e.preventDefault();
@@ -63,9 +81,10 @@ export function SmartLookupFlow({
     setStep({ kind: "query" });
     try {
       const params = new URLSearchParams({ brand: brand.trim(), name: name.trim() });
-      const res = await fetch(`/api/fragrance/lookup?${params}`);
+      const [res, picture] = await Promise.all([fetch(`/api/fragrance/lookup?${params}`), findImage(params)]);
       if (!res.ok) throw new Error(`lookup ${res.status}`);
       const { result } = (await res.json()) as { result: FragranceLookupResult | null };
+      setImage(picture);
       if (result) setStep({ kind: "found", result });
       else setNotFound(true);
     } catch (error) {
@@ -87,7 +106,12 @@ export function SmartLookupFlow({
         </div>
         <div className="mt-10">
           <FragranceForm
-            initial={prefill({ ...result.fragrance, origin: "lookup", sources: result.sources })}
+            initial={prefill({
+              ...result.fragrance,
+              ...imageFields(image),
+              origin: "lookup",
+              sources: result.sources,
+            })}
             allowImage={allowImage}
             submitLabel="確認並放進香水櫃"
             onCancel={() => setStep({ kind: "query" })}
@@ -101,7 +125,7 @@ export function SmartLookupFlow({
   if (step.kind === "manual") {
     return (
       <FragranceForm
-        initial={prefill({ brand: brand.trim(), name: name.trim(), origin: "manual" })}
+        initial={prefill({ brand: brand.trim(), name: name.trim(), ...imageFields(image), origin: "manual" })}
         allowImage={allowImage}
         submitLabel="放進香水櫃"
         onCancel={() => setStep({ kind: "query" })}
