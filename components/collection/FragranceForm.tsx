@@ -274,7 +274,7 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
             )}
           </div>
         ) : (
-          <p className="mt-3 text-small text-muted">登入後可以上傳香水照片；目前會以瓶身線稿呈現。</p>
+          <p className="mt-3 text-small text-muted">會以品牌官網圖片或瓶身線稿呈現。</p>
         )}
       </div>
 

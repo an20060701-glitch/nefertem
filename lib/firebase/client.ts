@@ -27,7 +27,13 @@ export function firestore(): Firestore | null {
   return firestoreDatabaseId ? getFirestore(a, firestoreDatabaseId) : getFirestore(a);
 }
 
+/**
+ * Member photo uploads need a Cloud Storage bucket, which needs the Blaze plan.
+ * Off until NEXT_PUBLIC_FIREBASE_STORAGE_ENABLED=true (An, 2026-10-06: hide uploads for now);
+ * without it the forms show the official picture or the bottle line drawing.
+ */
 export function storage(): FirebaseStorage | null {
+  if (process.env.NEXT_PUBLIC_FIREBASE_STORAGE_ENABLED !== "true") return null;
   const a = app();
   return a ? getStorage(a) : null;
 }
