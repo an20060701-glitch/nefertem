@@ -13,6 +13,7 @@ import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
 import { RecommendationResult } from "./RecommendationResult";
 import { STEPS, type Step, useChoiceFlow } from "./useChoiceFlow";
+import { type PickerEntry, TodayPicker } from "./TodayPicker";
 import { WeatherBar } from "./WeatherBar";
 
 const PROGRESS: Record<Step, { zh: string; en: string }> = {
@@ -41,6 +42,7 @@ export function TodaysChoice() {
   const [featured, setFeatured] = useState<{ key: string; id: string }>();
   const [confirmed, setConfirmed] = useState<{ key: string; id: string; viaWheel: boolean }>();
   const [wheelOpen, setWheelOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const ranked = useMemo(() => {
     if (!weather || !selection.occasion || selection.moods.length === 0) return [];
@@ -58,11 +60,29 @@ export function TodaysChoice() {
     confirmedHere?.id ?? (featured?.key === selectionKey ? featured.id : ranked[0]?.fragrance.id);
   const top = ranked.find((r) => r.fragrance.id === featuredId) ?? ranked[0];
 
+  // 「今天想噴哪一瓶？」: today's recommendations first, then the rest of the cabinet by wears.
+  const picker = useMemo(() => {
+    const wears = new Map<string, number>();
+    for (const u of usage) wears.set(u.fragranceId, (wears.get(u.fragranceId) ?? 0) + 1);
+    const entry = (f: PickerEntry["fragrance"]): PickerEntry => ({
+      fragrance: f,
+      wears: wears.get(f.id) ?? 0,
+    });
+    const recommended = ranked.slice(0, ALTERNATIVES + 1).map((r) => entry(r.fragrance));
+    const shown = new Set(recommended.map((e) => e.fragrance.id));
+    const others = items
+      .filter((f) => !shown.has(f.id))
+      .map(entry)
+      .sort((a, b) => b.wears - a.wears || a.fragrance.name.localeCompare(b.fragrance.name));
+    return { recommended, others };
+  }, [ranked, items, usage]);
+
   const [saveError, setSaveError] = useState<string>();
   const confirm = async (fragranceId: string, viaWheel: boolean) => {
     if (!weather || !selection.occasion) return;
     setSaveError(undefined);
     setWheelOpen(false);
+    setPickerOpen(false);
     try {
       await repo.logUsage({
         fragranceId,
@@ -208,10 +228,11 @@ export function TodaysChoice() {
                 transition: { duration: reduce ? 0.15 : 0.45, ease: ease.editorial },
               }}
             >
-              {step === "occasion" && (
+              {emptyCabinet && step !== "result" && <FirstVisit />}
+              {!emptyCabinet && step === "occasion" && (
                 <OccasionStep occasion={selection.occasion} onChoose={flow.chooseOccasion} />
               )}
-              {step === "mood" && (
+              {!emptyCabinet && step === "mood" && (
                 <MoodStep
                   moods={selection.moods}
                   onToggle={flow.toggleMood}
@@ -252,7 +273,7 @@ export function TodaysChoice() {
                       setFeatured({ key: selectionKey, id });
                       stageRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
                     }}
-                    onConfirm={() => confirm(top.fragrance.id, false)}
+                    onChoose={() => setPickerOpen(true)}
                     onOpenWheel={() => setWheelOpen(true)}
                     onEditMood={() => flow.goTo("mood")}
                     onRestart={() => {
@@ -278,6 +299,17 @@ export function TodaysChoice() {
       </div>
 
       <AnimatePresence>
+        {pickerOpen && (
+          <TodayPicker
+            recommended={picker.recommended}
+            others={picker.others}
+            onChoose={(id) => confirm(id, false)}
+            onClose={() => setPickerOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {wheelOpen && (
           <FortuneWheel
             candidates={wheelCandidates(ranked)}
@@ -287,5 +319,22 @@ export function TodaysChoice() {
         )}
       </AnimatePresence>
     </section>
+  );
+}
+
+/**
+ * First visit with an empty cabinet (An, 2026-10-06): the ritual can only pick
+ * from the visitor's own scents, so it starts by sending them to add some.
+ */
+function FirstVisit() {
+  return (
+    <div className="flex max-w-[40rem] flex-col items-start gap-6 border-l border-gold pl-6 desk:pl-8">
+      <p className="label text-gold-text">FIRST, YOUR CABINET</p>
+      <p className="font-serif-zh text-h2 text-ink">歡迎。先把你的香水放進香水櫃。</p>
+      <p className="text-muted">
+        今天的香氣只會從你自己的收藏裡挑選。把手邊的香水加進「我的香水櫃」，加好之後再回來，回答兩個問題，就能找到今天的那一瓶。
+      </p>
+      <ButtonLink href="/collection">前往我的香水櫃 · MY COLLECTION</ButtonLink>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ import { modalKeyDown, useModal } from "@/hooks/useModal";
 import { SunDisc } from "@/components/brand/SunDisc";
 import { FAMILIES } from "@/lib/fragrance/families";
 import { ease, fadeUp, reducedFade, staggerChildren } from "@/lib/motion";
-import { pickWheelIndex, type Recommendation } from "@/lib/recommendation";
+import { pickWeightedIndex, pickWheelIndex, type Recommendation, wheelWeights } from "@/lib/recommendation";
 
 const SPIN_SECONDS = 4.5;
 const TREMOR_SECONDS = 0.3;
@@ -49,7 +49,8 @@ export function FortuneWheel({ candidates, onClose, onConfirm }: FortuneWheelPro
   const onKeyDown = (e: React.KeyboardEvent) => modalKeyDown(e, dialogRef.current, onClose);
 
   const spin = () => {
-    const index = pickWheelIndex(n);
+    // Weighted by how well each scent fits: usage, note families and today (An, 2026-10-06).
+    const index = pickWeightedIndex(wheelWeights(candidates));
     // Land inside the sector, away from its edges, so the pointer never sits on a line.
     const jitter = (pickWheelIndex(1000) / 1000 - 0.5) * slice * 0.6;
     const stopAt = 360 - (index * slice + slice / 2 + jitter);
@@ -224,7 +225,9 @@ export function FortuneWheel({ candidates, onClose, onConfirm }: FortuneWheelPro
               >
                 {phase === "spinning" ? "命運轉動中…" : "轉動 · SPIN THE WHEEL"}
               </button>
-              <p className="text-small text-inverse/60">從今天最適合你的 {n} 款香氣中，讓命運替你決定。</p>
+              <p className="text-small text-inverse/60">
+                從今天最適合你的 {n} 款香氣中抽選；越常噴、香料越貼近今天的，機會越大。
+              </p>
             </>
           ) : (
             chosen && (
