@@ -112,7 +112,8 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
       let imageUrl = patch.imageUrl;
       if (options?.image) imageUrl = await uploadCover(id, options.image);
       if (options?.image === null) {
-        await removeCover(id);
+        // Like remove(): clearing the picture never waits on Storage.
+        removeCover(id).catch((error: unknown) => console.error("[collection] photo not removed", error));
         imageUrl = undefined;
       }
       const data: Record<string, unknown> = clean({ ...patch, imageUrl, updatedAt: serverTimestamp() });
@@ -123,9 +124,17 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
     },
 
     async remove(id) {
-      await removeCover(id);
+      const target = doc(fragrances, id);
+      const imageUrl = (await getDoc(target)).data()?.imageUrl as string | undefined;
+      // The scent goes first: removing it must never wait on Storage. Projects
+      // without a Storage bucket (no Blaze plan) used to retry the photo delete
+      // for minutes and then fail the whole removal (An, 2026-10-06).
       // Usage logs stay, matched by fragranceId (architecture §7).
-      await deleteDoc(doc(fragrances, id));
+      await deleteDoc(target);
+      // Only our own uploads live in Storage; brand pictures are just links.
+      if (imageUrl?.includes("firebasestorage")) {
+        removeCover(id).catch((error: unknown) => console.error("[collection] photo not removed", error));
+      }
     },
 
     async logUsage(entry) {
