@@ -43,7 +43,7 @@ export function WeatherBar({
   const showPicker = changing || failed;
 
   return (
-    <div aria-live="polite" className="mt-6">
+    <div aria-live="polite" className="mt-6 desk:mt-12">
       {(busy || (status === "idle" && !failed)) && (
         <p className="label text-muted">
           {status === "loading" ? "正在查詢當地今天的天氣…" : "正在確認你的位置…"}
@@ -52,20 +52,20 @@ export function WeatherBar({
 
       {ready && (
         <div>
-          <p className="font-serif-zh text-lead text-ink lining-nums">
+          <p className="font-serif-zh text-lead text-ink lining-nums desk:text-[clamp(1.5rem,1.6vw,2rem)] desk:leading-snug">
             {weather.place ?? cityLabel(weather.city)} · {CONDITION_LABELS[weather.condition].zh} ·{" "}
             {Math.round(weather.temperature)}°C · 濕度 {Math.round(weather.humidity)}%
           </p>
-          <p className="label mt-2 text-faint">
+          <p className="label mt-2 text-faint desk:mt-3 desk:text-[0.8125rem]">
             {weather.city} · {Math.round(weather.temperature)}°C · {CONDITION_LABELS[weather.condition].en}
             {weather.source === "mock" && " · DEMO WEATHER"}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-small text-faint">
+          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-small text-faint desk:mt-6">
             <button
               type="button"
               aria-expanded={changing}
               onClick={() => setChanging((open) => !open)}
-              className="gold-underline text-blue"
+              className="gold-underline text-blue desk:text-body"
             >
               {changing ? "收起" : "更改位置"}
             </button>
@@ -115,7 +115,7 @@ export function WeatherBar({
               setChanging(false);
               onLocate();
             }}
-            className="gold-underline min-h-11 text-small text-blue"
+            className="gold-underline min-h-11 text-small text-blue desk:text-body"
           >
             重新定位
           </button>
@@ -132,7 +132,7 @@ export function WeatherBar({
                   onChooseCity(key);
                 }}
                 className={cn(
-                  "min-h-11 font-serif-zh transition-colors duration-500",
+                  "min-h-11 font-serif-zh transition-colors duration-500 desk:text-lead",
                   checked ? "text-blue" : "text-ink hover:text-blue",
                 )}
               >

@@ -122,8 +122,11 @@ export function TodaysChoice() {
             asking && "desk:sticky desk:top-28 desk:row-span-2 desk:self-start",
           )}
         >
-          <p className="label text-muted">TODAY&apos;S CHOICE</p>
-          <h2 id="choice-title" className="mt-5 font-serif-zh text-h1-zh text-ink">
+          <p className="label text-muted desk:text-[0.875rem]">TODAY&apos;S CHOICE</p>
+          <h2
+            id="choice-title"
+            className="mt-5 font-serif-zh text-h1-zh text-ink desk:mt-8 desk:text-[clamp(2.75rem,3.4vw,4rem)] desk:leading-[1.3]"
+          >
             兩個問題
             <br />
             找到今天的你

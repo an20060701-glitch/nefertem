@@ -34,7 +34,8 @@ export function DesktopNav() {
       <NefertemLogo
         size={condensed ? "sm" : "md"}
         withTagline={!condensed}
-        className="transition-all duration-500"
+        // Larger at desktop width while the masthead is open (An, 2026-10-06).
+        className={cn("transition-all duration-500", !condensed && "desk:text-[2.25rem]")}
       />
       <nav aria-label="主要導覽" hidden={!showsSections(pathname)}>
         <ul className="flex items-center gap-10 desk:gap-14">
