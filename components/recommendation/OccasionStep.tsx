@@ -24,7 +24,7 @@ export function OccasionStep({
   return (
     <div className="flex flex-col gap-12 desk:gap-16">
       <StepHeading
-        index={2}
+        index={1}
         label="THE OCCASION"
         question="你今天會去哪裡？"
         glyph="ankh"

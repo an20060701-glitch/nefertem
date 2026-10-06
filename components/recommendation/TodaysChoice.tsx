@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCollection } from "@/components/collection/CollectionProvider";
 import { PetalScatter } from "@/components/brand/PetalScatter";
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
@@ -13,10 +13,9 @@ import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
 import { RecommendationResult } from "./RecommendationResult";
 import { STEPS, type Step, useChoiceFlow } from "./useChoiceFlow";
-import { WeatherStep } from "./WeatherStep";
+import { WeatherBar } from "./WeatherBar";
 
 const PROGRESS: Record<Step, { zh: string; en: string }> = {
-  weather: { zh: "天氣", en: "WEATHER" },
   occasion: { zh: "場合", en: "OCCASION" },
   mood: { zh: "印象", en: "IMPRESSION" },
   result: { zh: "今日香氣", en: "TODAY'S SCENT" },
@@ -25,7 +24,8 @@ const PROGRESS: Record<Step, { zh: string; en: string }> = {
 const ALTERNATIVES = 3;
 
 /**
- * Today's Choice ritual: weather → occasion → impression → today's scent,
+ * Today's Choice ritual: today's weather (read, shown under the title) →
+ * occasion → impression → today's scent,
  * with the fortune wheel for undecided days. Picks come only from the member's
  * own cabinet (An, 2026-10-06); an empty cabinet gets a nudge to add scents.
  */
@@ -111,13 +111,22 @@ export function TodaysChoice() {
         <div className="desk:col-span-5">
           <p className="label text-muted">TODAY&apos;S CHOICE</p>
           <h2 id="choice-title" className="mt-5 font-serif-zh text-h1-zh text-ink">
-            三個問題
+            兩個問題
             <br />
             找到今天的你
           </h2>
+          <WeatherBar
+            place={selection.place}
+            weather={weather}
+            status={flow.weatherStatus}
+            locateFailed={flow.locateFailed}
+            onLocate={flow.locate}
+            onAutoLocate={flow.autoLocate}
+            onChooseCity={flow.chooseCity}
+          />
         </div>
         <nav aria-label="儀式進度" className="desk:col-span-7 desk:col-start-6">
-          <ol className="grid grid-cols-4 gap-3 desk:gap-6">
+          <ol className="grid grid-cols-3 gap-3 desk:gap-6">
             {STEPS.map((s, i) => {
               const done = i < stepIndex;
               const current = i === stepIndex;
@@ -170,18 +179,6 @@ export function TodaysChoice() {
               transition: { duration: reduce ? 0.15 : 0.45, ease: ease.editorial },
             }}
           >
-            {step === "weather" && (
-              <WeatherStep
-                place={selection.place}
-                weather={weather}
-                status={flow.weatherStatus}
-                locateFailed={flow.locateFailed}
-                onLocate={flow.locate}
-                onAutoLocate={flow.autoLocate}
-                onChooseCity={flow.chooseCity}
-                onContinue={() => flow.goTo("occasion")}
-              />
-            )}
             {step === "occasion" && (
               <OccasionStep occasion={selection.occasion} onChoose={flow.chooseOccasion} />
             )}
@@ -235,13 +232,11 @@ export function TodaysChoice() {
                     flow.restart();
                   }}
                 />
-              ) : flow.weatherStatus === "error" ? (
-                <div className="flex flex-col items-start gap-6">
-                  <p className="font-serif-zh text-h2 text-ink">暫時無法取得天氣。</p>
-                  <Button variant="ghost" onClick={() => flow.goTo("weather")}>
-                    選擇城市
-                  </Button>
-                </div>
+              ) : flow.weatherStatus === "error" || (flow.locateFailed && !selection.place) ? (
+                <p className="font-serif-zh text-h2 text-ink">
+                  還不知道今天的天氣。
+                  <span className="mt-2 block text-body text-muted">請在上方選擇離你最近的城市。</span>
+                </p>
               ) : (
                 <div className="flex flex-col gap-4" aria-live="polite">
                   <span className="skeleton block h-24 w-full max-w-[40rem]" />

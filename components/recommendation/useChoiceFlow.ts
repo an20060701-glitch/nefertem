@@ -11,7 +11,8 @@ import type { CityKey, Mood, Occasion, WeatherSnapshot } from "@/types";
  * keeps the ritual and the browser's back button returns to the previous step.
  * Exact coordinates never go into the URL; "here" means "ask the browser again".
  */
-export const STEPS = ["weather", "occasion", "mood", "result"] as const;
+/** Only occasion and impression are asked; the weather is read, not asked (An, 2026-10-06). */
+export const STEPS = ["occasion", "mood", "result"] as const;
 export type Step = (typeof STEPS)[number];
 export type Place = CityKey | "here";
 export const MAX_MOODS = 2;
@@ -48,19 +49,18 @@ function parse(search: string): { requested: Step; selection: Selection } {
     .filter((m): m is Mood => MOOD_KEYS.has(m))
     .slice(0, MAX_MOODS);
   const stepParam = params.get("step");
-  const requested = (STEPS as readonly string[]).includes(stepParam ?? "") ? (stepParam as Step) : "weather";
+  const requested = (STEPS as readonly string[]).includes(stepParam ?? "") ? (stepParam as Step) : "occasion";
   return { requested, selection: { place, occasion, moods } };
 }
 
 /** The furthest step the selection allows, never past the one requested. */
 function reachableStep(requested: Step, s: Selection): Step {
   const ready: Record<Step, boolean> = {
-    weather: true,
-    occasion: !!s.place,
-    mood: !!s.place && !!s.occasion,
-    result: !!s.place && !!s.occasion && s.moods.length > 0,
+    occasion: true,
+    mood: !!s.occasion,
+    result: !!s.occasion && s.moods.length > 0,
   };
-  let step: Step = "weather";
+  let step: Step = "occasion";
   for (const candidate of STEPS) {
     if (!ready[candidate]) break;
     step = candidate;
@@ -73,7 +73,7 @@ function writeUrl(step: Step, s: Selection, mode: "push" | "replace") {
   const params = new URLSearchParams(window.location.search);
   const set = (key: string, value: string | undefined) =>
     value ? params.set(key, value) : params.delete(key);
-  set("step", step === "weather" ? undefined : step);
+  set("step", step === "occasion" ? undefined : step);
   set("city", s.place);
   set("occasion", s.occasion);
   set("mood", s.moods.length ? s.moods.join(",") : undefined);
@@ -108,6 +108,14 @@ export function useChoiceFlow() {
     },
     [],
   );
+  /** A new place keeps the visitor on the step they are on. */
+  const setPlace = useCallback(
+    (place: Place | undefined) => {
+      const { requested, selection: current } = parse(window.location.search);
+      update({ place }, reachableStep(requested, current), "replace");
+    },
+    [update],
+  );
 
   const locate = useCallback(() => {
     if (!("geolocation" in navigator)) {
@@ -128,22 +136,20 @@ export function useChoiceFlow() {
         setLocating(false);
         setLocateFailed(false);
         setCoords({ lat: c.latitude, lon: c.longitude });
-        if (parse(window.location.search).selection.place !== "here")
-          update({ place: "here" }, "weather", "replace");
+        if (parse(window.location.search).selection.place !== "here") setPlace("here");
       },
       () => {
         window.clearTimeout(unanswered);
         setLocating(false);
         setLocateFailed(true);
-        if (parse(window.location.search).selection.place === "here")
-          update({ place: undefined }, "weather", "replace");
+        if (parse(window.location.search).selection.place === "here") setPlace(undefined);
       },
       { timeout: 5000, maximumAge: 30 * 60 * 1000 },
     );
-  }, [update]);
+  }, [setPlace]);
 
   // Today's weather starts from where the visitor is (An, 2026-10-06): ask once,
-  // the first time the weather step is seen with no place chosen yet.
+  // the first time the ritual is opened with no place chosen yet.
   const autoLocated = useRef(false);
   const autoLocate = useCallback(() => {
     if (autoLocated.current || parse(window.location.search).selection.place) return;
@@ -195,7 +201,7 @@ export function useChoiceFlow() {
     goTo: (next: Step) => update({}, next),
     chooseCity: (city: CityKey) => {
       setLocateFailed(false);
-      update({ place: city }, "weather", "replace");
+      setPlace(city);
     },
     chooseOccasion: (occasion: Occasion) => update({ occasion }, "mood"),
     toggleMood: (mood: Mood) => {
@@ -207,6 +213,6 @@ export function useChoiceFlow() {
           : current;
       update({ moods }, "mood", "replace");
     },
-    restart: () => update({ occasion: undefined, moods: [] }, "weather"),
+    restart: () => update({ occasion: undefined, moods: [] }, "occasion"),
   };
 }

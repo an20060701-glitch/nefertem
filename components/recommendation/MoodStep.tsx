@@ -24,7 +24,7 @@ export function MoodStep({
   return (
     <div className="flex flex-col gap-12 desk:gap-16">
       <StepHeading
-        index={3}
+        index={2}
         label="THE IMPRESSION"
         question="今天，你想留下什麼樣的氣味？"
         glyph="eye"
