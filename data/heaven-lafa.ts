@@ -4,7 +4,9 @@ import type { Fragrance } from "@/types";
  * HEAVEN LAFA 天堂費洛香 — a Taiwanese house inspired by ancient Egypt, woody and
  * unisex — from An's "HEAVEN LAFA 香水產品資料庫" (2026-10-07). Top, heart and base
  * notes are as listed; the two 100 ml scents come with mood words only, no notes.
- * The style words go in tags, so the moods they name (療癒, 狂野…) can count.
+ * The style words go in tags exactly as listed, so any mood they name can count.
+ * Names are the official Chinese ones: the English names in the list could not be
+ * found on the brand's site or in a web search, so they are not used.
  */
 export const HEAVEN_LAFA_SOURCE = "An 提供的 HEAVEN LAFA 產品資料（2026-10-07，整理自品牌官網）";
 
@@ -16,7 +18,7 @@ type Entry = Omit<Fragrance, "brand" | "origin" | "createdAt">;
 const ENTRIES: readonly Entry[] = [
   {
     id: "cat-heaven-lafa-beast-wolf",
-    name: "Beast Wolf",
+    name: "神獸阿努比",
     nameZh: "神獸阿努比－俐落好感香",
     volumeMl: 50,
     family: "woody",
@@ -29,7 +31,7 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat-heaven-lafa-immortal-soul",
-    name: "Immortal Soul",
+    name: "永生法老魂",
     nameZh: "永生法老魂－慵懶偽體香",
     volumeMl: 50,
     family: "woody",
@@ -42,7 +44,7 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat-heaven-lafa-pyramid-lover",
-    name: "Pyramid Lover",
+    name: "金字塔戀人",
     nameZh: "金字塔戀人－狂野魅惑香",
     volumeMl: 50,
     family: "woody",
@@ -50,12 +52,12 @@ const ENTRIES: readonly Entry[] = [
     topNotes: ["cinnamon", "blood-orange", "iris", "elemi"],
     heartNotes: ["rose", "leather", "pink-pepper", "lavender"],
     baseNotes: ["sandalwood", "cherry", "vetiver"],
-    tags: ["狂野", "魅惑", "誘人"],
+    tags: ["狂野", "魅惑"],
     description: "煙燻薔薇木質調。狂野魅惑香，薔薇、狂野、魅惑。",
   },
   {
     id: "cat-heaven-lafa-ankh-life-key",
-    name: "Ankh Life Key",
+    name: "生命馥之鑰",
     nameZh: "生命馥之鑰－催眠治癒香",
     volumeMl: 50,
     family: "woody",
@@ -63,31 +65,31 @@ const ENTRIES: readonly Entry[] = [
     topNotes: ["pink-pepper", "bitter-orange"],
     heartNotes: ["rose", "jasmine"],
     baseNotes: ["vetiver", "patchouli", "myrrh"],
-    tags: ["療癒", "平靜", "神秘"],
+    tags: ["療癒", "催眠", "治癒"],
     description: "焚香玫瑰木質調。催眠治癒香，療癒、催眠、治癒。",
   },
   {
     id: "cat-heaven-lafa-nile-moon",
-    name: "Nile Moon",
+    name: "月暮尼羅河",
     nameZh: "月暮尼羅河－沉穩內斂信任感",
     volumeMl: 100,
     family: "woody",
     topNotes: [],
     heartNotes: [],
     baseNotes: [],
-    tags: ["沉穩", "內斂", "成熟"],
+    tags: ["沉穩", "內斂", "信任感"],
     description: "木質調。沉穩、內斂、信任感。",
   },
   {
     id: "cat-heaven-lafa-heart-of-isis",
-    name: "Heart of Isis",
+    name: "伊西絲之心",
     nameZh: "伊西絲之心－冷熱反差生命力",
     volumeMl: 100,
     family: "woody",
     topNotes: [],
     heartNotes: [],
     baseNotes: [],
-    tags: ["反差", "生命力", "活力"],
+    tags: ["冷熱", "反差", "生命力"],
     description: "木質調。冷熱、反差、生命力。",
   },
 ];

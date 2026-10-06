@@ -68,9 +68,9 @@ describe("HEAVEN LAFA", () => {
   it("is found by its Chinese brand and product names, notes from the dictionary", async () => {
     const r = await lookup({ brand: "天堂費洛香", name: "神獸阿努比－俐落好感香" });
     expect(r?.confidence).toBe("high");
-    expect(r?.fragrance.name).toBe("Beast Wolf");
+    expect(r?.fragrance.name).toBe("神獸阿努比");
     expect(r?.sources).toEqual([HEAVEN_LAFA_SOURCE]);
-    expect((await lookup({ brand: "LAFA", name: "Ankh Life Key" }))?.fragrance.baseNotes).toContain("myrrh");
+    expect((await lookup({ brand: "LAFA", name: "生命馥之鑰" }))?.fragrance.baseNotes).toContain("myrrh");
     for (const f of HEAVEN_LAFA)
       for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
         expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
