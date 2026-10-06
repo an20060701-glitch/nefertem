@@ -599,6 +599,14 @@ export const BRANDS: readonly BrandInfo[] = [
     site: "https://www.st-dupont.com/",
   },
   {
+    key: "tamburins",
+    name: "TAMBURINS",
+    aliases: ["Tamburins"],
+    domain: "tamburins.com",
+    site: "https://www.tamburins.com/en/",
+    fragrancePage: "https://www.tamburins.com/en/shop/perfume/perfumes/",
+  },
+  {
     key: "the-body-shop",
     name: "The Body Shop",
     domain: "thebodyshop.com.tw",

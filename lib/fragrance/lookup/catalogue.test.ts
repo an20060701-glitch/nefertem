@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { BRANDS } from "@/data/brands";
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
+import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
 import { catalogueFragranceProvider } from "./catalogue";
@@ -78,5 +79,19 @@ describe("HEAVEN LAFA", () => {
 
   it("links to the brand's Taiwan site", () => {
     expect(brandHomeLink({ brandKey: "heaven-lafa" })?.url).toBe("https://www.heavenlafa.tw/");
+  });
+});
+
+describe("TAMBURINS", () => {
+  it("has the fifteen listed scents with the official notes, each once", async () => {
+    expect(TAMBURINS).toHaveLength(15);
+    expect(new Set(TAMBURINS.map((f) => f.name)).size).toBe(15);
+    for (const f of TAMBURINS)
+      for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
+        expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
+    const r = await lookup({ brand: "Tamburins", name: "Puppy" });
+    expect(r?.confidence).toBe("high");
+    expect(r?.fragrance.topNotes).toEqual(["paw-accord", "chamomile", "aldehydes"]);
+    expect(r?.sources).toEqual([TAMBURINS_SOURCE]);
   });
 });

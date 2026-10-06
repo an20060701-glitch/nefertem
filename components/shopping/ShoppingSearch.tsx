@@ -10,6 +10,7 @@ import { FAMILY_GUIDES } from "@/data/family-guide";
 import { CATALOGUE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { HEAVEN_LAFA } from "@/data/heaven-lafa";
+import { TAMBURINS } from "@/data/tamburins";
 import { cn } from "@/lib/cn";
 import { cleanKeyword, MAX_KEYWORD_LENGTH } from "@/lib/shopping/links";
 import { familySearchKeyword, matchSearch } from "@/lib/shopping/normalize";
@@ -28,7 +29,13 @@ export function ShoppingSearch({ query }: { query: string }) {
   const catalogue = useMemo(() => {
     const own = new Set(items.map((i) => i.id));
     // The member's own scents, then the demo catalogue and An's brand product list (2026-10-07).
-    return [...items, ...DEMO_FRAGRANCES.filter((f) => !own.has(f.id)), ...CATALOGUE, ...HEAVEN_LAFA];
+    return [
+      ...items,
+      ...DEMO_FRAGRANCES.filter((f) => !own.has(f.id)),
+      ...CATALOGUE,
+      ...HEAVEN_LAFA,
+      ...TAMBURINS,
+    ];
   }, [items]);
   const ownedIds = useMemo(() => new Set(items.map((i) => i.id)), [items]);
   const match = useMemo(() => matchSearch(query, catalogue), [query, catalogue]);
