@@ -189,7 +189,7 @@ export function TodaysChoice() {
         <div
           ref={stageRef}
           className={cn(
-            "relative min-h-[70svh] scroll-mt-24 desk:scroll-mt-28",
+            "relative min-h-[40svh] scroll-mt-24 md:min-h-[70svh] desk:scroll-mt-28",
             asking ? "mt-4 desk:col-span-7 desk:col-start-6 desk:mt-16" : "mt-16 desk:col-span-12 desk:mt-24",
           )}
         >
