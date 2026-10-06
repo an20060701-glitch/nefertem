@@ -2,14 +2,17 @@ import "server-only";
 
 import type { WeatherSnapshot } from "@/types";
 import { mockProvider } from "./mock";
+import { openMeteoProvider } from "./openmeteo";
 import { createOpenWeatherMapProvider } from "./openweathermap";
 import type { WeatherLocation, WeatherProvider } from "./types";
 
 function configuredProvider(): WeatherProvider {
   const key = process.env.OPENWEATHER_API_KEY;
-  if (process.env.WEATHER_PROVIDER === "openweathermap" && key) return createOpenWeatherMapProvider(key);
-  // The CWA provider is planned (architecture §6.2); until then CWA config falls back to mock.
-  return mockProvider;
+  const choice = process.env.WEATHER_PROVIDER;
+  if (choice === "openweathermap" && key) return createOpenWeatherMapProvider(key);
+  if (choice === "mock") return mockProvider;
+  // Open-Meteo needs no key, so it is the default (CWA is still planned, architecture §6.2).
+  return openMeteoProvider;
 }
 
 /**

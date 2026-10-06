@@ -12,5 +12,7 @@ export interface WeatherSnapshot {
   isHot: boolean;
   /** ≤ 18°C */
   isCold: boolean;
-  source: "openweathermap" | "cwa" | "mock";
+  /** Local name of the place, in Traditional Chinese when the provider knows it ("大安區"). */
+  place?: string;
+  source: "open-meteo" | "openweathermap" | "cwa" | "mock";
 }

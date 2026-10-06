@@ -64,7 +64,7 @@ export function explain(
   context: { weather: WeatherSnapshot; occasion: Occasion; moods: Mood[] },
 ): Explanation {
   const { weather, occasion, moods } = context;
-  const where = `今天${cityLabel(weather.city)} ${Math.round(weather.temperature)}°C ${weatherPhrase(weather)}`;
+  const where = `今天${weather.place ?? cityLabel(weather.city)} ${Math.round(weather.temperature)}°C ${weatherPhrase(weather)}`;
   const families = familyPhrase(rec, moods);
   const lead =
     moods.length > 0

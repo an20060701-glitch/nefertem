@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { isCityKey } from "@/lib/weather/cities";
 import { MOODS } from "@/lib/fragrance/families";
 import type { CityKey, Mood, Occasion, WeatherSnapshot } from "@/types";
@@ -15,6 +15,7 @@ export const STEPS = ["weather", "occasion", "mood", "result"] as const;
 export type Step = (typeof STEPS)[number];
 export type Place = CityKey | "here";
 export const MAX_MOODS = 2;
+const PERMISSION_WAIT_MS = 10_000;
 
 export interface Selection {
   place?: Place;
@@ -115,14 +116,23 @@ export function useChoiceFlow() {
     }
     setLocating(true);
     setLocateFailed(false);
+    // The browser's own timeout only starts once permission is given; don't sit on
+    // 「正在確認你的位置…」 while the prompt is ignored. A late answer still counts.
+    const unanswered = window.setTimeout(() => {
+      setLocating(false);
+      setLocateFailed(true);
+    }, PERMISSION_WAIT_MS);
     navigator.geolocation.getCurrentPosition(
       ({ coords: c }) => {
+        window.clearTimeout(unanswered);
         setLocating(false);
+        setLocateFailed(false);
         setCoords({ lat: c.latitude, lon: c.longitude });
         if (parse(window.location.search).selection.place !== "here")
           update({ place: "here" }, "weather", "replace");
       },
       () => {
+        window.clearTimeout(unanswered);
         setLocating(false);
         setLocateFailed(true);
         if (parse(window.location.search).selection.place === "here")
@@ -131,6 +141,15 @@ export function useChoiceFlow() {
       { timeout: 5000, maximumAge: 30 * 60 * 1000 },
     );
   }, [update]);
+
+  // Today's weather starts from where the visitor is (An, 2026-10-06): ask once,
+  // the first time the weather step is seen with no place chosen yet.
+  const autoLocated = useRef(false);
+  const autoLocate = useCallback(() => {
+    if (autoLocated.current || parse(window.location.search).selection.place) return;
+    autoLocated.current = true;
+    locate();
+  }, [locate]);
 
   // Restoring "here" after a reload: ask the browser again (it remembers the permission).
   const needsCoords = selection.place === "here" && !coords;
@@ -172,6 +191,7 @@ export function useChoiceFlow() {
     weatherStatus,
     locateFailed,
     locate,
+    autoLocate,
     goTo: (next: Step) => update({}, next),
     chooseCity: (city: CityKey) => {
       setLocateFailed(false);
