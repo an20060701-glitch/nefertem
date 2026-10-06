@@ -34,10 +34,13 @@ export function SignInOptions({ next }: { next: string }) {
     } catch (e) {
       const code = (e as { code?: string }).code;
       if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return;
+      console.error(`[sign-in] ${provider} failed`, e);
+      // While developing, show Firebase's code so a failed provider setup can be diagnosed.
+      const detail = process.env.NODE_ENV !== "production" && code ? `（${code}）` : "";
       setError(
-        provider === "line" && (code === "auth/operation-not-allowed" || code === "auth/invalid-provider-id")
+        (provider === "line" && (code === "auth/operation-not-allowed" || code === "auth/invalid-provider-id")
           ? "LINE 登入尚未開通，請先使用 Google 帳號。"
-          : "登入沒有完成，請再試一次。",
+          : "登入沒有完成，請再試一次。") + detail,
       );
     } finally {
       setPending(undefined);
