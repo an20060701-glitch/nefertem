@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BRANDS } from "@/data/brands";
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
+import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
 import { catalogueFragranceProvider } from "./catalogue";
@@ -60,5 +61,22 @@ describe("catalogue lookup", () => {
     );
     expect(brandHomeLink({ brandKey: "byredo" })?.url).toBe("https://www.byredo.com/tw/zh-tw/");
     expect(brandHomeLink({ brandKey: "chanel" })?.url).toBe("https://www.chanel.com/tw/");
+  });
+});
+
+describe("HEAVEN LAFA", () => {
+  it("is found by its Chinese brand and product names, notes from the dictionary", async () => {
+    const r = await lookup({ brand: "天堂費洛香", name: "神獸阿努比－俐落好感香" });
+    expect(r?.confidence).toBe("high");
+    expect(r?.fragrance.name).toBe("Beast Wolf");
+    expect(r?.sources).toEqual([HEAVEN_LAFA_SOURCE]);
+    expect((await lookup({ brand: "LAFA", name: "Ankh Life Key" }))?.fragrance.baseNotes).toContain("myrrh");
+    for (const f of HEAVEN_LAFA)
+      for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
+        expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
+  });
+
+  it("links to the brand's Taiwan site", () => {
+    expect(brandHomeLink({ brandKey: "heaven-lafa" })?.url).toBe("https://www.heavenlafa.tw/");
   });
 });

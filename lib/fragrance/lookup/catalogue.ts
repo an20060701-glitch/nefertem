@@ -1,5 +1,6 @@
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
+import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
 import { DEMO_SOURCE } from "./mock";
@@ -80,6 +81,7 @@ export const catalogueFragranceProvider: FragranceDataProvider = {
     let best: { f: Fragrance; rank: number; exact: boolean; order: number; source: string } | null = null;
     const lists: [readonly Fragrance[], string][] = [
       [CATALOGUE, CATALOGUE_SOURCE],
+      [HEAVEN_LAFA, HEAVEN_LAFA_SOURCE],
       [DEMO_FRAGRANCES, DEMO_SOURCE],
     ];
     for (const [list, source] of lists) {

@@ -284,6 +284,15 @@ export const BRANDS: readonly BrandInfo[] = [
     site: "https://www.guerlain.com/zh-tw/",
   },
   {
+    key: "heaven-lafa",
+    name: "HEAVEN LAFA",
+    zh: "天堂費洛香",
+    aliases: ["LAFA", "Heaven Lafa", "LAFA天堂費洛香"],
+    domain: "heavenlafa.tw",
+    site: "https://www.heavenlafa.tw/",
+    fragrancePage: "https://www.heavenlafa.tw/Shop",
+  },
+  {
     key: "hermes",
     name: "Hermès",
     zh: "愛馬仕",

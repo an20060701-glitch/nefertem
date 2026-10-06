@@ -158,6 +158,9 @@ export const NOTES = {
   myrrh: { en: "Myrrh", zh: "沒藥", family: "amber" },
   tobacco: { en: "Tobacco", zh: "菸草", family: "amber" },
   honey: { en: "Honey", zh: "蜂蜜", family: "gourmand" },
+  // added with An's HEAVEN LAFA list (data/heaven-lafa.ts, 2026-10-07)
+  beeswax: { en: "Beeswax", zh: "蜂蠟", family: "amber" },
+  cherry: { en: "Cherry", zh: "櫻桃", family: "fruity" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;

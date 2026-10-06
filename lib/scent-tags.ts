@@ -138,6 +138,8 @@ export const NOTE_TAGS: Record<string, string[]> = {
   myrrh: ["神秘", "深邃"],
   tobacco: ["成熟", "溫暖", "侵略性"],
   honey: ["甜美", "溫暖"],
+  beeswax: ["溫暖", "溫潤"],
+  cherry: ["甜美", "誘人"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;
