@@ -302,3 +302,9 @@ html.has-custom-cursor,
 html.has-custom-cursor * {
   cursor: none !important;
 }
+
+/* Cover (An, 2026-10-06): the art melts into the page colour along its bottom edge,
+   where Today's Choice begins on ivory. */
+.cover-art {
+  mask-image: linear-gradient(to bottom, #000 92%, transparent);
+}

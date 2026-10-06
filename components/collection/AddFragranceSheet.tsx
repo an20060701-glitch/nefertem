@@ -7,14 +7,20 @@ import { Sheet } from "@/components/ui/Sheet";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { cn } from "@/lib/cn";
 import { useCollection } from "./CollectionProvider";
-import { FragranceForm } from "./FragranceForm";
+import { FragranceForm, type FragranceFormResult } from "./FragranceForm";
 import { addFromForm } from "./saveFragrance";
+import { SmartLookupFlow } from "./SmartLookupFlow";
 
-type Mode = "choose" | "manual" | "demo";
+type Mode = "choose" | "manual" | "lookup" | "demo";
 
 const OPTIONS = [
   { mode: "manual", en: "MANUAL", zh: "手動建立", note: "自己輸入品牌、香調與前中後調。" },
-  { mode: "lookup", en: "SMART LOOKUP", zh: "智能建檔", note: "輸入品牌與名稱自動帶入資料，即將開放。" },
+  {
+    mode: "lookup",
+    en: "SMART LOOKUP",
+    zh: "智能建檔",
+    note: "輸入品牌與名稱，自動帶入香調資料，確認後再存。",
+  },
   { mode: "demo", en: "FROM THE CATALOGUE", zh: "從示範目錄挑選", note: "從 18 款示範香水中直接加入。" },
 ] as const;
 
@@ -26,41 +32,45 @@ export function AddFragranceSheet({ onClose }: { onClose: () => void }) {
   const [adding, setAdding] = useState<string>();
   const owned = new Set(items.map((f) => f.id));
 
-  const title = mode === "manual" ? "手動建立" : mode === "demo" ? "從示範目錄挑選" : "新增一瓶香氣";
+  const title =
+    mode === "manual"
+      ? "手動建立"
+      : mode === "lookup"
+        ? "智能建檔"
+        : mode === "demo"
+          ? "從示範目錄挑選"
+          : "新增一瓶香氣";
+
+  async function save(result: FragranceFormResult) {
+    const item = await addFromForm(repo, result);
+    onClose();
+    router.push(`/collection/${encodeURIComponent(item.id)}`);
+  }
 
   return (
     <Sheet label="ADD NEW SCENT" title={title} onClose={onClose}>
       {mode === "choose" && (
         <ol className="border-t border-line">
-          {OPTIONS.map((o, i) => {
-            const disabled = o.mode === "lookup";
-            return (
-              <li key={o.mode} className="border-b border-line">
-                <button
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => !disabled && setMode(o.mode)}
-                  className="group flex w-full items-start gap-6 py-8 text-left disabled:cursor-not-allowed desk:gap-10 desk:py-10"
-                >
-                  <span className="font-display text-numeral font-light italic text-gold" aria-hidden>
-                    {String(i + 1).padStart(2, "0")}
+          {OPTIONS.map((o, i) => (
+            <li key={o.mode} className="border-b border-line">
+              <button
+                type="button"
+                onClick={() => setMode(o.mode)}
+                className="group flex w-full items-start gap-6 py-8 text-left desk:gap-10 desk:py-10"
+              >
+                <span className="font-display text-numeral font-light italic text-gold" aria-hidden>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>
+                  <span className="label block text-faint">{o.en}</span>
+                  <span className="mt-2 block font-serif-zh text-h1-zh text-ink transition-colors duration-500 group-hover:text-blue">
+                    {o.zh}
                   </span>
-                  <span>
-                    <span className="label block text-faint">{o.en}</span>
-                    <span
-                      className={cn(
-                        "mt-2 block font-serif-zh text-h1-zh transition-colors duration-500",
-                        disabled ? "text-faint" : "text-ink group-hover:text-blue",
-                      )}
-                    >
-                      {o.zh}
-                    </span>
-                    <span className="mt-2 block text-muted">{o.note}</span>
-                  </span>
-                </button>
-              </li>
-            );
-          })}
+                  <span className="mt-2 block text-muted">{o.note}</span>
+                </span>
+              </button>
+            </li>
+          ))}
         </ol>
       )}
 
@@ -69,12 +79,12 @@ export function AddFragranceSheet({ onClose }: { onClose: () => void }) {
           allowImage={repo.supportsImages}
           submitLabel="放進香水櫃"
           onCancel={() => setMode("choose")}
-          onSubmit={async (result) => {
-            const item = await addFromForm(repo, result);
-            onClose();
-            router.push(`/collection/${encodeURIComponent(item.id)}`);
-          }}
+          onSubmit={save}
         />
+      )}
+
+      {mode === "lookup" && (
+        <SmartLookupFlow allowImage={repo.supportsImages} onSave={save} onBack={() => setMode("choose")} />
       )}
 
       {mode === "demo" && (
