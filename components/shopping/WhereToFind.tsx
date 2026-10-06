@@ -17,7 +17,7 @@ interface WhereToFindProps {
 
 type Official = { key: string; link: OfficialLink | null };
 
-/** WHERE TO FIND IT: Shopee and momo searches, plus the brand's own site when we know the brand. */
+/** WHERE TO FIND IT: Shopee, momo and 香水1976 searches, plus the brand's own site when we know the brand. */
 export function WhereToFind({ keyword, brand, name }: WhereToFindProps) {
   const officialKey = brand ? `${brand.key}|${name ?? ""}` : "";
   const [official, setOfficial] = useState<Official>();

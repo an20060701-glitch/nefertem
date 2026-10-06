@@ -9,12 +9,16 @@ describe("store links", () => {
     expect(storeSearchUrl("momo", "Jo Malone & Co?x=1#y")).toBe(
       "https://m.momoshop.com.tw/search.momo?searchKeyword=Jo%20Malone%20%26%20Co%3Fx%3D1%23y",
     );
+    expect(storeSearchUrl("perfume1976", "Creed Aventus")).toBe(
+      "https://www.1976.com.tw/search?keyword=Creed%20Aventus",
+    );
   });
 
   it("cannot be steered to another host", () => {
     for (const evil of ["https://evil.example", "//evil.example", "a/../../b", "javascript:alert(1)"]) {
       expect(new URL(storeSearchUrl("shopee", evil)).host).toBe("shopee.tw");
       expect(new URL(storeSearchUrl("momo", evil)).host).toBe("m.momoshop.com.tw");
+      expect(new URL(storeSearchUrl("perfume1976", evil)).host).toBe("www.1976.com.tw");
       expect(new URL(webSearchUrl(evil)).host).toBe("www.google.com");
     }
   });
