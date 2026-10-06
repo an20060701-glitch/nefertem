@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { signInWithGoogle, signInWithLine } from "@/lib/firebase/auth";
+import { LINE_SERVER_LOGIN, signInWithGoogle, signInWithLine } from "@/lib/firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
 import { useCollection } from "./CollectionProvider";
 
@@ -15,11 +15,11 @@ const SIGN_IN: Record<Provider, () => Promise<unknown>> = {
 };
 
 /** Google or LINE; once signed in (popup or redirect), go on to `next`. */
-export function SignInOptions({ next }: { next: string }) {
+export function SignInOptions({ next, lineFailed = false }: { next: string; lineFailed?: boolean }) {
   const router = useRouter();
   const { user } = useCollection();
   const [pending, setPending] = useState<Provider>();
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<string | undefined>(lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined);
 
   useEffect(() => {
     if (user) router.replace(next);
@@ -28,6 +28,11 @@ export function SignInOptions({ next }: { next: string }) {
   async function signIn(provider: Provider) {
     setPending(provider);
     setError(undefined);
+    if (provider === "line" && LINE_SERVER_LOGIN) {
+      // A full-page trip through our server; any tab LINE returns to can finish it.
+      window.location.assign(new URL(`/api/auth/line/start?next=${encodeURIComponent(next)}`, window.location.origin));
+      return;
+    }
     try {
       await SIGN_IN[provider]();
       // Navigation follows from the auth state change above.
