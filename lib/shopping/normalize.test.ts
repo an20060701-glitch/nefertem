@@ -31,6 +31,14 @@ describe("matchSearch", () => {
     expect(m("YSL")?.brand?.key).toBe("ysl");
   });
 
+  it("knows the brands from An's list by English or Chinese name", () => {
+    expect(matchSearch("朵昂思", DEMO_FRAGRANCES)?.brand?.key).toBe("durance");
+    expect(matchSearch("Initio Side Effect", DEMO_FRAGRANCES)?.brand?.key).toBe("initio-parfums-prives");
+    expect(matchSearch("范思哲", DEMO_FRAGRANCES)?.brand?.key).toBe("versace");
+    // "ck" (Calvin Klein) inside another word is not a brand.
+    expect(matchSearch("Rock Musk", DEMO_FRAGRANCES)?.brand).toBeUndefined();
+  });
+
   it("recognises fragrance families", () => {
     expect(m("木質調")?.family?.key).toBe("woody");
     expect(m("清新")?.keyword).toBe("柑橘調香水");
