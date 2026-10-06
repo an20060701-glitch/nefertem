@@ -38,4 +38,4 @@ NEFERTEM 官方 Key Visual 位於 `public/images/nefertem-key-visual.png`，是�
 - [x] Phase 2：Today's Choice 完整流程（天氣 → 場合 → 印象 → 推薦 → 輪盤 → 使用紀錄；訪客紀錄暫存在這台裝置，Phase 3 登入後改存 Firestore）
 - [x] Phase 3：My Collection 與 Google 登入（未登入存在這台裝置；登入後存 Firestore `users/{uid}`，照片存 Storage；今日推薦改從你的香水櫃挑選）
 - [ ] Phase 4：Shopping
-- [ ] Phase 5：智能建檔 provider
+- [x] Phase 5：智能建檔 provider
