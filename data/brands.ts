@@ -18,6 +18,8 @@ export interface BrandInfo {
   domain?: string;
   /** Official site to link to; defaults to https://www.<domain>/. */
   site?: string;
+  /** The brand's fragrance page, checked to open (An's product list, 2026-10-07); preferred for OFFICIAL links. */
+  fragrancePage?: string;
 }
 
 export const BRANDS: readonly BrandInfo[] = [
@@ -113,6 +115,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["拜里朵"],
     domain: "byredo.com",
     site: "https://www.byredo.com/tw/zh-tw/",
+    fragrancePage: "https://www.byredo.com/us_en/c/perfume",
   },
   {
     key: "calvin-klein",
@@ -128,6 +131,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["卡羅琳娜·海萊拉"],
     domain: "carolinaherrera.com",
     site: "https://www.carolinaherrera.com/",
+    fragrancePage: "https://www.carolinaherrera.com/ww/en/c/fragrances",
   },
   {
     key: "cartier",
@@ -135,9 +139,17 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "卡地亞",
     domain: "cartier.com",
     site: "https://www.cartier.com/zh-tw/",
+    fragrancePage: "https://www.cartier.com/zh-tw/%E9%A6%99%E6%B0%B4/",
   },
   { key: "celine", name: "Celine", zh: "思琳", domain: "celine.com" },
-  { key: "chanel", name: "Chanel", zh: "香奈兒", domain: "chanel.com", site: "https://www.chanel.com/tw/" },
+  {
+    key: "chanel",
+    name: "Chanel",
+    zh: "香奈兒",
+    domain: "chanel.com",
+    site: "https://www.chanel.com/tw/",
+    fragrancePage: "https://www.chanel.com/us/fragrance/",
+  },
   {
     key: "clean",
     name: "Clean",
@@ -168,6 +180,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "大衛杜夫",
     domain: "davidoff.com",
     site: "https://www.davidoff.com/",
+    fragrancePage: "https://www.davidoff.com/fragrances/",
   },
   {
     key: "demeter",
@@ -183,6 +196,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Christian Dior"],
     domain: "dior.com",
     site: "https://www.dior.com/zh_tw",
+    fragrancePage: "https://www.dior.com/en_us/beauty/fragrance/fragrance-homepage.html",
   },
   {
     key: "diptyque",
@@ -190,6 +204,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "蒂普提克",
     domain: "diptyqueparis.com",
     site: "https://www.diptyqueparis.com/zh-tw/",
+    fragrancePage: "https://us.diptyqueparis.com/en-us/collections/all-fragrances",
   },
   {
     key: "dolce-gabbana",
@@ -220,6 +235,7 @@ export const BRANDS: readonly BrandInfo[] = [
     name: "Elizabeth Arden",
     domain: "elizabetharden.com.tw",
     site: "https://www.elizabetharden.com.tw/",
+    fragrancePage: "https://www.elizabetharden.tw/fragrance/",
   },
   { key: "escentric-molecules", name: "Escentric Molecules", zh: "分子香水", domain: "escentric.com" },
   {
@@ -305,6 +321,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "高堤耶",
     domain: "jeanpaulgaultier.com",
     site: "https://www.jeanpaulgaultier.com/",
+    fragrancePage: "https://www.jeanpaulgaultier.com/fragrances/",
   },
   {
     key: "jennifer-lopez",
@@ -327,6 +344,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Jo Malone", "祖馬龍"],
     domain: "jomalone.com",
     site: "https://www.jomalone.com.tw/",
+    fragrancePage: "https://www.jomalone.com/colognes",
   },
   {
     key: "juliette-has-a-gun",
@@ -372,8 +390,15 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Artisan Parfumeur"],
     domain: "artisanparfumeur.com",
     site: "https://www.artisanparfumeur.com/zh-tw/",
+    fragrancePage: "https://www.artisanparfumeur.com/zh-tw/collections/fragrances",
   },
-  { key: "le-labo", name: "Le Labo", zh: "勒拉柏", domain: "lelabofragrances.com" },
+  {
+    key: "le-labo",
+    name: "Le Labo",
+    zh: "勒拉柏",
+    domain: "lelabofragrances.com",
+    fragrancePage: "https://www.lelabofragrances.com/eau-de-parfum.html",
+  },
   {
     key: "l-occitane",
     name: "L'Occitane",
@@ -462,6 +487,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "納斯馬圖",
     domain: "nasomatto.com",
     site: "https://www.nasomatto.com/",
+    fragrancePage: "https://nasomatto.com/collections/fragrances",
   },
   {
     key: "nicolai",
@@ -476,6 +502,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "帕科·拉巴納",
     aliases: ["Rabanne"],
     domain: "rabanne.com",
+    fragrancePage: "https://www.rabanne.com/fragrances/",
   },
   { key: "parfums-de-marly", name: "Parfums de Marly", zh: "瑪麗之香", domain: "parfums-de-marly.com" },
   {
@@ -485,6 +512,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Penhaligons"],
     domain: "penhaligons.com",
     site: "https://www.penhaligons.com/zh-tw/",
+    fragrancePage: "https://www.penhaligons.com/zh-tw/collections/fragrances",
   },
   {
     key: "prada",
@@ -492,6 +520,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "普拉達",
     domain: "prada.com",
     site: "https://www.prada.com/tw/zh-tw.html",
+    fragrancePage: "https://www.prada.com/us/en/perfumes-and-beauty/fragrances/c/10566US",
   },
   {
     key: "p-seven",
@@ -536,6 +565,7 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "蘆丹氏",
     domain: "sergelutens.com",
     site: "https://www.sergelutens.com/",
+    fragrancePage: "https://sergelutens.com/collections/parfums",
   },
   {
     key: "shiseido",
@@ -550,6 +580,7 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["SOLINOTES"],
     domain: "solinotes.com",
     site: "https://www.solinotes.com/",
+    fragrancePage: "https://solinotes.com/collections/eaux-de-parfum",
   },
   {
     key: "s-t-dupont",
@@ -580,7 +611,14 @@ export const BRANDS: readonly BrandInfo[] = [
     domain: "tiffany.com.tw",
     site: "https://www.tiffany.com.tw/",
   },
-  { key: "tom-ford", name: "Tom Ford", zh: "湯姆福特", aliases: ["TF"], domain: "tomfordbeauty.com" },
+  {
+    key: "tom-ford",
+    name: "Tom Ford",
+    zh: "湯姆福特",
+    aliases: ["TF"],
+    domain: "tomfordbeauty.com",
+    fragrancePage: "https://www.tomfordbeauty.com/collections/fragrance",
+  },
   {
     key: "tommy-hilfiger",
     name: "Tommy Hilfiger",

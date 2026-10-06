@@ -7,6 +7,7 @@ import { HairlineHeading } from "@/components/brand/EditorialHeading";
 import { useCollection } from "@/components/collection/CollectionProvider";
 import { BRANDS } from "@/data/brands";
 import { FAMILY_GUIDES } from "@/data/family-guide";
+import { CATALOGUE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { cn } from "@/lib/cn";
 import { cleanKeyword, MAX_KEYWORD_LENGTH } from "@/lib/shopping/links";
@@ -25,7 +26,8 @@ export function ShoppingSearch({ query }: { query: string }) {
   // The member's own scents first, then the demo catalogue.
   const catalogue = useMemo(() => {
     const own = new Set(items.map((i) => i.id));
-    return [...items, ...DEMO_FRAGRANCES.filter((f) => !own.has(f.id))];
+    // The member's own scents, then the demo catalogue and An's brand product list (2026-10-07).
+    return [...items, ...DEMO_FRAGRANCES.filter((f) => !own.has(f.id)), ...CATALOGUE];
   }, [items]);
   const ownedIds = useMemo(() => new Set(items.map((i) => i.id)), [items]);
   const match = useMemo(() => matchSearch(query, catalogue), [query, catalogue]);
