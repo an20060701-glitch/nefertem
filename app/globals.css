@@ -302,3 +302,16 @@ html.has-custom-cursor,
 html.has-custom-cursor * {
   cursor: none !important;
 }
+
+/* Cover (An, 2026-10-06): the wash keeps its indigo to the bottom edge and only
+   melts into the page colour in the last strip, where Today's Choice begins… */
+.cover-wash {
+  mask-image: linear-gradient(to bottom, #000 90%, transparent);
+}
+/* …and the illustration feathers out at its left, top and bottom edges so no rectangle shows. */
+.cover-figure {
+  mask-image:
+    linear-gradient(to right, transparent, #000 22%),
+    linear-gradient(to bottom, transparent, #000 7%, #000 66%, transparent);
+  mask-composite: intersect;
+}

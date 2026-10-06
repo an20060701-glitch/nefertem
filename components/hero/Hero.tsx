@@ -6,6 +6,7 @@ import { SunDisc } from "@/components/brand/SunDisc";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
 import { BRAND } from "@/lib/brand";
 import { fadeUp, reducedFade, scaleIn, staggerChildren, transition } from "@/lib/motion";
+import { CoverWash } from "./CoverWash";
 import { GoldParticles } from "./GoldParticles";
 import { ReferenceImage } from "./ReferenceImage";
 import { SmokeLayer } from "./SmokeLayer";
@@ -39,6 +40,8 @@ export function Hero({ hasReferenceImage }: HeroProps) {
       aria-labelledby="hero-title"
       className="page-x relative overflow-x-clip pb-20 pt-4 md:pt-[calc(var(--nav-desktop-height)+2rem)] desk:min-h-svh desk:pb-28"
     >
+      {/* Watercolour wash (An, 2026-10-06): white margin top-left → lavender mist → blue-violet → indigo ink. */}
+      <CoverWash />
       <motion.div
         className="relative grid grid-cols-1 gap-8 desk:grid-cols-12 desk:gap-6"
         initial="hidden"
@@ -95,7 +98,7 @@ export function Hero({ hasReferenceImage }: HeroProps) {
           </motion.a>
         </motion.div>
 
-        {/* The official illustration, printed onto the ivory page (multiply), with Ra's sun, vapour and motes */}
+        {/* The official illustration, its paper made transparent so the wash runs through it, with Ra's sun, vapour and motes */}
         <motion.figure
           variants={reduce ? reducedFade : scaleIn}
           className="relative -mx-[var(--gutter)] mt-24 md:mt-28 desk:col-span-7 desk:col-start-6 desk:row-span-2 desk:row-start-1 desk:-mr-[var(--gutter)] desk:ml-0 desk:mt-[14vh] desk:self-center"
@@ -113,17 +116,13 @@ export function Hero({ hasReferenceImage }: HeroProps) {
             <motion.div className="absolute inset-[-2%]" style={{ y: imageY }}>
               <ReferenceImage
                 available={hasReferenceImage}
+                transparent
                 priority
                 sizes="(min-width: 1200px) 66vw, 100vw"
-                className="mix-blend-multiply"
+                className="cover-figure"
               />
             </motion.div>
             <GoldParticles />
-            {/* Ivory veil at the left edge so the headline stays legible where it crosses the artwork */}
-            <div
-              aria-hidden
-              className="absolute inset-y-0 left-0 hidden w-[22%] bg-gradient-to-r from-surface to-transparent desk:block"
-            />
           </div>
           <SunDisc
             id="hero-sun"

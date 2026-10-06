@@ -3,12 +3,16 @@ import { LotusGlyph } from "@/components/brand/LotusGlyph";
 import { cn } from "@/lib/cn";
 
 export const REFERENCE_IMAGE_PATH = "/images/nefertem-key-visual.png";
+/** Same artwork with its white paper made transparent, so it sits on any background. */
+export const REFERENCE_IMAGE_ALPHA_PATH = "/images/nefertem-key-visual-alpha.webp";
 
 interface ReferenceImageProps {
   available: boolean;
   className?: string;
   priority?: boolean;
   sizes?: string;
+  /** Use the transparent version (no white paper). */
+  transparent?: boolean;
 }
 
 /**
@@ -20,11 +24,12 @@ export function ReferenceImage({
   className,
   priority = false,
   sizes = "100vw",
+  transparent = false,
 }: ReferenceImageProps) {
   if (available) {
     return (
       <Image
-        src={REFERENCE_IMAGE_PATH}
+        src={transparent ? REFERENCE_IMAGE_ALPHA_PATH : REFERENCE_IMAGE_PATH}
         alt="NEFERTEM Key Visual：頭戴藍色睡蓮的香氣之神，手持香水瓶與睡蓮，身旁是太陽神 Ra 的鷹與香水瓶"
         fill
         priority={priority}
