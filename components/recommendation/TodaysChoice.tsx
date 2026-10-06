@@ -4,8 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCollection } from "@/components/collection/CollectionProvider";
 import { PetalScatter } from "@/components/brand/PetalScatter";
-import { Button } from "@/components/ui/Button";
-import { DEMO_FRAGRANCES } from "@/data/fragrances";
+import { Button, ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
@@ -27,17 +26,16 @@ const ALTERNATIVES = 3;
 
 /**
  * Today's Choice ritual: weather → occasion → impression → today's scent,
- * with the fortune wheel for undecided days. Guests choose from the demo
- * catalogue; their choices are kept on this device until sign-in (Phase 3).
+ * with the fortune wheel for undecided days. Picks come only from the member's
+ * own cabinet (An, 2026-10-06); an empty cabinet gets a nudge to add scents.
  */
 export function TodaysChoice() {
   const flow = useChoiceFlow();
   const { step, selection, weather } = flow;
   const reduce = useReducedMotion();
-  const { items, usage, repo } = useCollection();
-  // Recommend from the member's own cabinet; the demo catalogue until it has a scent.
-  const fromCollection = items.length > 0;
-  const candidates = fromCollection ? items : DEMO_FRAGRANCES;
+  const { items, usage, repo, ready } = useCollection();
+  const candidates = items;
+  const emptyCabinet = ready && items.length === 0;
 
   const selectionKey = `${weather?.city}|${selection.occasion}|${selection.moods.join(",")}`;
   const [featured, setFeatured] = useState<{ key: string; id: string }>();
@@ -194,7 +192,15 @@ export function TodaysChoice() {
               />
             )}
             {step === "result" &&
-              (top && weather && selection.occasion ? (
+              (emptyCabinet ? (
+                <div className="flex max-w-[44rem] flex-col items-start gap-6">
+                  <p className="font-serif-zh text-h2 text-ink">你的香水櫃還是空的。</p>
+                  <p className="text-muted">
+                    今日選香只從你自己的收藏推薦。先把手邊的香水放進香水櫃，再回來找今天的香氣。
+                  </p>
+                  <ButtonLink href="/collection">前往香水櫃 · MY COLLECTION</ButtonLink>
+                </div>
+              ) : top && weather && selection.occasion ? (
                 <RecommendationResult
                   featured={top}
                   explanation={explain(top, {
@@ -204,11 +210,7 @@ export function TodaysChoice() {
                   })}
                   alternatives={ranked.filter((r) => r !== top).slice(0, ALTERNATIVES)}
                   canSpin={ranked.length >= WHEEL_MIN}
-                  source={
-                    fromCollection
-                      ? `從你的 ${items.length} 款收藏中挑選`
-                      : "目前從示範目錄推薦，把你的香水放進香水櫃後，就會從你的收藏挑選。"
-                  }
+                  source={`從你的 ${items.length} 款收藏中挑選`}
                   confirmed={
                     confirmedHere && {
                       viaWheel: confirmedHere.viaWheel,
