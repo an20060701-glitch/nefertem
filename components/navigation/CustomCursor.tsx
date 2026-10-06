@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
  * Desktop-only cursor: a small blue dot and a hairline ring that widens over
  * interactive elements. Disabled on touch devices and for reduced motion.
  * (The trailing ring uses a critically-damped follow — no overshoot.)
+ * It sits above the full-screen sheets (z-80), or the pointer vanishes there.
  */
 export function CustomCursor() {
   const reduce = useReducedMotion();
@@ -46,7 +47,7 @@ export function CustomCursor() {
   if (!enabled || reduce) return null;
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[70]">
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[90]">
       <motion.div
         className="absolute left-0 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue"
         style={{ x, y }}
