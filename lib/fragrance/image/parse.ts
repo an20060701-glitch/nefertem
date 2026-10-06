@@ -10,17 +10,38 @@ function decodeEntities(text: string): string {
     .replace(/&#x2F;|&#47;/gi, "/");
 }
 
+/** A page listed in a sitemap, with the product picture and title an image sitemap may add. */
+export interface SitemapEntry {
+  loc: string;
+  image?: string;
+  title?: string;
+}
+
 export interface Sitemap {
   /** True for a sitemap index, whose <loc>s are further sitemaps. */
   isIndex: boolean;
   locs: string[];
+  entries: SitemapEntry[];
+}
+
+function tagText(block: string, name: string): string | undefined {
+  const m = block.match(
+    new RegExp(`<${name}\\b[^>]*>\\s*(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?\\s*</${name}>`, "i"),
+  );
+  const text = m?.[1]?.trim();
+  return text ? decodeEntities(text) : undefined;
 }
 
 export function parseSitemap(xml: string): Sitemap {
-  const locs = [...xml.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]]+?)\s*(?:\]\]>)?\s*<\/loc>/gi)].map((m) =>
-    decodeEntities(m[1]),
-  );
-  return { isIndex: /<sitemapindex[\s>]/i.test(xml), locs };
+  const isIndex = /<sitemapindex[\s>]/i.test(xml);
+  const blocks = [
+    ...xml.matchAll(isIndex ? /<sitemap>([\s\S]*?)<\/sitemap>/gi : /<url>([\s\S]*?)<\/url>/gi),
+  ].map((m) => m[1]);
+  const entries = blocks.flatMap((block) => {
+    const loc = tagText(block, "loc");
+    return loc ? [{ loc, image: tagText(block, "image:loc"), title: tagText(block, "image:title") }] : [];
+  });
+  return { isIndex, locs: entries.map((e) => e.loc), entries: isIndex ? [] : entries };
 }
 
 /** Words that describe the bottle rather than name the scent. */
@@ -94,33 +115,51 @@ export function nameWords(name: string): string[] {
 }
 
 /**
- * The product page whose path names this scent, or undefined. Every name word must
- * appear in the path; pages for sets, candles and body care lose to the bottle itself,
- * and of the rest the path with the fewest extra words wins.
+ * The product page whose address (or image-sitemap title) names this scent, or undefined.
+ * Every name word must appear; pages for sets, candles and body care lose to the bottle
+ * itself; then the address with the fewest extra words wins, so "aventus" is Aventus and
+ * "aventus-cologne" another perfume.
  */
-export function bestProductUrl(urls: readonly string[], name: string): string | undefined {
+export function bestProductEntry(entries: readonly SitemapEntry[], name: string): SitemapEntry | undefined {
   const wanted = nameWords(name);
   if (!wanted.length) return undefined;
+  // Bottle words in the name still count when the address has them: "Aventus Cologne".
+  const full = words(name);
   const joined = wanted.join("");
-  let best: { url: string; score: number } | undefined;
-  for (const url of urls) {
+  let best: { entry: SitemapEntry; score: number } | undefined;
+  for (const entry of entries) {
     let path: string;
     try {
-      path = decodeURIComponent(new URL(url).pathname);
+      path = decodeURIComponent(new URL(entry.loc).pathname).replace(/\.html?$/i, "");
     } catch {
       continue;
     }
     const segments = path.split("/").filter(Boolean);
     const slug = words(segments[segments.length - 1] ?? "");
-    const all = words(path);
+    const all = [...words(path), ...(entry.title ? words(entry.title) : [])];
     const hasAll = wanted.every((w) => all.includes(w)) || slug.join("").includes(joined);
     if (!hasAll) continue;
-    const extras = slug.filter((w) => !wanted.includes(w) && !GENERIC.has(w) && !/^\d+$/.test(w));
+    const extras = slug.filter((w) => !full.includes(w));
+    const named = extras.filter((w) => !GENERIC.has(w) && !/^\d+$/.test(w)).length;
+    const missing = full.filter((w) => !wanted.includes(w) && !slug.includes(w)).length;
     const offTopic = all.some((w) => NOT_THE_BOTTLE.has(w) && !wanted.includes(w));
-    const score = extras.length + (offTopic ? 100 : 0) + (wanted.every((w) => slug.includes(w)) ? 0 : 10);
-    if (!best || score < best.score) best = { url, score };
+    const score =
+      (offTopic ? 100 : 0) +
+      (wanted.every((w) => slug.includes(w)) || slug.join("") === joined ? 0 : 10) +
+      named * 2 +
+      (extras.length - named) +
+      missing +
+      (entry.image ? 0 : 0.5);
+    if (!best || score < best.score) best = { entry, score };
   }
-  return best && best.score < 100 ? best.url : undefined;
+  return best && best.score < 100 ? best.entry : undefined;
+}
+
+export function bestProductUrl(urls: readonly string[], name: string): string | undefined {
+  return bestProductEntry(
+    urls.map((loc) => ({ loc })),
+    name,
+  )?.loc;
 }
 
 function metaContent(html: string, key: string): string | undefined {

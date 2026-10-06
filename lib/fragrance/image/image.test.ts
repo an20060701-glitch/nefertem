@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { imageCredit } from "./credit";
-import { bestProductUrl, nameWords, pageImage, parseSitemap } from "./parse";
+import { bestProductEntry, bestProductUrl, nameWords, pageImage, parseSitemap } from "./parse";
 import { parseRobots } from "./robots";
 
 vi.mock("server-only", () => ({}));
@@ -44,9 +44,29 @@ describe("parseSitemap", () => {
     const index = parseSitemap(
       `<sitemapindex><sitemap><loc>https://a.com/sitemap_products_1.xml?from=1&amp;to=2</loc></sitemap></sitemapindex>`,
     );
-    expect(index).toEqual({ isIndex: true, locs: ["https://a.com/sitemap_products_1.xml?from=1&to=2"] });
+    expect(index).toMatchObject({
+      isIndex: true,
+      locs: ["https://a.com/sitemap_products_1.xml?from=1&to=2"],
+    });
     const pages = parseSitemap(`<urlset><url><loc><![CDATA[ https://a.com/p/x ]]></loc></url></urlset>`);
-    expect(pages).toEqual({ isIndex: false, locs: ["https://a.com/p/x"] });
+    expect(pages).toMatchObject({ isIndex: false, locs: ["https://a.com/p/x"] });
+  });
+});
+
+describe("image sitemaps", () => {
+  const xml = `<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    <url><loc>https://x.com/p/12345</loc><image:image><image:loc>https://cdn.x.com/halfeti.jpg</image:loc><image:title>Halfeti Eau de Parfum</image:title></image:image></url>
+    <url><loc>https://x.com/p/67890</loc><image:image><image:title><![CDATA[Halfeti Body Lotion]]></image:title></image:image></url>
+  </urlset>`;
+
+  it("reads each page's picture and title, and matches on the title", () => {
+    const { entries } = parseSitemap(xml);
+    expect(entries[0]).toEqual({
+      loc: "https://x.com/p/12345",
+      image: "https://cdn.x.com/halfeti.jpg",
+      title: "Halfeti Eau de Parfum",
+    });
+    expect(bestProductEntry(entries, "Halfeti")?.loc).toBe("https://x.com/p/12345");
   });
 });
 
@@ -78,6 +98,15 @@ describe("bestProductUrl", () => {
   it("returns nothing when the name is missing or only a set matches", () => {
     expect(bestProductUrl(urls, "Gypsy Water")).toBeUndefined();
     expect(bestProductUrl(["https://x.com/p/aventus-gift-set"], "Aventus")).toBeUndefined();
+  });
+
+  it("takes the exact name over a flanker", () => {
+    const creed = [
+      "https://www.creedfragrance.com/aventus-cologne",
+      "https://www.creedfragrance.com/aventus",
+    ];
+    expect(bestProductUrl(creed, "Aventus")).toBe("https://www.creedfragrance.com/aventus");
+    expect(bestProductUrl(creed, "Aventus Cologne")).toBe("https://www.creedfragrance.com/aventus-cologne");
   });
 
   it("ignores bottle words in the name", () => {

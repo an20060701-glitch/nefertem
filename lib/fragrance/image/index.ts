@@ -2,7 +2,7 @@ import "server-only";
 
 import type { BrandInfo } from "@/data/brands";
 import { brandForName } from "@/lib/shopping/normalize";
-import { bestProductUrl, pageImage, parseSitemap } from "./parse";
+import { bestProductEntry, pageImage, parseSitemap, type SitemapEntry } from "./parse";
 import { parseRobots, type RobotsRules } from "./robots";
 import type { OfficialImage } from "./types";
 
@@ -67,7 +67,11 @@ function origins(brand: BrandInfo): string[] {
       // Ignore a malformed site link.
     }
   }
-  if (brand.domain) list.add(`https://www.${brand.domain}`);
+  // Brands publish under www. or the bare domain.
+  if (brand.domain) {
+    list.add(`https://www.${brand.domain}`);
+    list.add(`https://${brand.domain}`);
+  }
   return [...list];
 }
 
@@ -142,8 +146,8 @@ async function allowed(url: string, hosts: readonly string[]): Promise<boolean> 
   return !!robots?.allows(u.pathname + u.search);
 }
 
-/** Product page URLs listed in the brand's sitemaps at `origin`, fetched at most once a day. */
-function productUrls(origin: string, hosts: readonly string[]): Promise<string[]> {
+/** Product pages listed in the brand's sitemaps at `origin`, fetched at most once a day. */
+function productEntries(origin: string, hosts: readonly string[]): Promise<SitemapEntry[]> {
   return remember(`sitemap:${origin}`, async () => {
     const robots = await robotsFor(origin, hosts);
     if (!robots) return [];
@@ -153,7 +157,7 @@ function productUrls(origin: string, hosts: readonly string[]): Promise<string[]
     const byProduct = (a: string, b: string) => Number(/product/i.test(b)) - Number(/product/i.test(a));
     queue.sort(byProduct);
 
-    const pages: string[] = [];
+    const pages: SitemapEntry[] = [];
     let fetched = 0;
     while (queue.length && fetched < MAX_SITEMAPS) {
       const next = queue.shift()!;
@@ -166,7 +170,7 @@ function productUrls(origin: string, hosts: readonly string[]): Promise<string[]
         queue.push(...map.locs.filter((l) => onBrand(l, hosts)));
         queue.sort(byProduct);
       } else {
-        pages.push(...map.locs.filter((l) => onBrand(l, hosts)));
+        pages.push(...map.entries.filter((e) => onBrand(e.loc, hosts)));
       }
     }
     return pages;
@@ -176,10 +180,20 @@ function productUrls(origin: string, hosts: readonly string[]): Promise<string[]
 async function findOnBrandSite(brand: BrandInfo, name: string): Promise<OfficialImage | null> {
   const hosts = brandHosts(brand);
   for (const origin of origins(brand)) {
-    const pageUrl = bestProductUrl(await productUrls(origin, hosts), name);
-    if (!pageUrl || !(await allowed(pageUrl, hosts))) continue;
+    // The bare domain is only a fallback for a www. site that did not answer at all.
+    if (
+      brand.domain &&
+      origin === `https://${brand.domain}` &&
+      (await robotsFor(`https://www.${brand.domain}`, hosts))
+    )
+      continue;
+    const entry = bestProductEntry(await productEntries(origin, hosts), name);
+    if (!entry || !(await allowed(entry.loc, hosts))) continue;
+    const pageUrl = entry.loc;
     const html = await getText(pageUrl, PAGE_BYTES, hosts).catch(() => undefined);
-    const imageUrl = html ? pageImage(html, pageUrl) : undefined;
+    // The page's own picture, else the one its image sitemap lists for it.
+    const imageUrl =
+      (html && pageImage(html, pageUrl)) || (entry.image?.startsWith("https://") ? entry.image : undefined);
     if (imageUrl) return { imageUrl, pageUrl, brand: brand.name };
   }
   return null;
