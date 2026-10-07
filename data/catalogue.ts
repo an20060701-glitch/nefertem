@@ -1,4 +1,5 @@
 import type { Fragrance } from "@/types";
+import { withZhName } from "./name-zh";
 
 /*
  * Brand product catalogue from An's "香水品牌完整產品資料庫（含香調）" (2026-10-07):
@@ -1576,9 +1577,11 @@ const ENTRIES: readonly Entry[] = [
   },
 ];
 
-export const CATALOGUE: readonly Fragrance[] = ENTRIES.map((e) => ({
-  ...e,
-  tags: [],
-  origin: "lookup",
-  createdAt: CREATED,
-}));
+export const CATALOGUE: readonly Fragrance[] = ENTRIES.map((e) =>
+  withZhName({
+    ...e,
+    tags: [],
+    origin: "lookup",
+    createdAt: CREATED,
+  }),
+);

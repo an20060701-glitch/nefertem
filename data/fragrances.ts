@@ -1,4 +1,5 @@
 import type { Fragrance } from "@/types";
+import { withZhName } from "./name-zh";
 
 /**
  * Demo catalogue for guests and empty collections.
@@ -12,7 +13,7 @@ const CREATED = Date.UTC(2026, 9, 5);
 
 type DemoInput = Omit<Fragrance, "origin" | "createdAt">;
 
-const demo = (f: DemoInput): Fragrance => ({ ...f, origin: "demo", createdAt: CREATED });
+const demo = (f: DemoInput): Fragrance => withZhName({ ...f, origin: "demo", createdAt: CREATED });
 
 export const DEMO_FRAGRANCES: readonly Fragrance[] = [
   demo({

@@ -1,4 +1,5 @@
 import type { Fragrance } from "@/types";
+import { withZhName } from "./name-zh";
 
 /*
  * Calvin Klein perfumes from An's "Calvin Klein 與 adidas 香水產品資料庫" (2026-10-07).
@@ -209,10 +210,12 @@ const ENTRIES: readonly Entry[] = [
   },
 ];
 
-export const CALVIN_KLEIN: readonly Fragrance[] = ENTRIES.map((e) => ({
-  ...e,
-  brand: BRAND,
-  tags: [],
-  origin: "lookup",
-  createdAt: CREATED,
-}));
+export const CALVIN_KLEIN: readonly Fragrance[] = ENTRIES.map((e) =>
+  withZhName({
+    ...e,
+    brand: BRAND,
+    tags: [],
+    origin: "lookup",
+    createdAt: CREATED,
+  }),
+);

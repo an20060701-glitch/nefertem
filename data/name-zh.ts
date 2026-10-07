@@ -1,0 +1,200 @@
+import type { Fragrance } from "@/types";
+
+/*
+ * Chinese names for the catalogue's perfumes (An, 2026-10-07), so they can be searched
+ * in Chinese. Keyed by brand and the catalogue's original name, so every concentration
+ * of a scent shares them. The first name is the one shown; any others are also found
+ * by search. Names were checked against the brands' Taiwan names as @cosme Taiwan,
+ * the brands' Taiwan sites (Le Labo, Jo Malone London) and Taiwan press list them, and
+ * the names Taiwanese buyers commonly use. Perfumes without a name that could be
+ * checked are left out rather than guessed.
+ */
+const NAMES: Readonly<Record<string, readonly string[]>> = {
+  // Chanel
+  "Chanel|Bleu de Chanel": ["藍色男性", "蔚藍"],
+  "Chanel|Bleu de Chanel L'Exclusif": ["藍色男性淬煉香精"],
+  "Chanel|Chance": ["邂逅"],
+  "Chanel|Chance Eau Tendre": ["粉紅甜蜜"],
+  "Chanel|Chance Eau Fraîche": ["綠色氣息"],
+  "Chanel|Chance Eau Splendide": ["紫色霓幻"],
+  "Chanel|Coco Mademoiselle": ["摩登COCO", "摩登可可"],
+  "Chanel|Coco Mademoiselle Intense": ["摩登COCO魅惑印記"],
+  "Chanel|Coco Mademoiselle Crush Absolu": ["摩登COCO極致CRUSH"],
+  "Chanel|Coco Noir": ["黑色COCO"],
+  "Chanel|N°5": ["五號", "No5", "No.5"],
+  "Chanel|N°5 L'Eau": ["N°5清新晨露", "五號之水"],
+  "Chanel|N°5 Eau Première": ["N°5低調奢華版"],
+  "Chanel|Gabrielle Chanel": ["嘉柏麗"],
+  "Chanel|Gabrielle Chanel Essence": ["嘉柏麗琉金"],
+  "Chanel|Allure Homme Sport Eau Extrême": ["ALLURE男性運動極限版"],
+  "Chanel|Allure Homme Édition Blanche": ["白色時尚男性"],
+  "Chanel|Gardénia": ["梔子花"],
+  "Chanel|Beige": ["米色時尚"],
+  "Chanel|Paris - Riviera les Eaux de Chanel": ["巴黎-蔚藍海岸"],
+  "Chanel|Paris - Paris les Eaux de Chanel": ["巴黎-巴黎"],
+  // Dior
+  "Dior|Miss Dior": ["迪奧小姐"],
+  "Dior|Miss Dior Essence": ["迪奧小姐極緻香精"],
+  "Dior|J'adore": ["真我宣言", "真我"],
+  "Dior|J'adore L'Or": ["真我宣言頂級金緻香精"],
+  "Dior|Dior Addict": ["癮誘"],
+  "Dior|Poison": ["毒藥"],
+  "Dior|Gris Dior": ["蒙田大道"],
+  "Dior|Sauvage": ["曠野之心"],
+  "Dior|Sauvage Extrait": ["曠野之心極境香精"],
+  "Dior|Fahrenheit": ["華氏溫度"],
+  // Jo Malone London (names on its Taiwan site and @cosme Taiwan)
+  "Jo Malone London|Sea Salt & Bergamot": ["海鹽與佛手柑"],
+  "Jo Malone London|English Pear & Freesia": ["英國梨與小蒼蘭", "英國梨"],
+  "Jo Malone London|Wood Sage & Sea Salt": ["鼠尾草與海鹽", "鼠尾草海鹽"],
+  "Jo Malone London|Lime Basil & Mandarin": ["青檸羅勒與柑橘"],
+  "Jo Malone London|Peony & Blush Suede": ["牡丹與胭紅麂絨"],
+  "Jo Malone London|English Oak & Redcurrant": ["英國橡樹與紅醋栗"],
+  "Jo Malone London|Blackberry & Bay": ["黑莓子與月桂葉", "黑莓與月桂葉"],
+  "Jo Malone London|Nectarine Blossom & Honey": ["杏桃花與蜂蜜"],
+  "Jo Malone London|Wild Bluebell": ["藍風鈴"],
+  "Jo Malone London|Orange Blossom": ["橙花"],
+  "Jo Malone London|Red Roses": ["紅玫瑰"],
+  "Jo Malone London|Velvet Rose & Oud": ["絲絨玫瑰與烏木"],
+  "Jo Malone London|Myrrh & Tonka": ["沒藥與零陵香豆"],
+  "Jo Malone London|Amber & Patchouli": ["琥珀與廣藿香"],
+  "Jo Malone London|Oud & Bergamot": ["烏木與佛手柑"],
+  "Jo Malone London|Cypress & Grapevine": ["絲柏與葡萄藤"],
+  // Diptyque
+  "Diptyque|Orphéon": ["爵夢"],
+  "Diptyque|Fleur de Peau": ["肌膚之華"],
+  "Diptyque|Tam Dao": ["譚道"],
+  "Diptyque|Do Son": ["杜桑"],
+  "Diptyque|Eau Rose": ["玫瑰之水"],
+  "Diptyque|Philosykos": ["希臘無花果"],
+  "Diptyque|Eau Capitale": ["花都之水"],
+  "Diptyque|Eau Duelle": ["杜耶爾"],
+  "Diptyque|Eau Rihla Intense": ["客旅遊記"],
+  "Diptyque|Tempo": ["坦博"],
+  "Diptyque|34 Boulevard Saint Germain": ["聖日爾曼大道34號"],
+  "Diptyque|Vetyverio": ["維堤里歐"],
+  "Diptyque|Eau de Minthé": ["青蕨"],
+  "Diptyque|Benjoin Bohème Intense": ["波希米亞安息香"],
+  "Diptyque|L'Eau Papier": ["紙染之水"],
+  "Diptyque|Eau des Sens": ["感官之水"],
+  "Diptyque|Lilyphéa": ["睡蓮粼波"],
+  "Diptyque|L'Ombre dans l'Eau": ["影中之水"],
+  // Byredo
+  "Byredo|Bal d'Afrique": ["熱帶爵士"],
+  "Byredo|Blanche": ["返樸歸真"],
+  "Byredo|Bibliothèque": ["懷舊書香"],
+  "Byredo|Mojave Ghost": ["莫哈維之影"],
+  "Byredo|Gypsy Water": ["吉普賽之水"],
+  "Byredo|Rose Of No Man's Land": ["無人之境"],
+  "Byredo|Rose of No Man's Land": ["無人之境"],
+  "Byredo|La Tulipe": ["鬱金香"],
+  "Byredo|Oud Immortel": ["不朽烏木"],
+  "Byredo|M/Mink": ["墨印"],
+  "Byredo|Pulp": ["果園"],
+  "Byredo|Inflorescence": ["春日花序"],
+  "Byredo|Accord Oud": ["烏木協奏"],
+  "Byredo|Rose Noir": ["夜幕玫瑰"],
+  "Byredo|Black Saffron": ["黑色番紅花"],
+  "Byredo|Future Memories": ["未來之憶"],
+  "Byredo|Vanille Antique": ["梵尼古珀"],
+  // Le Labo (names on its Taiwan site)
+  "Le Labo|Santal 33": ["檀香33", "檀香木33"],
+  "Le Labo|Another 13": ["別樣13"],
+  "Le Labo|Thé Noir 29": ["黑茶29"],
+  "Le Labo|Thé Matcha 26": ["末茶26", "抹茶26"],
+  "Le Labo|Rose 31": ["玫瑰31"],
+  "Le Labo|Baie 19": ["樹果19"],
+  "Le Labo|Poivre 23": ["胡椒23"],
+  "Le Labo|Gaiac 10": ["癒創木10"],
+  "Le Labo|Patchouli 24": ["廣藿香24"],
+  "Le Labo|Musc 25": ["麝香25"],
+  "Le Labo|Tubéreuse 40": ["晚香玉40"],
+  "Le Labo|Neroli 36": ["苦橙36"],
+  "Le Labo|Jasmin 17": ["茉莉17"],
+  "Le Labo|Fleur d'Oranger 27": ["橙花27"],
+  "Le Labo|Bergamote 22": ["佛手柑22"],
+  "Le Labo|Lys 41": ["百合41"],
+  "Le Labo|Vanille 44": ["香草44"],
+  "Le Labo|Ylang 49": ["依蘭49"],
+  "Le Labo|Labdanum 18": ["岩薔薇18"],
+  // TAMBURINS
+  "TAMBURINS|Evening Glow": ["落日霞光玫瑰"],
+  // Calvin Klein
+  "Calvin Klein|Eternity for Women": ["永恆瞬間女性"],
+  "Calvin Klein|Eternity for Women Suede Essence": ["永恆麂語柔情女性"],
+  "Calvin Klein|Euphoria": ["謎情誘惑"],
+  "Calvin Klein|Eternity for Men": ["永恆瞬間男性"],
+  "Calvin Klein|Defy": ["無畏之心"],
+  // Acqua di Parma
+  "Acqua di Parma|Colonia": ["克羅尼亞經典"],
+  "Acqua di Parma|Buongiorno": ["早安"],
+  "Acqua di Parma|Bergamotto La Spugnatura": ["香檸檬手萃"],
+  "Acqua di Parma|Quercia": ["橡木"],
+  "Acqua di Parma|Arancia di Capri": ["卡布里島橙"],
+  "Acqua di Parma|Lily of the Valley": ["山谷中的鈴蘭"],
+  // Aesop
+  "Aesop|Ouranon": ["烏拉諾"],
+  "Aesop|Marrakech Intense": ["馬拉喀什馥郁"],
+  "Aesop|Tacit": ["悟"],
+  // Kiehl's
+  "Kiehl's|Musk": ["原．麝香", "原麝香"],
+  // Bvlgari
+  "Bvlgari|Bvlgari Pour Homme": ["大吉嶺茶"],
+  "Bvlgari|Eau Parfumée Thé Impérial": ["帝王紅茶"],
+  "Bvlgari|Eau Parfumée Thé Vert": ["綠茶"],
+  "Bvlgari|Eau Parfumée Thé Blanc": ["白茶"],
+  "Bvlgari|Le Gemme Tygar": ["巍晶寶石"],
+  // Chloé
+  "Chloé|Nomade Nuit d'Égypte": ["芳心之旅夜幕"],
+  // Tom Ford
+  "Tom Ford|Soleil Neige": ["冬日光芒"],
+  "Tom Ford|Vanille Fatale": ["引誘香草"],
+  "Tom Ford|Beau de Jour": ["美好的一天"],
+  "Tom Ford|Fleur de Portofino": ["阿瑪菲海岸"],
+  "Tom Ford|Oud Wood": ["神秘東方"],
+  // Yves Saint Laurent
+  "Yves Saint Laurent|Tuxedo": ["煙管褲裝"],
+  "Yves Saint Laurent|Jumpsuit": ["連身褲裝"],
+  "Yves Saint Laurent|Babycat": ["豹紋皮衣"],
+  "Yves Saint Laurent|LIBRE L'EAU NUE": ["自由不羈裸膚之水"],
+  "Yves Saint Laurent|Trench": ["經典風衣"],
+  "Yves Saint Laurent|VELOURS": ["奢華絲絨"],
+  "Yves Saint Laurent|La Nuit de L'Homme": ["天之驕子夜幕版"],
+  "Yves Saint Laurent|Cuir": ["黑色皮衣"],
+  "Yves Saint Laurent|Black Opium": ["黑鴉片"],
+  // Gucci, Hermès, Penhaligon's, Prada, Loewe
+  "Gucci|Gucci Bloom": ["花悅"],
+  "Hermès|Terre d'Hermès": ["大地"],
+  "Hermès|Terre d'Hermès Eau Givrée": ["大地冷冽之水"],
+  "Penhaligon's|The Coveted Duchess Rose": ["狐狸"],
+  "Prada|L'Homme Prada": ["男士經典"],
+  "Prada|Paradoxe Intense": ["唯我莫測"],
+  "Loewe|LOEWE 7": ["第七樂章"],
+  "Loewe|LOEWE Solo": ["獨奏宣言男士"],
+  "Loewe|LOEWE Solo Ella": ["獨奏宣言女士"],
+  "Loewe|LOEWE Aire Sutileza": ["奇蹟天光"],
+  // Maison Margiela
+  "Maison Margiela|REPLICA Jazz Club": ["爵士酒廊"],
+  "Maison Margiela|REPLICA Autumn Vibes": ["梧葉秋聲"],
+  "Maison Margiela|REPLICA From The Garden": ["田園拾果"],
+  "Maison Margiela|Replica Lazy Sunday Morning": ["慵懶週末", "慵懶週日早晨"],
+  "Maison Margiela|Replica By the Fireplace": ["溫暖壁爐", "壁爐火光"],
+  // Demo scents of other brands
+  "Creed|Aventus": ["阿文圖斯", "拿破崙之水"],
+  "Giorgio Armani|Acqua di Giò": ["寄情水"],
+  "Guerlain|Shalimar": ["一千零一夜"],
+};
+
+/** Every Chinese name for this scent, the shown one first; none when it has no checked name. */
+export function zhNames(f: Pick<Fragrance, "brand" | "name">): readonly string[] {
+  return NAMES[`${f.brand}|${f.name}`] ?? [];
+}
+
+/** The scent with its Chinese name filled in (a name it already has is kept). */
+export function withZhName<T extends Pick<Fragrance, "brand" | "name" | "nameZh">>(f: T): T {
+  const zh = zhNames(f)[0];
+  return f.nameZh || !zh ? f : { ...f, nameZh: zh };
+}
+
+/** How many scents have a Chinese name (for the tests). */
+export const NAME_ZH_COUNT = Object.keys(NAMES).length;

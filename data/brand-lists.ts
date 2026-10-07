@@ -1,4 +1,5 @@
 import type { Fragrance } from "@/types";
+import { withZhName } from "./name-zh";
 
 /*
  * More brands from An's lists (perfume_brands*.md, 2026-10-07): perfumes whose notes
@@ -1610,9 +1611,11 @@ const ENTRIES: readonly Entry[] = [
   },
 ];
 
-export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) => ({
-  ...e,
-  tags: [],
-  origin: "lookup",
-  createdAt: CREATED,
-}));
+export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>
+  withZhName({
+    ...e,
+    tags: [],
+    origin: "lookup",
+    createdAt: CREATED,
+  }),
+);

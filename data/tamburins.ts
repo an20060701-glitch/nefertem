@@ -1,4 +1,5 @@
 import type { Fragrance } from "@/types";
+import { withZhName } from "./name-zh";
 
 /*
  * TAMBURINS perfumes from An's list (2026-10-07), checked against the official
@@ -167,10 +168,12 @@ const ENTRIES: readonly Entry[] = [
   },
 ];
 
-export const TAMBURINS: readonly Fragrance[] = ENTRIES.map((e) => ({
-  ...e,
-  brand: "TAMBURINS",
-  tags: [],
-  origin: "lookup",
-  createdAt: CREATED,
-}));
+export const TAMBURINS: readonly Fragrance[] = ENTRIES.map((e) =>
+  withZhName({
+    ...e,
+    brand: "TAMBURINS",
+    tags: [],
+    origin: "lookup",
+    createdAt: CREATED,
+  }),
+);

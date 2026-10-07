@@ -4,6 +4,7 @@ import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
+import { zhNames } from "@/data/name-zh";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
 import { DEMO_SOURCE } from "./mock";
@@ -36,7 +37,7 @@ function score(
   const fb = brandKey(f.brand);
   const brandMatch =
     brand.length > 0 && (fb === brand || fold(f.brand).includes(brand) || brand.includes(fold(f.brand)));
-  const names = [f.name, f.nameZh].filter((n): n is string => !!n).map(fold);
+  const names = [f.name, f.nameZh, ...zhNames(f)].filter((n): n is string => !!n).map(fold);
   // "Sauvage Eau de Parfum" names one bottle among Sauvage's several.
   const bottles = f.concentration
     ? CONCENTRATION_WORDS[f.concentration].map((w) => fold(`${f.name} ${w}`))
@@ -174,7 +175,7 @@ export function nameSuggestions(brand: string, typed: string): NameSuggestion[] 
     if (seen.has(fold(value))) continue;
     const at = q
       ? Math.min(
-          ...[value, f.nameZh]
+          ...[value, f.nameZh, ...zhNames(f)]
             .filter((n): n is string => !!n)
             .map((n) => fold(n).indexOf(q))
             .map((i) => (i < 0 ? Infinity : i)),
