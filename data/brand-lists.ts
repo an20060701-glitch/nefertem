@@ -182,9 +182,9 @@ const ENTRIES: readonly Entry[] = [
     description: "柑橘調",
   },
   {
-    id: "cat2-acqua-di-parma-lili-of-the-valley-edp",
+    id: "cat2-acqua-di-parma-lily-of-the-valley-edp",
     brand: "Acqua di Parma",
-    name: "Lili of the Valley",
+    name: "Lily of the Valley",
     concentration: "EDP",
     family: "floral",
     topNotes: ["bergamot", "grapefruit", "blackcurrant"],

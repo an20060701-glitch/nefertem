@@ -234,7 +234,7 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat2-acqua-di-parma-quercia-edp": "https://www.acquadiparma.com/en/kr/quercia/QUERCIAEDPSPRAY.html",
   "cat2-acqua-di-parma-arancia-di-capri-edt":
     "https://www.acquadiparma.com/en/us/arancia-di-capri/ARANCIAEDTSPRAY.html?dwvar_ARANCIAEDTSPRAY_size=30ML",
-  "cat2-acqua-di-parma-lili-of-the-valley-edp":
+  "cat2-acqua-di-parma-lily-of-the-valley-edp":
     "https://www.acquadiparma.com/en/us/lily-of-the-valley/LILYOFTHEVALLEYEDP.html",
   "cat2-acqua-di-parma-note-di-colonia-ii-edc":
     "https://www.acquadiparma.com/en/us/note-di-colonia-ii/NDCIIEDC.html",
