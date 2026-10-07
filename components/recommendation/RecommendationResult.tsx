@@ -4,11 +4,13 @@ import { motion, useReducedMotion } from "motion/react";
 import { HairlineHeading } from "@/components/brand/EditorialHeading";
 import { SunDisc } from "@/components/brand/SunDisc";
 import { FamilyDot } from "@/components/fragrance/FamilyDot";
-import { FragranceBottle } from "@/components/fragrance/FragranceBottle";
+import { FragranceVisual } from "@/components/fragrance/FragranceVisual";
 import { Button } from "@/components/ui/Button";
 import { guideForFamily } from "@/data/family-guide";
 import { noteInfo } from "@/data/notes";
 import { cn } from "@/lib/cn";
+import { imageCredit } from "@/lib/fragrance/image/credit";
+import { withSuppliedImage } from "@/lib/fragrance/supplied-image";
 import { fadeUp, reducedFade, reveal, staggerChildren } from "@/lib/motion";
 import type { Explanation, Recommendation } from "@/lib/recommendation";
 
@@ -56,6 +58,8 @@ export function RecommendationResult({
   const item = reduce ? reducedFade : fadeUp;
   const f = featured.fragrance;
   const guide = guideForFamily(f.family);
+  const shown = withSuppliedImage(f);
+  const credit = shown.imageUrl ? imageCredit(shown.imageSource) : undefined;
 
   return (
     <motion.article
@@ -73,12 +77,19 @@ export function RecommendationResult({
       >
         <div className="relative aspect-[4/5]">
           <SunDisc id="result-sun" className="absolute left-1/2 top-0 w-[78%] -translate-x-1/2 opacity-60" />
-          <FragranceBottle
-            family={f.family}
-            label={`${f.brand} ${f.name} 的瓶身線稿`}
-            className="absolute bottom-0 left-1/2 w-[52%] -translate-x-1/2"
-          />
+          {/* The scent's picture (as in the cabinet), else its line drawing. */}
+          <div className="absolute inset-x-0 bottom-0 flex h-[78%] justify-center">
+            <FragranceVisual fragrance={f} className="w-[52%]" />
+          </div>
         </div>
+        {credit && (
+          <p className="mt-6 text-center text-small text-faint">
+            圖片來源：
+            <a href={credit.href} target="_blank" rel="noopener noreferrer" className="gold-underline">
+              {credit.label}
+            </a>
+          </p>
+        )}
         {f.origin === "demo" && (
           <figcaption className="label mt-6 text-center text-faint">示範資料 · DEMO DATA</figcaption>
         )}

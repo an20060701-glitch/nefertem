@@ -4,6 +4,7 @@ import { FamilyDot } from "@/components/fragrance/FamilyDot";
 import { FragranceVisual } from "@/components/fragrance/FragranceVisual";
 import { Sheet } from "@/components/ui/Sheet";
 import { cn } from "@/lib/cn";
+import { FAMILIES } from "@/lib/fragrance/families";
 import type { Fragrance } from "@/types";
 
 export interface PickerEntry {
@@ -88,9 +89,13 @@ function PickerRow({
               <span className="mt-1 block font-display text-lead font-light leading-tight text-ink transition-colors duration-500 group-hover:text-blue">
                 {f.name}
               </span>
-              <span className="mt-auto flex items-center justify-between gap-2 pt-3 text-small text-muted">
-                <FamilyDot family={f.family} />
-                <span className="shrink-0 lining-nums">{wears > 0 ? `噴過 ${wears} 次` : "還沒噴過"}</span>
+              {/* Stacked, Chinese family name only: the card is too narrow for one line. */}
+              <span className="mt-auto flex flex-col items-start gap-1 pt-3 text-small text-muted">
+                <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                  <FamilyDot family={f.family} showLabel={false} />
+                  <span className="font-serif-zh text-ink">{FAMILIES[f.family].zh}</span>
+                </span>
+                <span className="lining-nums">{wears > 0 ? `噴過 ${wears} 次` : "還沒噴過"}</span>
               </span>
             </button>
           </li>
