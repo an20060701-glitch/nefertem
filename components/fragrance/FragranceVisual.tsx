@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { withSuppliedImage } from "@/lib/fragrance/supplied-image";
 import type { Fragrance } from "@/types";
 import { FragranceBottle } from "./FragranceBottle";
 
@@ -9,7 +10,14 @@ import { FragranceBottle } from "./FragranceBottle";
  * The member's photo or the brand's official picture when there is one, otherwise the
  * line-drawn flacon — also when a linked picture no longer loads.
  */
-export function FragranceVisual({ fragrance, className }: { fragrance: Fragrance; className?: string }) {
+export function FragranceVisual({
+  fragrance: saved,
+  className,
+}: {
+  fragrance: Fragrance;
+  className?: string;
+}) {
+  const fragrance = withSuppliedImage(saved);
   const [failed, setFailed] = useState<string>();
   if (fragrance.imageUrl && failed !== fragrance.imageUrl) {
     return (

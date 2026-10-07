@@ -14,6 +14,7 @@ import { Sheet } from "@/components/ui/Sheet";
 import { guideForFamily } from "@/data/family-guide";
 import { noteInfo } from "@/data/notes";
 import { imageCredit } from "@/lib/fragrance/image/credit";
+import { withSuppliedImage } from "@/lib/fragrance/supplied-image";
 import { MOODS } from "@/lib/fragrance/families";
 import { tagToMood } from "@/lib/scent-tags";
 import { cityLabel } from "@/lib/weather/cities";
@@ -67,7 +68,8 @@ export function FragranceDetail({ id }: { id: string }) {
   const history = usage.filter((u) => u.fragranceId === f.id).sort((a, b) => b.timestamp - a.timestamp);
   const moods = f.tags.map(tagToMood).filter(Boolean);
   const guide = guideForFamily(f.family);
-  const credit = f.imageUrl ? imageCredit(f.imageSource) : undefined;
+  const shown = withSuppliedImage(f);
+  const credit = shown.imageUrl ? imageCredit(shown.imageSource) : undefined;
 
   async function remove() {
     setRemoving(true);
