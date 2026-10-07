@@ -1,5 +1,6 @@
 import { BRANDS, type BrandInfo, FRAGRANCE_ALIASES } from "@/data/brands";
 import { FAMILY_GUIDES, type FamilyGuide } from "@/data/family-guide";
+import { zhNames } from "@/data/name-zh";
 import type { Fragrance } from "@/types";
 import { cleanKeyword } from "./links";
 
@@ -72,7 +73,7 @@ export function matchSearch(input: string, catalogue: readonly Fragrance[]): Sea
 
   let best: { fragrance: Fragrance; score: number } | undefined;
   for (const f of catalogue) {
-    const names = [f.name, f.nameZh, ...(FRAGRANCE_ALIASES[f.id] ?? [])]
+    const names = [f.name, f.nameZh, ...zhNames(f), ...(FRAGRANCE_ALIASES[f.id] ?? [])]
       .map((n) => (n ? fold(n) : ""))
       .filter((n) => n.length >= 2);
     const nameLen = Math.max(0, ...names.filter((n) => q.includes(n)).map((n) => n.length));

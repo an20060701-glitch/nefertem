@@ -4,6 +4,9 @@ import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
+import { DEMO_FRAGRANCES } from "@/data/fragrances";
+import { NAME_ZH_COUNT } from "@/data/name-zh";
+import { matchSearch } from "@/lib/shopping/normalize";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
@@ -180,5 +183,25 @@ describe("An's brand lists", () => {
     expect(r?.confidence).toBe("high");
     expect(r?.sources).toEqual([BRAND_LISTS_SOURCE]);
     expect(nameSuggestions("Mancera", "cher").map((s) => s.value)).toContain("Cherry Cherry");
+  });
+});
+
+describe("Chinese names", () => {
+  it("each belongs to a perfume in the database", () => {
+    const all = [...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN, ...BRAND_LISTS, ...DEMO_FRAGRANCES];
+    const named = all.filter((f) => f.nameZh);
+    expect(named.length).toBeGreaterThan(150);
+    expect(new Set(named.map((f) => `${f.brand}|${f.name}`)).size).toBe(NAME_ZH_COUNT);
+  });
+
+  it("finds a perfume by its Chinese name, in smart lookup, the name field and the shop", async () => {
+    const r = await lookup({ brand: "迪奧", name: "曠野之心" });
+    expect(r?.fragrance.name).toBe("Sauvage");
+    expect(r?.fragrance.nameZh).toBe("曠野之心");
+    expect((await lookup({ brand: "Le Labo", name: "黑茶29" }))?.fragrance.name).toBe("Thé Noir 29");
+    expect(nameSuggestions("Byredo", "無人").map((s) => s.name)).toContain("Rose of No Man's Land");
+    expect(nameSuggestions("Jo Malone", "黑莓與").map((s) => s.name)).toContain("Blackberry & Bay");
+    expect(matchSearch("香奈兒 摩登COCO", [...CATALOGUE])?.fragrance?.name).toBe("Coco Mademoiselle");
+    expect(matchSearch("希臘無花果", [...CATALOGUE])?.fragrance?.brand).toBe("Diptyque");
   });
 });
