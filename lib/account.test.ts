@@ -28,20 +28,15 @@ describe("loginHref", () => {
 });
 
 describe("afterSignIn", () => {
-  const user = (created: string, last: string) => ({
-    metadata: { creationTime: created, lastSignInTime: last },
-  });
-  const returning = user("Mon, 05 Oct 2026 10:00:00 GMT", "Wed, 07 Oct 2026 04:40:00 GMT");
-  const brandNew = user("Wed, 07 Oct 2026 04:40:00 GMT", "Wed, 07 Oct 2026 04:40:01 GMT");
-
-  it("sends a returning member to 香水選擇 instead of the cabinet", () => {
-    expect(afterSignIn("/collection", returning)).toBe(RITUAL_HOME);
-    expect(afterSignIn(RITUAL_HOME, returning)).toBe(RITUAL_HOME);
+  it("sends a member with scents to 香水選擇, from the cabinet or the ritual", () => {
+    expect(afterSignIn("/collection", true)).toBe(RITUAL_HOME);
+    expect(afterSignIn(RITUAL_HOME, true)).toBe(RITUAL_HOME);
   });
 
-  it("keeps a first sign-in where it was going, and other pages for everyone", () => {
-    expect(afterSignIn("/collection", brandNew)).toBe("/collection");
-    expect(afterSignIn("/shopping", returning)).toBe("/shopping");
-    expect(afterSignIn("/collection", user("", ""))).toBe("/collection");
+  it("sends a new member (empty cabinet) to the cabinet first, and other pages back as they were", () => {
+    expect(afterSignIn(RITUAL_HOME, false)).toBe("/collection");
+    expect(afterSignIn("/collection", false)).toBe("/collection");
+    expect(afterSignIn("/shopping", true)).toBe("/shopping");
+    expect(afterSignIn("/shopping", false)).toBe("/shopping");
   });
 });

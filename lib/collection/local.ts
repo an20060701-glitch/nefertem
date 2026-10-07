@@ -33,6 +33,8 @@ function write(items: UserFragrance[]) {
 
 const byNewest = (items: UserFragrance[]) => [...items].sort((a, b) => b.addedAt - a.addedAt);
 
+import { markRestarted, restartedAt, subscribeRestarted } from "@/lib/recommendation/today";
+
 export const deviceRepo: CollectionRepo = {
   kind: "device",
   supportsImages: false,
@@ -51,6 +53,15 @@ export const deviceRepo: CollectionRepo = {
       listeners.delete(emit);
       window.removeEventListener("storage", onStorage);
     };
+  },
+
+  subscribeRestart(onRestart) {
+    onRestart(restartedAt());
+    return subscribeRestarted(() => onRestart(restartedAt()));
+  },
+
+  async markRestarted(at) {
+    markRestarted(at);
   },
 
   subscribeUsage(onLogs) {

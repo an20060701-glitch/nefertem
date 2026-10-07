@@ -202,6 +202,8 @@ export function useChoiceFlow() {
     [locate],
   );
 
+  const restart = useCallback(() => update({ occasion: undefined, moods: [] }, "occasion"), [update]);
+
   let weatherStatus: WeatherStatus = "idle";
   if (locating || needsCoords) weatherStatus = "locating";
   else if (fetchKey) weatherStatus = fetched?.key === fetchKey ? fetched.status : "loading";
@@ -230,7 +232,7 @@ export function useChoiceFlow() {
           : current;
       update({ moods }, "mood", "replace");
     },
-    restart: () => update({ occasion: undefined, moods: [] }, "occasion"),
+    restart,
     resume,
   };
 }
