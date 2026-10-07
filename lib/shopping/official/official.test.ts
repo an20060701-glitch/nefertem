@@ -3,6 +3,7 @@ import { BRANDS } from "@/data/brands";
 import { isOnDomain } from "./google-cse";
 import { CATALOGUE } from "@/data/catalogue";
 import { OFFICIAL_PAGES } from "@/data/official-pages";
+import { CALVIN_KLEIN } from "@/data/calvin-klein";
 import { TAMBURINS } from "@/data/tamburins";
 import { brandHomeLink, productPageLink } from "./mock";
 
@@ -52,7 +53,7 @@ describe("official links", () => {
   });
 
   it("lists only known perfumes, each on an https page", () => {
-    const ids = new Set([...CATALOGUE, ...TAMBURINS].map((f) => f.id));
+    const ids = new Set([...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN].map((f) => f.id));
     for (const [id, url] of Object.entries(OFFICIAL_PAGES)) {
       expect(ids.has(id), id).toBe(true);
       expect(url.startsWith("https://"), id).toBe(true);
