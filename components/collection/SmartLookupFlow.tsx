@@ -24,7 +24,8 @@ const fieldClass =
 /** The brand's own picture for this scent; a slow or failed search just means no picture. */
 async function findImage(params: URLSearchParams): Promise<OfficialImage | null> {
   try {
-    const res = await fetch(`/api/fragrance/image?${params}`, { signal: AbortSignal.timeout(15_000) });
+    // v=2: skips answers cached before misses stopped being cached (2026-10-07).
+    const res = await fetch(`/api/fragrance/image?${params}&v=2`, { signal: AbortSignal.timeout(15_000) });
     if (!res.ok) return null;
     return ((await res.json()) as { image: OfficialImage | null }).image;
   } catch {
