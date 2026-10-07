@@ -2,6 +2,9 @@ export interface OfficialQuery {
   brandKey: string;
   /** Perfume name, when the search named one. */
   name?: string;
+  /** The bottle, when the search matched one: its catalogue id and concentration. */
+  id?: string;
+  concentration?: string;
 }
 
 export interface OfficialLink {

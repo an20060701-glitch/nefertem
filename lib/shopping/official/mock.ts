@@ -1,4 +1,9 @@
 import { findBrand } from "@/data/brands";
+import { CATALOGUE } from "@/data/catalogue";
+import { OFFICIAL_PAGES } from "@/data/official-pages";
+import { TAMBURINS } from "@/data/tamburins";
+import { fold } from "@/lib/fragrance/lookup/normalize";
+import { brandForName } from "../normalize";
 import { webSearchUrl } from "../links";
 import type { OfficialLink, OfficialQuery, OfficialSearchProvider } from "./types";
 
@@ -17,6 +22,24 @@ export function brandHomeLink({ brandKey }: OfficialQuery): OfficialLink | null 
     label: `搜尋 ${brand.name} 官方網站`,
     kind: "search",
   };
+}
+
+/**
+ * The perfume's own page on the brand's site (data/official-pages.ts): by the matched
+ * bottle's id, else by brand + name (a bottle from the member's own collection), the
+ * same concentration first.
+ */
+export function productPageLink({ brandKey, name, id, concentration }: OfficialQuery): OfficialLink | null {
+  const brand = findBrand(brandKey);
+  if (!brand) return null;
+  let url = id ? OFFICIAL_PAGES[id] : undefined;
+  if (!url && name) {
+    const same = [...CATALOGUE, ...TAMBURINS].filter(
+      (f) => OFFICIAL_PAGES[f.id] && brandForName(f.brand)?.key === brand.key && fold(f.name) === fold(name),
+    );
+    url = OFFICIAL_PAGES[(same.find((f) => f.concentration === concentration) ?? same[0])?.id ?? ""];
+  }
+  return url ? { url, label: `${brand.name} 官網商品頁`, kind: "page" } : null;
 }
 
 export const mockOfficialProvider: OfficialSearchProvider = {
