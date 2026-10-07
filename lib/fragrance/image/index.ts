@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { BrandInfo } from "@/data/brands";
-import { OFFICIAL_PAGES } from "@/data/official-pages";
+import { OFFICIAL_PAGES, OFFICIAL_PICTURES } from "@/data/official-pages";
 import { findCatalogueBottle } from "@/lib/fragrance/lookup/catalogue";
 import { brandForName } from "@/lib/shopping/normalize";
 import { bestProductEntry, pageImage, parseSitemap, type SitemapEntry } from "./parse";
@@ -198,6 +198,9 @@ async function findOnBrandSite(brand: BrandInfo, name: string): Promise<Official
     const pageHosts = [...hosts, new URL(known).hostname.replace(/^www\./, "")];
     const image = await fromKnownPage(known, brand, pageHosts);
     if (image) return image;
+    // The page's picture recorded by hand, for sites that turn our server away.
+    const recorded = bottle && OFFICIAL_PICTURES[bottle.fragrance.id];
+    if (recorded) return { imageUrl: recorded, pageUrl: known, brand: brand.name };
   }
   for (const origin of origins(brand)) {
     // The bare domain is only a fallback for a www. site that did not answer at all.
