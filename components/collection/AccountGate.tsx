@@ -22,10 +22,7 @@ export function AccountGate({ children }: { children: React.ReactNode }) {
 
   if (!locked) return children;
   return (
-    <div
-      className="page-x flex min-h-[70svh] items-center md:pt-[var(--nav-desktop-height)]"
-      aria-live="polite"
-    >
+    <div className="page-x flex min-h-[70svh] items-center md:pt-[var(--nav-desktop-height)]" aria-live="polite">
       <p className="label text-muted">{user === undefined ? "正在確認你的身分…" : "請先登入…"}</p>
     </div>
   );

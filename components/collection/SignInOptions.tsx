@@ -19,9 +19,7 @@ export function SignInOptions({ next, lineFailed = false }: { next: string; line
   const router = useRouter();
   const { user } = useCollection();
   const [pending, setPending] = useState<Provider>();
-  const [error, setError] = useState<string | undefined>(
-    lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined,
-  );
+  const [error, setError] = useState<string | undefined>(lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined);
 
   useEffect(() => {
     if (user) router.replace(next);
@@ -32,9 +30,7 @@ export function SignInOptions({ next, lineFailed = false }: { next: string; line
     setError(undefined);
     if (provider === "line" && LINE_SERVER_LOGIN) {
       // A full-page trip through our server; any tab LINE returns to can finish it.
-      window.location.assign(
-        new URL(`/api/auth/line/start?next=${encodeURIComponent(next)}`, window.location.origin),
-      );
+      window.location.assign(new URL(`/api/auth/line/start?next=${encodeURIComponent(next)}`, window.location.origin));
       return;
     }
     try {
