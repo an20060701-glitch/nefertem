@@ -3,7 +3,8 @@ import type { Fragrance } from "@/types";
 /*
  * HEAVEN LAFA 天堂費洛香 — a Taiwanese house inspired by ancient Egypt, woody and
  * unisex — from An's "HEAVEN LAFA 香水產品資料庫" (2026-10-07). Top, heart and base
- * notes are as listed; the two 100 ml scents come with mood words only, no notes.
+ * notes are as listed; the two 100 ml scents' notes come from the brand's product
+ * pictures An supplied (2026-10-07).
  * The style words go in tags exactly as listed, so any mood they name can count.
  * Names are the official Chinese ones: the English names in the list could not be
  * found on the brand's site or in a web search, so they are not used.
@@ -82,11 +83,11 @@ const ENTRIES: readonly Entry[] = [
     nameZh: "月暮尼羅河－沉穩內斂信任感",
     volumeMl: 100,
     family: "woody",
-    topNotes: [],
-    heartNotes: [],
-    baseNotes: [],
+    topNotes: ["cardamom", "black-tea", "fig"],
+    heartNotes: ["vetiver", "iris", "labdanum"],
+    baseNotes: ["tonka", "sandalwood", "papyrus"],
     tags: ["沉穩", "內斂", "信任感"],
-    description: "木質調。沉穩、內斂、信任感。",
+    description: "煙燻紙莎草木質調。沉穩內斂香，沉穩、內斂、信任感。",
   },
   {
     id: "cat-heaven-lafa-heart-of-isis",
@@ -95,11 +96,12 @@ const ENTRIES: readonly Entry[] = [
     nameZh: "伊西絲之心－冷熱反差生命力",
     volumeMl: 100,
     family: "woody",
-    topNotes: [],
-    heartNotes: [],
-    baseNotes: [],
+    subFamilies: ["fruity"],
+    topNotes: ["mandarin", "lemon"],
+    heartNotes: ["cardamom", "bergamot", "pink-pepper"],
+    baseNotes: ["patchouli", "vetiver"],
     tags: ["冷熱", "反差", "生命力"],
-    description: "木質調。冷熱、反差、生命力。",
+    description: "冷冽果香木質調。高冷反差香，冷熱、反差、生命力。",
   },
 ];
 
