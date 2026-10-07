@@ -107,6 +107,8 @@ export function ShoppingSearch({ query }: { query: string }) {
             keyword={match.keyword}
             brand={match.brand}
             name={match.fragrance?.name}
+            id={match.fragrance?.id}
+            concentration={match.fragrance?.concentration}
           />
         </div>
       ) : (

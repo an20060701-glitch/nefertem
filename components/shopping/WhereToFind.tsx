@@ -13,13 +13,16 @@ interface WhereToFindProps {
   brand?: BrandInfo;
   /** Perfume name for the official-site search. */
   name?: string;
+  /** The matched bottle, so the official link can open its own page. */
+  id?: string;
+  concentration?: string;
 }
 
 type Official = { key: string; link: OfficialLink | null };
 
 /** WHERE TO FIND IT: Shopee, momo and 香水1976 searches, plus the brand's own site when we know the brand. */
-export function WhereToFind({ keyword, brand, name }: WhereToFindProps) {
-  const officialKey = brand ? `${brand.key}|${name ?? ""}` : "";
+export function WhereToFind({ keyword, brand, name, id, concentration }: WhereToFindProps) {
+  const officialKey = brand ? `${brand.key}|${name ?? ""}|${id ?? ""}|${concentration ?? ""}` : "";
   const [official, setOfficial] = useState<Official>();
 
   useEffect(() => {
@@ -27,6 +30,8 @@ export function WhereToFind({ keyword, brand, name }: WhereToFindProps) {
     const controller = new AbortController();
     const params = new URLSearchParams({ brand: brand.key });
     if (name) params.set("name", name);
+    if (id) params.set("id", id);
+    if (concentration) params.set("concentration", concentration);
     fetch(`/api/shopping/official?${params}`, { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : { link: null }))
       .then((data: { link: OfficialLink | null }) => setOfficial({ key: officialKey, link: data.link }))
@@ -35,7 +40,7 @@ export function WhereToFind({ keyword, brand, name }: WhereToFindProps) {
         if (!controller.signal.aborted) console.error("[official] lookup failed", error);
       });
     return () => controller.abort();
-  }, [brand, name, officialKey]);
+  }, [brand, name, id, concentration, officialKey]);
 
   const current = official?.key === officialKey ? official : undefined;
   const officialHint = (link: OfficialLink) =>
