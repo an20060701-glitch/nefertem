@@ -2,7 +2,8 @@
  * Each perfume's own page on its brand's official site, by catalogue id, for the
  * shop's OFFICIAL link. Chanel and Le Labo use their Taiwan sites; Dior, Byredo and
  * Diptyque their US / international sites (they have no Taiwan product pages);
- * Jo Malone London only where its Taiwan site's page could be confirmed. Taken
+ * Jo Malone London only where its Taiwan site's page could be confirmed; Calvin Klein
+ * its US site. Taken
  * from the brands' sitemaps (2026-10-07); perfumes not listed here link to the
  * brand's fragrance page instead.
  */
@@ -190,4 +191,19 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat-tamburins-sunshine": "https://www.tamburins.com/en/item/12001681/",
   "cat-tamburins-unknown-oud": "https://www.tamburins.com/en/item/1662463782/",
   "cat-tamburins-white-darjeeling": "https://www.tamburins.com/en/item/1662464240/",
+  // Calvin Klein's US site (its Taiwan site sells no fragrance), from its fragrance pages (2026-10-07).
+  "cat-calvin-klein-ck-one-edt": "https://www.calvinklein.us/en/women/fragrance/fragrance/ck-one/10740-000.html",
+  "cat-calvin-klein-eternity-for-women-edp": "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-eau-de-parfum-for-women/LX000744-000.html",
+  "cat-calvin-klein-eternity-for-women-suede-essence-parfum": "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-suede-essence-parfum-for-women/LX002152-000.html",
+  "cat-calvin-klein-euphoria-signature-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-signature-elixir/LX002159-000.html",
+  "cat-calvin-klein-euphoria-magnetic-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-magnetic-elixir/LX001963-000.html",
+  "cat-calvin-klein-euphoria-bold-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-bold-elixir/LX001959-000.html",
+  "cat-calvin-klein-euphoria-solar-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-solar-elixir/LX001967-000.html",
+  "cat-calvin-klein-eternity-for-men-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-eau-de-toilette-for-men/LX000145-000.html",
+  "cat-calvin-klein-eternity-for-men-parfum": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-parfum-for-men/LX000724-000.html",
+  "cat-calvin-klein-eternity-for-men-edp": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-for-men-eau-de-parfum/LX000725-000.html",
+  "cat-calvin-klein-obsession-for-men-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/obsession-eau-de-toilette-for-men/LX000709-000.html",
+  "cat-calvin-klein-defy-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-toilette/YS99350D-000.html",
+  "cat-calvin-klein-defy-edp": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-parfum/LX000102-000.html",
+  "cat-calvin-klein-defy-parfum": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-parfum/LX000315-000.html",
 };
