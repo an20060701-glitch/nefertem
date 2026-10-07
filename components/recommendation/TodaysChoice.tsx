@@ -8,6 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
+import { saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
 import { FortuneWheel } from "./FortuneWheel";
 import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
@@ -55,7 +56,39 @@ export function TodaysChoice() {
     });
   }, [weather, selection.occasion, selection.moods, usage, candidates]);
 
-  const confirmedHere = confirmed?.key === selectionKey ? confirmed : undefined;
+  // A scent chosen earlier today (the usage log follows the account): coming back to the
+  // page shows that result again instead of asking (An, 2026-10-07).
+  const picks = useMemo(() => todaysPicks(usage), [usage]);
+  const answersKey = `restored|${selection.occasion}|${selection.moods.join(",")}`;
+  const resumed = useRef(false);
+  const { resume } = flow;
+  useEffect(() => {
+    if (resumed.current || !ready) return;
+    resumed.current = true;
+    const first = picks[0];
+    if (!first || new URLSearchParams(window.location.search).has("step")) return;
+    const saved =
+      savedSearch() ??
+      new URLSearchParams({ occasion: first.occasion, mood: first.mood.join(",") }).toString();
+    const answers = new URLSearchParams(saved);
+    // After this render; the ref keeps it to once, so no cleanup cancels it.
+    window.setTimeout(() => {
+      setConfirmed({
+        key: `restored|${answers.get("occasion")}|${answers.get("mood")}`,
+        id: first.fragranceId,
+        viaWheel: first.viaWheel,
+      });
+      resume(saved);
+    }, 0);
+  }, [ready, picks, resume]);
+
+  const confirmedHere =
+    confirmed && (confirmed.key === selectionKey || confirmed.key === answersKey) ? confirmed : undefined;
+
+  // Today's answers stay on this device for the day, so the result can come back with its city.
+  useEffect(() => {
+    if (step === "result" && confirmedHere) saveSearch(window.location.search);
+  }, [step, confirmedHere, selection.place, selectionKey]);
   const featuredId =
     confirmedHere?.id ?? (featured?.key === selectionKey ? featured.id : ranked[0]?.fragrance.id);
   const top = ranked.find((r) => r.fragrance.id === featuredId) ?? ranked[0];
@@ -93,7 +126,8 @@ export function TodaysChoice() {
         mood: selection.moods,
         viaWheel,
       });
-      setConfirmed({ key: selectionKey, id: fragranceId, viaWheel });
+      // A second pick is layered on today's scent, which stays the one shown.
+      setConfirmed(confirmedHere ?? { key: selectionKey, id: fragranceId, viaWheel });
     } catch (error) {
       console.error("[usage] log failed", error);
       setSaveError("紀錄沒有完成，請再試一次。");
@@ -265,6 +299,14 @@ export function TodaysChoice() {
                         count: usage.filter((u) => u.fragranceId === confirmedHere.id).length,
                         savedTo: repo.kind,
                         inCollection: items.some((i) => i.id === confirmedHere.id),
+                        layered: [
+                          ...new Set(
+                            picks
+                              .filter((p) => p.fragranceId !== confirmedHere.id)
+                              .map((p) => items.find((i) => i.id === p.fragranceId)?.name)
+                              .filter((n): n is string => !!n),
+                          ),
+                        ],
                       }
                     }
                     saveError={saveError}

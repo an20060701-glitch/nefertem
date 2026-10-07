@@ -27,7 +27,14 @@ interface RecommendationResultProps {
   canSpin: boolean;
   /** Where the candidates came from, in one line. */
   source: string;
-  confirmed?: { count: number; viaWheel: boolean; savedTo: "device" | "account"; inCollection: boolean };
+  confirmed?: {
+    count: number;
+    viaWheel: boolean;
+    savedTo: "device" | "account";
+    inCollection: boolean;
+    /** Other scents worn on top of it today. */
+    layered: string[];
+  };
   saveError?: string;
   onAddToCollection: () => void;
   onFeature: (id: string) => void;
@@ -194,6 +201,18 @@ export function RecommendationResult({
                 {confirmed.savedTo === "account" ? "已記在你的帳號" : "已記在這台裝置"}
                 {confirmed.count > 1 ? `，這是你第 ${confirmed.count} 次選擇它` : ""}。
               </p>
+              {confirmed.layered.length > 0 && (
+                <p className="mt-3 text-muted">今天疊噴：{confirmed.layered.join("、")}</p>
+              )}
+              {/* Layering (An, 2026-10-07): another bottle from the cabinet on top of today's scent. */}
+              <Button variant="ghost" className="mt-6" onClick={onChoose}>
+                疊噴 · 再選一瓶 LAYER ANOTHER
+              </Button>
+              {saveError && (
+                <p role="alert" className="mt-4 text-small text-danger">
+                  {saveError}
+                </p>
+              )}
               {!confirmed.inCollection && (
                 <p className="mt-4 text-small text-muted">
                   它還不在你的香水櫃裡。
