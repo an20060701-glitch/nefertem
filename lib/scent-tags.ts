@@ -87,6 +87,7 @@ export const NOTE_TAGS: Record<string, string[]> = {
   aldehydes: ["優雅", "侵略性"],
   hinoki: ["平靜", "沉穩", "乾燥"],
   tea: ["平靜", "清新"],
+  "black-tea": ["平靜", "溫暖"],
   basil: ["清新", "綠意"],
   petitgrain: ["清新", "明朗"],
   "blood-orange": ["清新", "酸甜"],

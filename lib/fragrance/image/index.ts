@@ -225,7 +225,14 @@ export async function findOfficialImage(query: {
   name: string;
 }): Promise<OfficialImage | null> {
   const brand = brandForName(query.brand);
-  if (!brand || !origins(brand).length) return null;
+  if (!brand) return null;
+  // A picture the brand supplied with its product list (HEAVEN LAFA) needs no search.
+  const bottle = findCatalogueBottle(query);
+  if (bottle && bottle.confidence !== "low" && bottle.fragrance.imageUrl && bottle.fragrance.imageSource) {
+    const { imageUrl, imageSource } = bottle.fragrance;
+    return { imageUrl, pageUrl: imageSource, brand: brand.name };
+  }
+  if (!origins(brand).length) return null;
   try {
     return await remember(`image:${brand.key}:${query.name.toLowerCase()}`, () =>
       findOnBrandSite(brand, query.name),

@@ -107,6 +107,7 @@ export const NOTES = {
   // added with An's fragrance-family guide (data/family-guide.ts)
   hinoki: { en: "Hinoki", zh: "檜木", family: "woody" },
   tea: { en: "Tea", zh: "茶", family: "fresh" },
+  "black-tea": { en: "Black Tea", zh: "紅茶", family: "woody" },
   basil: { en: "Basil", zh: "羅勒", family: "fougere" },
   petitgrain: { en: "Petitgrain", zh: "苦橙葉", family: "citrus" },
   "blood-orange": { en: "Blood Orange", zh: "血橙", family: "citrus" },
