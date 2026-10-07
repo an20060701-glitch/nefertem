@@ -3,6 +3,7 @@ import { BRANDS } from "@/data/brands";
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
+import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
 import { catalogueFragranceProvider, nameSuggestions } from "./catalogue";
@@ -93,6 +94,25 @@ describe("TAMBURINS", () => {
     expect(r?.confidence).toBe("high");
     expect(r?.fragrance.topNotes).toEqual(["paw-accord", "chamomile", "aldehydes"]);
     expect(r?.sources).toEqual([TAMBURINS_SOURCE]);
+  });
+});
+
+describe("Calvin Klein", () => {
+  it("has the sixteen checked perfumes with dictionary notes", async () => {
+    expect(CALVIN_KLEIN).toHaveLength(16);
+    expect(new Set(CALVIN_KLEIN.map((f) => f.id)).size).toBe(16);
+    for (const f of CALVIN_KLEIN)
+      for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
+        expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
+    const r = await lookup({ brand: "CK", name: "Defy Parfum" });
+    expect(r?.fragrance.concentration).toBe("Parfum");
+    expect(r?.fragrance.baseNotes).toEqual(["sandalwood", "cocoa"]);
+    expect(r?.sources).toEqual([CALVIN_KLEIN_SOURCE]);
+  });
+
+  it("offers its perfumes under the name field", () => {
+    const names = nameSuggestions("Calvin Klein", "eup").map((s) => s.value);
+    expect(names).toContain("Euphoria Solar Elixir");
   });
 });
 

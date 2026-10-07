@@ -178,6 +178,18 @@ export const NOTE_TAGS: Record<string, string[]> = {
   praline: ["甜美", "溫暖"],
   "red-berries": ["甜美", "活潑"],
   pomelo: ["清新", "明亮"],
+  // Calvin Klein notes (data/calvin-klein.ts, 2026-10-07)
+  papaya: ["甜美", "活力"],
+  pomegranate: ["酸甜", "活力"],
+  mango: ["甜美", "度假"],
+  lotus: ["平靜", "優雅"],
+  orchid: ["優雅", "誘人"],
+  champaca: ["溫暖", "誘人"],
+  coriander: ["辛香", "清新"],
+  civet: ["誘人", "成熟"],
+  ozonic: ["清新", "清涼"],
+  suede: ["溫潤", "成熟"],
+  cocoa: ["溫暖", "甜美"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;
