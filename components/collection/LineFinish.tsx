@@ -5,12 +5,21 @@ import { useEffect, useRef, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { afterSignIn, loginHref, safeNext } from "@/lib/account";
 import { signInWithLineToken } from "@/lib/firebase/auth";
+import { useCollection } from "./CollectionProvider";
 
 /** Last leg of the server-side LINE sign-in: trade the token in the URL fragment for a Firebase session. */
 export function LineFinish() {
   const router = useRouter();
   const started = useRef(false);
   const [failed, setFailed] = useState<string>();
+  const [signedIn, setSignedIn] = useState<string>();
+  const { user, ready, items, error: cabinetError } = useCollection();
+
+  // Signed in: once the cabinet has loaded, go where it says (see afterSignIn).
+  useEffect(() => {
+    if (signedIn !== undefined && user && (ready || cabinetError))
+      router.replace(ready ? afterSignIn(signedIn, items.length > 0) : signedIn);
+  }, [signedIn, user, ready, cabinetError, items.length, router]);
 
   useEffect(() => {
     if (started.current) return;
@@ -24,7 +33,7 @@ export function LineFinish() {
       ? signInWithLineToken(token, params.get("name") ?? undefined)
       : Promise.reject(new Error("no token"))
     )
-      .then((user) => router.replace(afterSignIn(next, user)))
+      .then(() => setSignedIn(next))
       .catch((error: unknown) => {
         console.error("[sign-in] line token failed", error);
         setFailed(next);

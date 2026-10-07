@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
-import { saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
+import { markRestarted, restartedAt, saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
 import { FortuneWheel } from "./FortuneWheel";
 import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
@@ -58,14 +58,25 @@ export function TodaysChoice() {
 
   // A scent chosen earlier today (the usage log follows the account): coming back to the
   // page shows that result again instead of asking (An, 2026-10-07).
-  const picks = useMemo(() => todaysPicks(usage), [usage]);
+  // 「重新開始」 sets earlier picks aside for the day, even after signing out or reopening.
+  const [restartAt, setRestartAt] = useState<number>();
+  useEffect(() => {
+    const at = restartedAt();
+    if (at) window.setTimeout(() => setRestartAt(at), 0);
+  }, []);
+  const picks = useMemo(
+    () => todaysPicks(usage).filter((p) => !restartAt || p.timestamp > restartAt),
+    [usage, restartAt],
+  );
   const answersKey = `restored|${selection.occasion}|${selection.moods.join(",")}`;
   const resumed = useRef(false);
   const { resume } = flow;
   useEffect(() => {
     if (resumed.current || !ready) return;
     resumed.current = true;
-    const first = picks[0];
+    // Read the restart here too: the state above may not have caught up on this render.
+    const at = restartedAt();
+    const first = picks.find((p) => !at || p.timestamp > at);
     if (!first || new URLSearchParams(window.location.search).has("step")) return;
     const saved =
       savedSearch() ??
@@ -319,6 +330,9 @@ export function TodaysChoice() {
                     onOpenWheel={() => setWheelOpen(true)}
                     onEditMood={() => flow.goTo("mood")}
                     onRestart={() => {
+                      const now = Date.now();
+                      markRestarted(now);
+                      setRestartAt(now);
                       setConfirmed(undefined);
                       setFeatured(undefined);
                       flow.restart();

@@ -40,3 +40,30 @@ export function saveSearch(search: string, now = Date.now()) {
     // Private mode or blocked storage: the answers come back from the usage log instead.
   }
 }
+
+const RESTART_KEY = "nefertem:choice-restarted";
+
+/**
+ * 「重新開始」 (An, 2026-10-07): today's result is set aside, and stays set aside after
+ * signing out or reopening the page. Only scents chosen after the restart come back.
+ */
+export function markRestarted(now = Date.now()) {
+  try {
+    window.localStorage.setItem(RESTART_KEY, JSON.stringify({ day: dayKey(now), at: now }));
+  } catch {
+    // Blocked storage: the restart holds for this visit only.
+  }
+}
+
+/** When today's ritual was last restarted on this device, if it was. */
+export function restartedAt(now = Date.now()): number | undefined {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(RESTART_KEY) ?? "null") as {
+      day?: string;
+      at?: number;
+    } | null;
+    return saved?.day === dayKey(now) && typeof saved.at === "number" ? saved.at : undefined;
+  } catch {
+    return undefined;
+  }
+}

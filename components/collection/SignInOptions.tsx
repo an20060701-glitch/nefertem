@@ -18,15 +18,17 @@ const SIGN_IN: Record<Provider, () => Promise<unknown>> = {
 /** Google or LINE; once signed in (popup or redirect), go on to `next`. */
 export function SignInOptions({ next, lineFailed = false }: { next: string; lineFailed?: boolean }) {
   const router = useRouter();
-  const { user } = useCollection();
+  const { user, ready, items, error: cabinetError } = useCollection();
   const [pending, setPending] = useState<Provider>();
   const [error, setError] = useState<string | undefined>(
     lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined,
   );
 
+  // Once signed in and the cabinet has loaded: where to go depends on whether it holds scents.
   useEffect(() => {
-    if (user) router.replace(afterSignIn(next, user));
-  }, [user, next, router]);
+    // A cabinet that cannot be read does not hold the visitor here: they go on to `next`.
+    if (user && (ready || cabinetError)) router.replace(ready ? afterSignIn(next, items.length > 0) : next);
+  }, [user, ready, cabinetError, items.length, next, router]);
 
   async function signIn(provider: Provider) {
     setPending(provider);
