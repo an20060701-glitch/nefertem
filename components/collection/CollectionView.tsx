@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { findDemoFragrance } from "@/data/fragrances";
-import { lastUsed, mostUsedThisMonth } from "@/lib/collection/stats";
+import { byMostWorn, lastUsed, mostUsedThisMonth } from "@/lib/collection/stats";
 import { AccountBar } from "./AccountBar";
 import { AddFragranceSheet } from "./AddFragranceSheet";
 import { useCollection } from "./CollectionProvider";
@@ -100,7 +100,7 @@ export function CollectionView() {
           />
         ) : (
           <div className="relative gap-8 md:columns-2 desk:columns-3 desk:gap-10">
-            {items.map((f, i) => (
+            {byMostWorn(items).map((f, i) => (
               <Reveal key={f.id} amount={0.15}>
                 <FragranceCard fragrance={f} tall={i % 3 === 1} />
               </Reveal>

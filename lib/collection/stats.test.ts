@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { UsageLog } from "@/types";
-import { lastUsed, mostUsedThisMonth } from "./stats";
+import { byMostWorn, lastUsed, mostUsedThisMonth } from "./stats";
 
 const NOW = new Date(2026, 9, 20, 12).getTime();
 const log = (fragranceId: string, date: Date): UsageLog => ({
@@ -33,5 +33,22 @@ describe("collection stats", () => {
   it("finds the latest wear", () => {
     expect(lastUsed(logs)?.fragranceId).toBe("c");
     expect(lastUsed([])).toBeUndefined();
+  });
+});
+
+describe("byMostWorn", () => {
+  it("puts the most worn first, then newest added among equals", () => {
+    const items = [
+      { id: "old-unworn", usageCount: 0, addedAt: 1 },
+      { id: "new-unworn", usageCount: 0, addedAt: 3 },
+      { id: "worn-twice", usageCount: 2, addedAt: 2 },
+      { id: "worn-once", usageCount: 1, addedAt: 4 },
+    ];
+    expect(byMostWorn(items).map((f) => f.id)).toEqual([
+      "worn-twice",
+      "worn-once",
+      "new-unworn",
+      "old-unworn",
+    ]);
   });
 });
