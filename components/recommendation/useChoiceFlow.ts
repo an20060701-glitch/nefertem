@@ -129,6 +129,8 @@ export function useChoiceFlow() {
     const unanswered = window.setTimeout(() => {
       setLocating(false);
       setLocateFailed(true);
+      // A remembered "here" that the browser never answers would wait forever: offer the cities.
+      if (parse(window.location.search).selection.place === "here") setPlace(undefined);
     }, PERMISSION_WAIT_MS);
     navigator.geolocation.getCurrentPosition(
       ({ coords: c }) => {
