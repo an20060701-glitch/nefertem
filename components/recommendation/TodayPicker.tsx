@@ -78,7 +78,7 @@ function PickerRow({
               type="button"
               onClick={() => onChoose(f.id)}
               className={cn(
-                "group flex h-full w-full flex-col border p-4 text-left transition-colors duration-500",
+                "press-soft group flex h-full w-full flex-col border p-4 text-left",
                 highlightFirst && i === 0 ? "border-gold" : "border-line hover:border-ink",
               )}
             >

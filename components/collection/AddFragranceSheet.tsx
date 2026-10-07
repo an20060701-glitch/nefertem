@@ -56,7 +56,7 @@ export function AddFragranceSheet({ onClose }: { onClose: () => void }) {
               <button
                 type="button"
                 onClick={() => setMode(o.mode)}
-                className="group flex w-full items-start gap-6 py-8 text-left desk:gap-10 desk:py-10"
+                className="press-soft group flex w-full items-start gap-6 py-8 text-left desk:gap-10 desk:py-10"
               >
                 <span className="font-display text-numeral font-light italic text-gold" aria-hidden>
                   {String(i + 1).padStart(2, "0")}

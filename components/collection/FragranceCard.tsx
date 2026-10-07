@@ -11,7 +11,7 @@ export function FragranceCard({ fragrance, tall }: { fragrance: UserFragrance; t
   return (
     <Link
       href={`/collection/${encodeURIComponent(fragrance.id)}`}
-      className="group block break-inside-avoid pb-12"
+      className="press-soft group block break-inside-avoid pb-12"
       aria-label={`${fragrance.brand} ${fragrance.name}`}
     >
       <div

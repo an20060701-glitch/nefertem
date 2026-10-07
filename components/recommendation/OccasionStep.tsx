@@ -45,6 +45,7 @@ export function OccasionStep({
               aria-checked={checked}
               onClick={() => onChoose(option.key)}
               whileHover={reduce ? undefined : { y: -4 }}
+              whileTap={reduce ? undefined : { scale: 0.985, transition: { duration: 0.08 } }}
               transition={transition.base}
               className={cn(
                 // Phones: two compact squares side by side (An, 2026-10-06), not a tall stack.

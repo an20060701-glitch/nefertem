@@ -14,8 +14,9 @@ export function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const ringX = useSpring(x, { stiffness: 300, damping: 40, mass: 0.6 });
-  const ringY = useSpring(y, { stiffness: 300, damping: 40, mass: 0.6 });
+  // Critically damped (damping ≈ 2·√(stiffness·mass)): it follows closely and never overshoots.
+  const ringX = useSpring(x, { stiffness: 520, damping: 35, mass: 0.6 });
+  const ringY = useSpring(y, { stiffness: 520, damping: 35, mass: 0.6 });
 
   useEffect(() => {
     const query = window.matchMedia("(pointer: fine) and (min-width: 1200px)");
@@ -53,9 +54,10 @@ export function CustomCursor() {
         style={{ x, y }}
       />
       <motion.div
-        className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue/40"
+        // Grows by scale, not width/height, so it stays on the compositor.
+        className="absolute -left-4 -top-4 size-8 rounded-full border border-blue/40"
         style={{ x: ringX, y: ringY }}
-        animate={{ width: hovering ? 64 : 32, height: hovering ? 64 : 32, opacity: hovering ? 1 : 0.7 }}
+        animate={{ scale: hovering ? 2 : 1, opacity: hovering ? 1 : 0.7 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       />
     </div>

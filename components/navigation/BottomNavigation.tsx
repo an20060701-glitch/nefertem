@@ -21,7 +21,7 @@ export function BottomNavigation() {
   return (
     <nav
       aria-label="主要導覽"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-[rgb(247_244_237/0.88)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 material-bar border-t border-line md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="mx-auto grid h-[var(--nav-mobile-height)] max-w-md grid-cols-3">
@@ -33,7 +33,7 @@ export function BottomNavigation() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-full flex-col items-center justify-center gap-1 transition-colors duration-300",
+                  "press flex h-full flex-col items-center justify-center gap-1",
                   active ? "text-lotus-deep" : "text-muted hover:text-ink",
                 )}
               >

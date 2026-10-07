@@ -113,6 +113,7 @@ function MagneticTag({
         aria-disabled={disabled || undefined}
         onClick={() => !disabled && onToggle()}
         style={{ x, y }}
+        whileTap={disabled ? undefined : { scale: 0.97, transition: { duration: 0.08 } }}
         className={cn(
           "group flex min-h-11 items-baseline gap-3 py-1 text-left transition-colors duration-500",
           checked

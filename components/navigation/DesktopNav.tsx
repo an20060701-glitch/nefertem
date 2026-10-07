@@ -27,7 +27,7 @@ export function DesktopNav() {
       className={cn(
         "page-x fixed inset-x-0 top-0 z-50 hidden items-center justify-between transition-[height,background-color,border-color] duration-500 ease-[var(--ease-editorial)] md:flex",
         condensed
-          ? "h-16 border-b border-line bg-surface"
+          ? "material-bar h-16 border-b border-line"
           : "h-[var(--nav-desktop-height)] border-b border-transparent bg-transparent",
       )}
     >
