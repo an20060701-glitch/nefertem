@@ -78,6 +78,17 @@ export function TodaysChoice() {
     () => todaysPicks(usage).filter((p) => !restartAt || p.timestamp > restartAt),
     [usage, restartAt],
   );
+  // Wears set aside by a restart that are still counted (one pressed before restarts took
+  // them back, or on a device whose undo did not finish) are taken back here.
+  const settling = useRef<string>(undefined);
+  useEffect(() => {
+    if (!ready || !restartKnown || !restartAt) return;
+    const aside = todaysPicks(usage).filter((p) => p.timestamp <= restartAt);
+    const key = aside.map((p) => p.id).join(",");
+    if (!aside.length || settling.current === key) return;
+    settling.current = key;
+    repo.undoUsage(aside, usage).catch((error: unknown) => console.error("[restart] undo", error));
+  }, [ready, restartKnown, restartAt, usage, repo]);
   const answersKey = `restored|${selection.occasion}|${selection.moods.join(",")}`;
   const { resume, restart: restartFlow } = flow;
 
@@ -365,10 +376,8 @@ export function TodaysChoice() {
                       const now = Date.now();
                       shownPick.current = undefined;
                       setRestart({ repo, at: now });
-                      // Today's pick (and anything layered on it) no longer counts as worn.
-                      void repo
-                        .undoUsage(picks, usage)
-                        .catch((error: unknown) => console.error("[restart] undo", error));
+                      // Today's pick (and anything layered on it) stops counting as worn: the
+                      // set-aside effect above takes those wears back.
                       void repo
                         .markRestarted(now)
                         .catch((error: unknown) => console.error("[restart]", error));

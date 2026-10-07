@@ -100,9 +100,11 @@ export const deviceRepo: CollectionRepo = {
   },
 
   async undoUsage(logs, usage) {
-    if (!logs.length) return;
-    const after = usageAfterUndo(logs, usage);
-    removeLocalUsage(new Set(logs.map((l) => l.id)));
+    const recorded = new Set(getLocalUsage().map((u) => u.id));
+    const present = logs.filter((l) => recorded.has(l.id));
+    if (!present.length) return;
+    const after = usageAfterUndo(present, usage);
+    removeLocalUsage(new Set(present.map((l) => l.id)));
     write(
       read().map((f) => {
         const e = after.get(f.id);

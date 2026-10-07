@@ -9,6 +9,7 @@ import {
   increment,
   onSnapshot,
   orderBy,
+  runTransaction,
   query,
   serverTimestamp,
   setDoc,
@@ -173,17 +174,24 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
 
     async undoUsage(logs, usage) {
       if (!logs.length) return;
-      const batch = writeBatch(db);
-      for (const l of logs) batch.delete(doc(usageLogs, l.id));
-      for (const [fragranceId, e] of usageAfterUndo(logs, usage)) {
-        const owned = await getDoc(doc(fragrances, fragranceId));
-        if (!owned.exists()) continue;
-        batch.update(owned.ref, {
-          usageCount: increment(-e.count),
-          lastUsedAt: e.lastUsedAt ?? deleteField(),
-        });
-      }
-      await batch.commit();
+      // In a transaction, counting only logs that still exist: two devices taking back the
+      // same wears (a restart seen on both) lower each count once.
+      await runTransaction(db, async (tx) => {
+        const present = [];
+        for (const l of logs) if ((await tx.get(doc(usageLogs, l.id))).exists()) present.push(l);
+        if (!present.length) return;
+        const after = usageAfterUndo(present, usage);
+        const owned = new Map<string, boolean>();
+        for (const id of after.keys()) owned.set(id, (await tx.get(doc(fragrances, id))).exists());
+        for (const l of present) tx.delete(doc(usageLogs, l.id));
+        for (const [fragranceId, e] of after) {
+          if (!owned.get(fragranceId)) continue;
+          tx.update(doc(fragrances, fragranceId), {
+            usageCount: increment(-e.count),
+            lastUsedAt: e.lastUsedAt ?? deleteField(),
+          });
+        }
+      });
     },
   };
 }
