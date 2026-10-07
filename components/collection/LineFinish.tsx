@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
-import { loginHref, safeNext } from "@/lib/account";
+import { afterSignIn, loginHref, safeNext } from "@/lib/account";
 import { signInWithLineToken } from "@/lib/firebase/auth";
 
 /** Last leg of the server-side LINE sign-in: trade the token in the URL fragment for a Firebase session. */
@@ -20,8 +20,11 @@ export function LineFinish() {
     const next = safeNext(params.get("next"));
     // Keep the token out of history and screenshots.
     window.history.replaceState(null, "", window.location.pathname);
-    (token ? signInWithLineToken(token, params.get("name") ?? undefined) : Promise.reject(new Error("no token")))
-      .then(() => router.replace(next))
+    (token
+      ? signInWithLineToken(token, params.get("name") ?? undefined)
+      : Promise.reject(new Error("no token"))
+    )
+      .then((user) => router.replace(afterSignIn(next, user)))
       .catch((error: unknown) => {
         console.error("[sign-in] line token failed", error);
         setFailed(next);
