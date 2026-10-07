@@ -69,46 +69,59 @@ function toResult(f: Fragrance, confidence: Confidence, source: string): Fragran
   return { fragrance: data, confidence, sources: [source] };
 }
 
+/** The lists searched, in order, each with the source line shown to the member. */
+const LISTS: readonly (readonly [readonly Fragrance[], string])[] = [
+  [CATALOGUE, CATALOGUE_SOURCE],
+  [HEAVEN_LAFA, HEAVEN_LAFA_SOURCE],
+  [TAMBURINS, TAMBURINS_SOURCE],
+  [CALVIN_KLEIN, CALVIN_KLEIN_SOURCE],
+  [DEMO_FRAGRANCES, DEMO_SOURCE],
+];
+
 /**
- * Smart lookup over An's brand product list (data/catalogue.ts, 146 perfumes from
- * Chanel, Dior, Jo Malone London, Diptyque, Byredo and Le Labo), HEAVEN LAFA,
- * TAMBURINS and Calvin Klein, then the demo catalogue. Brand names match in any spelling the brand list knows (香奈兒 = Chanel).
+ * The bottle a brand + name most likely means, with how sure we are and which list it
+ * came from. Brand names match in any spelling the brand list knows (香奈兒 = Chanel).
+ */
+export function findCatalogueBottle({
+  brand,
+  name,
+}: FragranceQuery): { fragrance: Fragrance; confidence: Confidence; source: string } | null {
+  const b = brand.trim() ? brandKey(brand) : "";
+  const n = fold(name);
+  if (!n) return null;
+  let best: { f: Fragrance; rank: number; exact: boolean; order: number; source: string } | null = null;
+  for (const [list, source] of LISTS) {
+    for (const f of list) {
+      const s = score(f, b, n);
+      if (!s) continue;
+      const rank = RANK[s.confidence];
+      const order = CONCENTRATION_ORDER.indexOf(f.concentration ?? "");
+      const better =
+        !best ||
+        rank > best.rank ||
+        (rank === best.rank && s.exactBottle && !best.exact) ||
+        (rank === best.rank &&
+          s.exactBottle === best.exact &&
+          source === best.source &&
+          order >= 0 &&
+          (best.order < 0 || order < best.order));
+      if (better) best = { f, rank, exact: s.exactBottle, order, source };
+    }
+  }
+  if (!best) return null;
+  const confidence = (Object.keys(RANK) as Confidence[]).find((c) => RANK[c] === best.rank)!;
+  return { fragrance: best.f, confidence, source: best.source };
+}
+
+/**
+ * Smart lookup over An's brand product lists (data/catalogue.ts and the per-brand
+ * files), then the demo catalogue.
  */
 export const catalogueFragranceProvider: FragranceDataProvider = {
   name: "catalogue",
-  async lookup({ brand, name }: FragranceQuery) {
-    const b = brand.trim() ? brandKey(brand) : "";
-    const n = fold(name);
-    if (!n) return null;
-    let best: { f: Fragrance; rank: number; exact: boolean; order: number; source: string } | null = null;
-    const lists: [readonly Fragrance[], string][] = [
-      [CATALOGUE, CATALOGUE_SOURCE],
-      [HEAVEN_LAFA, HEAVEN_LAFA_SOURCE],
-      [TAMBURINS, TAMBURINS_SOURCE],
-      [CALVIN_KLEIN, CALVIN_KLEIN_SOURCE],
-      [DEMO_FRAGRANCES, DEMO_SOURCE],
-    ];
-    for (const [list, source] of lists) {
-      for (const f of list) {
-        const s = score(f, b, n);
-        if (!s) continue;
-        const rank = RANK[s.confidence];
-        const order = CONCENTRATION_ORDER.indexOf(f.concentration ?? "");
-        const better =
-          !best ||
-          rank > best.rank ||
-          (rank === best.rank && s.exactBottle && !best.exact) ||
-          (rank === best.rank &&
-            s.exactBottle === best.exact &&
-            source === best.source &&
-            order >= 0 &&
-            (best.order < 0 || order < best.order));
-        if (better) best = { f, rank, exact: s.exactBottle, order, source };
-      }
-    }
-    if (!best) return null;
-    const confidence = (Object.keys(RANK) as Confidence[]).find((c) => RANK[c] === best.rank)!;
-    return toResult(best.f, confidence, best.source);
+  async lookup(query: FragranceQuery) {
+    const found = findCatalogueBottle(query);
+    return found ? toResult(found.fragrance, found.confidence, found.source) : null;
   },
 };
 
@@ -136,10 +149,12 @@ export interface NameSuggestion {
 export function nameSuggestions(brand: string, typed: string): NameSuggestion[] {
   const b = brand.trim() ? brandKey(brand) : "";
   if (!b) return [];
-  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...CALVIN_KLEIN, ...DEMO_FRAGRANCES].filter((f) => {
-    const fb = brandKey(f.brand);
-    return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
-  });
+  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...CALVIN_KLEIN, ...DEMO_FRAGRANCES].filter(
+    (f) => {
+      const fb = brandKey(f.brand);
+      return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
+    },
+  );
   const bottles = new Map<string, number>();
   for (const f of all) bottles.set(fold(f.name), (bottles.get(fold(f.name)) ?? 0) + 1);
 
