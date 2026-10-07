@@ -205,6 +205,17 @@ describe("findOfficialImage", () => {
     expect(calls.some((c) => c.includes("sitemap"))).toBe(false);
   });
 
+  it("falls back to the page's recorded picture when the site turns the server away", async () => {
+    const { findOfficialImage } = await import("./index");
+    site({ "https://www.calvinklein.us/robots.txt": 403 });
+    const image = await findOfficialImage({ brand: "Calvin Klein", name: "CK One" });
+    expect(image).toEqual({
+      imageUrl: "https://calvinklein.scene7.com/is/image/CalvinKlein/10740_000_main",
+      pageUrl: "https://www.calvinklein.us/en/women/fragrance/fragrance/ck-one/10740-000.html",
+      brand: "Calvin Klein",
+    });
+  });
+
   it("uses the picture the brand supplied, without fetching anything", async () => {
     const { findOfficialImage } = await import("./index");
     const calls = site({});

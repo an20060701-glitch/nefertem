@@ -207,3 +207,25 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat-calvin-klein-defy-edp": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-parfum/LX000102-000.html",
   "cat-calvin-klein-defy-parfum": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-parfum/LX000315-000.html",
 };
+
+/*
+ * The picture a product page declares for sharing (its og:image), copied from the page
+ * by hand (2026-10-07) for brands whose site does not answer our server (Calvin Klein).
+ * Used only when reading the page itself fails; linked, never copied, credited to the page.
+ */
+export const OFFICIAL_PICTURES: Readonly<Record<string, string>> = {
+  "cat-calvin-klein-ck-one-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/10740_000_main",
+  "cat-calvin-klein-eternity-for-women-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000744_000_main",
+  "cat-calvin-klein-eternity-for-women-suede-essence-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002152_000_main",
+  "cat-calvin-klein-euphoria-signature-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002160_000_main",
+  "cat-calvin-klein-euphoria-magnetic-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001963_000_main",
+  "cat-calvin-klein-euphoria-bold-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001959_000_main",
+  "cat-calvin-klein-euphoria-solar-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001967_000_main",
+  "cat-calvin-klein-eternity-for-men-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000717_000_main",
+  "cat-calvin-klein-eternity-for-men-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000724_000_main",
+  "cat-calvin-klein-eternity-for-men-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000725_000_main",
+  "cat-calvin-klein-obsession-for-men-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000709_000_main",
+  "cat-calvin-klein-defy-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/YS99350D_000_main",
+  "cat-calvin-klein-defy-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000102_000_main",
+  "cat-calvin-klein-defy-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000315_000_main",
+};
