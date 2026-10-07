@@ -78,6 +78,15 @@ describe("HEAVEN LAFA", () => {
         expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
   });
 
+  it("has a picture in public/ for every HEAVEN LAFA perfume", async () => {
+    const { existsSync } = await import("node:fs");
+    for (const f of HEAVEN_LAFA) {
+      expect(f.imageUrl, f.name).toMatch(/^\/images\/heaven-lafa\/[a-z-]+\.webp$/);
+      expect(existsSync(`public${f.imageUrl}`), f.name).toBe(true);
+      expect(f.imageSource).toBe("https://www.heavenlafa.tw/Shop");
+    }
+  });
+
   it("links to the brand's Taiwan site", () => {
     expect(brandHomeLink({ brandKey: "heaven-lafa" })?.url).toBe("https://www.heavenlafa.tw/");
   });

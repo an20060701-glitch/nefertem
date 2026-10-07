@@ -205,6 +205,18 @@ describe("findOfficialImage", () => {
     expect(calls.some((c) => c.includes("sitemap"))).toBe(false);
   });
 
+  it("uses the picture the brand supplied, without fetching anything", async () => {
+    const { findOfficialImage } = await import("./index");
+    const calls = site({});
+    const image = await findOfficialImage({ brand: "LAFA", name: "神獸阿努比" });
+    expect(image).toEqual({
+      imageUrl: "/images/heaven-lafa/beast-wolf.webp",
+      pageUrl: "https://www.heavenlafa.tw/Shop",
+      brand: "HEAVEN LAFA",
+    });
+    expect(calls).toEqual([]);
+  });
+
   it("fetches nothing past robots.txt when the site says no", async () => {
     const { findOfficialImage } = await import("./index");
     const calls = site({ "https://www.byredo.com/robots.txt": "User-agent: *\nDisallow: /" });
