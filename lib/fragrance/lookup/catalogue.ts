@@ -2,6 +2,7 @@ import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
+import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
@@ -75,6 +76,7 @@ const LISTS: readonly (readonly [readonly Fragrance[], string])[] = [
   [HEAVEN_LAFA, HEAVEN_LAFA_SOURCE],
   [TAMBURINS, TAMBURINS_SOURCE],
   [CALVIN_KLEIN, CALVIN_KLEIN_SOURCE],
+  [BRAND_LISTS, BRAND_LISTS_SOURCE],
   [DEMO_FRAGRANCES, DEMO_SOURCE],
 ];
 
@@ -149,12 +151,17 @@ export interface NameSuggestion {
 export function nameSuggestions(brand: string, typed: string): NameSuggestion[] {
   const b = brand.trim() ? brandKey(brand) : "";
   if (!b) return [];
-  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...CALVIN_KLEIN, ...DEMO_FRAGRANCES].filter(
-    (f) => {
-      const fb = brandKey(f.brand);
-      return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
-    },
-  );
+  const all = [
+    ...CATALOGUE,
+    ...HEAVEN_LAFA,
+    ...TAMBURINS,
+    ...CALVIN_KLEIN,
+    ...BRAND_LISTS,
+    ...DEMO_FRAGRANCES,
+  ].filter((f) => {
+    const fb = brandKey(f.brand);
+    return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
+  });
   const bottles = new Map<string, number>();
   for (const f of all) bottles.set(fold(f.name), (bottles.get(fold(f.name)) ?? 0) + 1);
 

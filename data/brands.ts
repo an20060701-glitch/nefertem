@@ -24,6 +24,13 @@ export interface BrandInfo {
 
 export const BRANDS: readonly BrandInfo[] = [
   {
+    key: "100bon",
+    name: "100BON",
+    aliases: ["100 Bon"],
+    domain: "100bon.com",
+    site: "https://www.100bon.com/en/",
+  },
+  {
     key: "abercrombie-fitch",
     name: "Abercrombie & Fitch",
     aliases: ["A&F"],
@@ -151,6 +158,14 @@ export const BRANDS: readonly BrandInfo[] = [
     fragrancePage: "https://www.chanel.com/us/fragrance/",
   },
   {
+    key: "chloe",
+    name: "Chloé",
+    zh: "蔻依",
+    aliases: ["Chloe"],
+    domain: "chloe.com",
+    site: "https://www.chloe.com/",
+  },
+  {
     key: "clean",
     name: "Clean",
     aliases: ["CLEAN"],
@@ -246,6 +261,14 @@ export const BRANDS: readonly BrandInfo[] = [
     site: "https://www.esteelauder.com.tw/",
   },
   {
+    key: "etat-libre-d-orange",
+    name: "Etat Libre d'Orange",
+    zh: "解放橘郡",
+    aliases: ["Etat Libre d’Orange", "État Libre d'Orange", "ELDO"],
+    domain: "etatlibredorange.com",
+    site: "https://www.etatlibredorange.com/",
+  },
+  {
     key: "ferrari",
     name: "Ferrari",
     zh: "法拉利",
@@ -258,6 +281,13 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "佛羅麗絲",
     domain: "florislondon.com",
     site: "https://www.florislondon.com/",
+  },
+  {
+    key: "fragonard",
+    name: "Fragonard",
+    zh: "花宮娜",
+    domain: "fragonard.com",
+    site: "https://www.fragonard.com/",
   },
   {
     key: "frederic-malle",
@@ -356,6 +386,13 @@ export const BRANDS: readonly BrandInfo[] = [
     fragrancePage: "https://www.jomalone.com/colognes",
   },
   {
+    key: "john-varvatos",
+    name: "John Varvatos",
+    zh: "約翰瓦維托斯",
+    domain: "johnvarvatos.com",
+    site: "https://www.johnvarvatos.com/",
+  },
+  {
     key: "juliette-has-a-gun",
     name: "Juliette Has A Gun",
     zh: "帶槍茱麗葉",
@@ -368,6 +405,14 @@ export const BRANDS: readonly BrandInfo[] = [
     zh: "堅尼哥爾",
     domain: "kennethcole.com",
     site: "https://www.kennethcole.com/",
+  },
+  {
+    key: "kiehls",
+    name: "Kiehl's",
+    zh: "契爾氏",
+    aliases: ["Kiehls", "Kiehl’s"],
+    domain: "kiehls.com.tw",
+    site: "https://www.kiehls.com.tw/",
   },
   {
     key: "kilian",
@@ -425,6 +470,14 @@ export const BRANDS: readonly BrandInfo[] = [
     domain: "louisvuitton.com",
   },
   {
+    key: "lush",
+    name: "LUSH",
+    zh: "嵐舒",
+    aliases: ["Lush"],
+    domain: "lush.com",
+    site: "https://www.lush.com/tw/zh-tw",
+  },
+  {
     key: "maison-francis-kurkdjian",
     name: "Maison Francis Kurkdjian",
     zh: "法蘭西斯庫克",
@@ -445,6 +498,13 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Malin Goetz", "MALIN+GOETZ"],
     domain: "malinandgoetz.com",
     site: "https://www.malinandgoetz.com/",
+  },
+  {
+    key: "mancera",
+    name: "Mancera",
+    zh: "曼斯拉",
+    domain: "manceraparfums.com",
+    site: "https://www.manceraparfums.com/en/",
   },
   {
     key: "marc-jacobs",

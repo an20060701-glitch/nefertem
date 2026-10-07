@@ -192,20 +192,117 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat-tamburins-unknown-oud": "https://www.tamburins.com/en/item/1662463782/",
   "cat-tamburins-white-darjeeling": "https://www.tamburins.com/en/item/1662464240/",
   // Calvin Klein's US site (its Taiwan site sells no fragrance), from its fragrance pages (2026-10-07).
-  "cat-calvin-klein-ck-one-edt": "https://www.calvinklein.us/en/women/fragrance/fragrance/ck-one/10740-000.html",
-  "cat-calvin-klein-eternity-for-women-edp": "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-eau-de-parfum-for-women/LX000744-000.html",
-  "cat-calvin-klein-eternity-for-women-suede-essence-parfum": "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-suede-essence-parfum-for-women/LX002152-000.html",
-  "cat-calvin-klein-euphoria-signature-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-signature-elixir/LX002159-000.html",
-  "cat-calvin-klein-euphoria-magnetic-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-magnetic-elixir/LX001963-000.html",
-  "cat-calvin-klein-euphoria-bold-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-bold-elixir/LX001959-000.html",
-  "cat-calvin-klein-euphoria-solar-elixir": "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-solar-elixir/LX001967-000.html",
-  "cat-calvin-klein-eternity-for-men-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-eau-de-toilette-for-men/LX000145-000.html",
-  "cat-calvin-klein-eternity-for-men-parfum": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-parfum-for-men/LX000724-000.html",
-  "cat-calvin-klein-eternity-for-men-edp": "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-for-men-eau-de-parfum/LX000725-000.html",
-  "cat-calvin-klein-obsession-for-men-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/obsession-eau-de-toilette-for-men/LX000709-000.html",
-  "cat-calvin-klein-defy-edt": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-toilette/YS99350D-000.html",
-  "cat-calvin-klein-defy-edp": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-parfum/LX000102-000.html",
-  "cat-calvin-klein-defy-parfum": "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-parfum/LX000315-000.html",
+  "cat-calvin-klein-ck-one-edt":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/ck-one/10740-000.html",
+  "cat-calvin-klein-eternity-for-women-edp":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-eau-de-parfum-for-women/LX000744-000.html",
+  "cat-calvin-klein-eternity-for-women-suede-essence-parfum":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/eternity-suede-essence-parfum-for-women/LX002152-000.html",
+  "cat-calvin-klein-euphoria-signature-elixir":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-signature-elixir/LX002159-000.html",
+  "cat-calvin-klein-euphoria-magnetic-elixir":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-magnetic-elixir/LX001963-000.html",
+  "cat-calvin-klein-euphoria-bold-elixir":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-bold-elixir/LX001959-000.html",
+  "cat-calvin-klein-euphoria-solar-elixir":
+    "https://www.calvinklein.us/en/women/fragrance/fragrance/euphoria-solar-elixir/LX001967-000.html",
+  "cat-calvin-klein-eternity-for-men-edt":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-eau-de-toilette-for-men/LX000145-000.html",
+  "cat-calvin-klein-eternity-for-men-parfum":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-parfum-for-men/LX000724-000.html",
+  "cat-calvin-klein-eternity-for-men-edp":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/eternity-for-men-eau-de-parfum/LX000725-000.html",
+  "cat-calvin-klein-obsession-for-men-edt":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/obsession-eau-de-toilette-for-men/LX000709-000.html",
+  "cat-calvin-klein-defy-edt":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-toilette/YS99350D-000.html",
+  "cat-calvin-klein-defy-edp":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-eau-de-parfum/LX000102-000.html",
+  "cat-calvin-klein-defy-parfum":
+    "https://www.calvinklein.us/en/men/fragrance/fragrance/defy-parfum/LX000315-000.html",
+  // An's brand lists (perfume_brands*.md): pages that opened as the product (2026-10-07).
+  "cat2-100bon-rose-and-black-pepper-edp": "https://www.100bon.com/en/products/rose-black-pepper",
+  "cat2-100bon-zeste-d-agrumes-edp": "https://www.100bon.com/en/products/eau-de-parfum-zeste-agrumes",
+  "cat2-100bon-bois-oriental-ylang-edp": "https://www.100bon.com/en/products/bois-oriental-ylang",
+  "cat2-100bon-ebene-et-ambre-edp": "https://www.100bon.com/en/products/ebene-ambre",
+  "cat2-100bon-secret-garden-edt": "https://www.100bon.com/en/products/secret-garden-eau-de-toilette",
+  "cat2-100bon-nuage-de-coton-edt": "https://www.100bon.com/en/products/nuage-de-coton-eau-de-toilette",
+  "cat2-acqua-di-parma-colonia-edc": "https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html",
+  "cat2-acqua-di-parma-buongiorno-edp": "https://www.acquadiparma.com/en/us/buongiorno/BUONGIORNOEDP.html",
+  "cat2-acqua-di-parma-bergamotto-la-spugnatura-edp":
+    "https://www.acquadiparma.com/en/us/bergamotto-la-spugnatura%C2%A0/BERGAMOTTOLASPUGNATURAEDP.html",
+  "cat2-acqua-di-parma-quercia-edp": "https://www.acquadiparma.com/en/kr/quercia/QUERCIAEDPSPRAY.html",
+  "cat2-acqua-di-parma-arancia-di-capri-edt":
+    "https://www.acquadiparma.com/en/us/arancia-di-capri/ARANCIAEDTSPRAY.html?dwvar_ARANCIAEDTSPRAY_size=30ML",
+  "cat2-acqua-di-parma-lili-of-the-valley-edp":
+    "https://www.acquadiparma.com/en/us/lily-of-the-valley/LILYOFTHEVALLEYEDP.html",
+  "cat2-acqua-di-parma-note-di-colonia-ii-edc":
+    "https://www.acquadiparma.com/en/us/note-di-colonia-ii/NDCIIEDC.html",
+  "cat2-acqua-di-parma-note-di-colonia-iv-edc":
+    "https://www.acquadiparma.com/en/us/note-di-colonia-iv/NDCIVEDC.html",
+  "cat2-juliette-has-a-gun-juliette-edp": "https://us.juliettehasagun.com/products/juliette",
+  "cat2-juliette-has-a-gun-lust-for-sun-edp": "https://us.juliettehasagun.com/products/lust-for-sun",
+  "cat2-juliette-has-a-gun-not-a-perfume-edp":
+    "https://www.juliettehasagun.com/en/products/not-a-perfume-parfum",
+  "cat2-juliette-has-a-gun-pear-inc-edp": "https://us.juliettehasagun.com/products/pear-inc",
+  "cat2-juliette-has-a-gun-mmmm-edp": "https://us.juliettehasagun.com/products/mmmm",
+  "cat2-juliette-has-a-gun-powder-love-edp": "https://us.juliettehasagun.com/products/powder-love",
+  "cat2-juliette-has-a-gun-magnolia-bliss-edp": "https://us.juliettehasagun.com/products/magnolia-bliss",
+  "cat2-juliette-has-a-gun-lili-fantasy-edp":
+    "https://us.juliettehasagun.com/products/lili-fantasy-travel-spray",
+  "cat2-chloe-nomade-nuit-d-egypte-edp":
+    "https://www.chloe.com/en-us/p/fragrances/eau-de-parfum/CHCA50186025.html",
+  "cat2-tom-ford-soleil-neige-edp": "https://www.tomfordbeauty.com/products/soleil-neige-eau-de-parfum",
+  "cat2-tom-ford-noir-extreme-edp": "https://www.tomfordbeauty.com/products/noir-extreme-eau-de-parfum",
+  "cat2-tom-ford-vanille-fatale-edp": "https://www.tomfordbeauty.com/products/vanille-fatale-eau-de-parfum",
+  "cat2-tom-ford-fucking-fabulous-edp":
+    "https://www.tomfordbeauty.com/products/fucking-fabulous-eau-de-parfum",
+  "cat2-tom-ford-noir-extreme-parfum": "https://www.tomfordbeauty.com/products/noir-extreme-parfum",
+  "cat2-tom-ford-fucking-fabulous-parfum": "https://www.tomfordbeauty.com/products/fucking-fabulous-parfum",
+  "cat2-tom-ford-oud-wood-edp": "https://www.tomfordbeauty.com/products/oud-wood-eau-de-parfum",
+  "cat2-tom-ford-grey-vetiver-parfum": "https://www.tomfordbeauty.com/products/grey-vetiver-parfum",
+  "cat2-tom-ford-noir-de-noir-edp": "https://www.tomfordbeauty.com/products/noir-de-noir-eau-de-parfum",
+  "cat2-tom-ford-black-orchid-reserve-parfum":
+    "https://www.tomfordbeauty.com/products/black-orchid-reserve-parfum",
+  "cat2-tom-ford-ebene-fume-edp": "https://www.tomfordbeauty.com/products/ebene-fume-eau-de-parfum",
+  "cat2-mancera-black-gold": "https://www.manceraparfums.com/en/oriental/60-black-gold.html",
+  "cat2-mancera-wind-wood-edp": "https://www.manceraparfums.com/en/fougere/32-wind-wood.html",
+  "cat2-mancera-feminity-edp": "https://www.manceraparfums.com/en/fruity/111-feminity.html",
+  "cat2-mancera-silver-blue-edp": "https://www.manceraparfums.com/en/gourmand/92-silver-blue.html",
+  "cat2-mancera-lemon-line-edp": "https://www.manceraparfums.com/en/fruity/30-lemon-line.html",
+  "cat2-mancera-cherry-cherry-edp": "https://www.manceraparfums.com/en/fruity/129-cherry-cherry.html",
+  "cat2-mancera-velvet-vanilla-edp": "https://www.manceraparfums.com/en/gourmand/49-velvet-vanilla.html",
+  "cat2-mancera-lovely-garden-edp": "https://www.manceraparfums.com/en/oriental/98-lovely-graden.html",
+  "cat2-mancera-sicily-edp": "https://www.manceraparfums.com/esp/en/fruity/53-sicily.html",
+  "cat2-mancera-of-the-wild-edp": "https://www.manceraparfums.com/en/gourmand/115-of-the-wild.html",
+  "cat2-mancera-french-riviera-edp": "https://www.manceraparfums.com/esp/en/marine/106-french-riviera.html",
+  "cat2-mancera-intense-red-tobacco-extrait":
+    "https://www.manceraparfums.com/civ/en/oriental/118-intense-red-tobacco.html",
+  "cat2-fragonard-fragonard-edt": "https://www.fragonard.com/en-int/fragonard/fragonard-p-2904-o-1491.htm",
+  "cat2-fragonard-fragonard-parfum": "https://www.fragonard.com/en-us/fragonard/fragonard-p-2906-o-1494.htm",
+  "cat2-fragonard-belle-de-paris-edp": "https://www.fragonard.com/en-int/-p-2272.htm",
+  "cat2-prada-l-homme-prada-edt":
+    "https://www.prada.com/us/en/p/lhomme-prada-edt-50-ml/2A1266_2HC0_F0Z99_P_ML050",
+  "cat2-prada-paradoxe-intense-edp":
+    "https://www.prada.com/sa/en/p/paradoxe-intense-edp-90ml/1A1352_2HEC_F0Z99_P_ML090",
+  "cat2-loewe-loewe-7-edt":
+    "https://www.loewe.com/int/en/men/fragrances/loewe-7-eau-de-toilette-100-ml/P000011X20-0000.html",
+  "cat2-loewe-loewe-001-woman-edp":
+    "https://www.loewe.com/int/en/women/fragrance/loewe-001-woman-eau-de-parfum-50-ml/P000487X04-0000.html",
+  "cat2-loewe-loewe-001-man-edp":
+    "https://www.loewe.com/int/en/men/fragrances/loewe-001-man-eau-de-parfum-50-ml/P000487X03-0000.html",
+  "cat2-loewe-loewe-solo-edt":
+    "https://www.loewe.com/int/en/men/fragrances/loewe-solo-eau-de-toilette-50-ml/P000011X52-0000.html",
+  "cat2-loewe-loewe-solo-ella-edp":
+    "https://www.loewe.com/int/en/women/fragrance/loewe-solo-ella-eau-de-parfum-50-ml/P000011X31-0000.html",
+  "cat2-loewe-loewe-aire-sutileza-edt":
+    "https://www.loewe.com/int/en/women/fragrance/loewe-aire-sutileza-eau-de-toilette-50-ml/P000011X50-0000.html",
+  "cat2-maison-margiela-replica-jazz-club-edt":
+    "https://www.maisonmargiela.com/wx/replica-jazz-club-eau-de-toilette-%7C-maison-margiela-S33YX0016S10930001.html",
+  "cat2-maison-margiela-replica-autumn-vibes-edt":
+    "https://www.maisonmargiela.com/wx/replica-autumn-vibes-eau-de-toilette-S33YX0128SV0049961.html",
+  "cat2-maison-margiela-replica-from-the-garden-edt":
+    "https://www.maisonmargiela.com/en-tw/replica-from-the-garden-eau-de-toilette-S33YX0177M10053961.html",
 };
 
 /*
@@ -215,16 +312,26 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
  */
 export const OFFICIAL_PICTURES: Readonly<Record<string, string>> = {
   "cat-calvin-klein-ck-one-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/10740_000_main",
-  "cat-calvin-klein-eternity-for-women-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000744_000_main",
-  "cat-calvin-klein-eternity-for-women-suede-essence-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002152_000_main",
-  "cat-calvin-klein-euphoria-signature-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002160_000_main",
-  "cat-calvin-klein-euphoria-magnetic-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001963_000_main",
-  "cat-calvin-klein-euphoria-bold-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001959_000_main",
-  "cat-calvin-klein-euphoria-solar-elixir": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001967_000_main",
-  "cat-calvin-klein-eternity-for-men-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000717_000_main",
-  "cat-calvin-klein-eternity-for-men-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000724_000_main",
-  "cat-calvin-klein-eternity-for-men-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000725_000_main",
-  "cat-calvin-klein-obsession-for-men-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000709_000_main",
+  "cat-calvin-klein-eternity-for-women-edp":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000744_000_main",
+  "cat-calvin-klein-eternity-for-women-suede-essence-parfum":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002152_000_main",
+  "cat-calvin-klein-euphoria-signature-elixir":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX002160_000_main",
+  "cat-calvin-klein-euphoria-magnetic-elixir":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001963_000_main",
+  "cat-calvin-klein-euphoria-bold-elixir":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001959_000_main",
+  "cat-calvin-klein-euphoria-solar-elixir":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001967_000_main",
+  "cat-calvin-klein-eternity-for-men-edt":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000717_000_main",
+  "cat-calvin-klein-eternity-for-men-parfum":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000724_000_main",
+  "cat-calvin-klein-eternity-for-men-edp":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000725_000_main",
+  "cat-calvin-klein-obsession-for-men-edt":
+    "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000709_000_main",
   "cat-calvin-klein-defy-edt": "https://calvinklein.scene7.com/is/image/CalvinKlein/YS99350D_000_main",
   "cat-calvin-klein-defy-edp": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000102_000_main",
   "cat-calvin-klein-defy-parfum": "https://calvinklein.scene7.com/is/image/CalvinKlein/LX000315_000_main",

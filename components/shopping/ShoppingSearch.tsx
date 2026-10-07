@@ -11,6 +11,7 @@ import { CATALOGUE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { HEAVEN_LAFA } from "@/data/heaven-lafa";
 import { TAMBURINS } from "@/data/tamburins";
+import { BRAND_LISTS } from "@/data/brand-lists";
 import { CALVIN_KLEIN } from "@/data/calvin-klein";
 import { cn } from "@/lib/cn";
 import { cleanKeyword, MAX_KEYWORD_LENGTH } from "@/lib/shopping/links";
@@ -37,6 +38,7 @@ export function ShoppingSearch({ query }: { query: string }) {
       ...HEAVEN_LAFA,
       ...TAMBURINS,
       ...CALVIN_KLEIN,
+      ...BRAND_LISTS,
     ];
   }, [items]);
   const ownedIds = useMemo(() => new Set(items.map((i) => i.id)), [items]);

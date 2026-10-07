@@ -3,6 +3,7 @@ import { BRANDS } from "@/data/brands";
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
+import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
@@ -154,5 +155,30 @@ describe("name suggestions", () => {
 
   it("matches Chinese names too", () => {
     expect(nameSuggestions("HEAVEN LAFA", "阿努").map((x) => x.name)).toContain("神獸阿努比");
+  });
+});
+
+describe("An's brand lists", () => {
+  it("holds known brands, unique ids and dictionary notes, without repeating the catalogue", () => {
+    expect(BRAND_LISTS.length).toBeGreaterThan(100);
+    expect(new Set(BRAND_LISTS.map((f) => f.id)).size).toBe(BRAND_LISTS.length);
+    const earlier = new Set([...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN].map((f) => f.id));
+    for (const f of BRAND_LISTS) {
+      expect(earlier.has(f.id), f.id).toBe(false);
+      expect(
+        BRANDS.some((b) => b.name === f.brand),
+        f.brand,
+      ).toBe(true);
+      expect(f.topNotes.length + f.heartNotes.length + f.baseNotes.length, f.name).toBeGreaterThan(0);
+      for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
+        expect(noteInfo(n), `${f.name}: ${n}`).toBeDefined();
+    }
+  });
+
+  it("is found by smart lookup and under the name field", async () => {
+    const r = await lookup({ brand: "Tom Ford", name: "Oud Wood" });
+    expect(r?.confidence).toBe("high");
+    expect(r?.sources).toEqual([BRAND_LISTS_SOURCE]);
+    expect(nameSuggestions("Mancera", "cher").map((s) => s.value)).toContain("Cherry Cherry");
   });
 });

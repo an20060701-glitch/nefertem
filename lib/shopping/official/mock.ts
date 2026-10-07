@@ -1,4 +1,5 @@
 import { findBrand } from "@/data/brands";
+import { BRAND_LISTS } from "@/data/brand-lists";
 import { CALVIN_KLEIN } from "@/data/calvin-klein";
 import { CATALOGUE } from "@/data/catalogue";
 import { OFFICIAL_PAGES } from "@/data/official-pages";
@@ -35,7 +36,7 @@ export function productPageLink({ brandKey, name, id, concentration }: OfficialQ
   if (!brand) return null;
   let url = id ? OFFICIAL_PAGES[id] : undefined;
   if (!url && name) {
-    const same = [...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN].filter(
+    const same = [...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN, ...BRAND_LISTS].filter(
       (f) => OFFICIAL_PAGES[f.id] && brandForName(f.brand)?.key === brand.key && fold(f.name) === fold(name),
     );
     url = OFFICIAL_PAGES[(same.find((f) => f.concentration === concentration) ?? same[0])?.id ?? ""];
