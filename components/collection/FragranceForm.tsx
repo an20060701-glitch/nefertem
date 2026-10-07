@@ -8,6 +8,7 @@ import type { FragranceDraft } from "@/lib/collection/types";
 import { FAMILIES, MOODS } from "@/lib/fragrance/families";
 import { deriveMoods, tagToMood } from "@/lib/scent-tags";
 import type { Fragrance, FragranceFamily, Mood } from "@/types";
+import { NameSuggestInput } from "./NameSuggestInput";
 import { NoteInput } from "./NoteInput";
 
 const CONCENTRATIONS = ["EDC", "EDT", "EDP", "Parfum", "Extrait"] as const;
@@ -122,12 +123,17 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
         />
       </Field>
       <Field label="香水名稱 NAME" error={errors.name}>
-        <input
+        <NameSuggestInput
+          brand={brand}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={setName}
+          onPick={(s) => {
+            setName(s.name);
+            if (s.concentration) setConcentration(s.concentration);
+            if (s.nameZh && !nameZh) setNameZh(s.nameZh);
+          }}
           placeholder="例如 Santal 33"
           className={fieldClass}
-          autoComplete="off"
         />
       </Field>
       <Field label="中文名稱 （選填）">

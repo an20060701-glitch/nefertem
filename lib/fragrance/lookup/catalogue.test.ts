@@ -5,7 +5,7 @@ import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
-import { catalogueFragranceProvider } from "./catalogue";
+import { catalogueFragranceProvider, nameSuggestions } from "./catalogue";
 import { DEMO_SOURCE } from "./mock";
 
 const lookup = catalogueFragranceProvider.lookup;
@@ -93,5 +93,37 @@ describe("TAMBURINS", () => {
     expect(r?.confidence).toBe("high");
     expect(r?.fragrance.topNotes).toEqual(["paw-accord", "chamomile", "aldehydes"]);
     expect(r?.sources).toEqual([TAMBURINS_SOURCE]);
+  });
+});
+
+describe("name suggestions", () => {
+  it("offers nothing until a brand is given", () => {
+    expect(nameSuggestions("", "Sauvage")).toEqual([]);
+  });
+
+  it("lists every perfume of the brand at first, in any spelling of the brand", () => {
+    const all = nameSuggestions("香奈兒", "");
+    expect(all.length).toBe(nameSuggestions("Chanel", "").length);
+    expect(all.length).toBeGreaterThan(20);
+    expect(all.every((s) => !/sauvage/i.test(s.value))).toBe(true);
+  });
+
+  it("narrows as the member types, names starting with the text first", () => {
+    const s = nameSuggestions("Dior", "sau").map((x) => x.value);
+    expect(s.length).toBeGreaterThan(1);
+    expect(s.every((v) => /sauvage/i.test(v))).toBe(true);
+    expect(s).toContain("Sauvage Eau de Toilette");
+    expect(nameSuggestions("Dior", "eau sau").map((x) => x.value)[0]).toBe("Eau Sauvage");
+  });
+
+  it("names a bottle so the lookup finds that concentration", async () => {
+    const pick = nameSuggestions("Dior", "sauvage eau de t")[0];
+    expect(pick.concentration).toBe("EDT");
+    const r = await lookup({ brand: "Dior", name: pick.value });
+    expect(r?.fragrance.concentration).toBe("EDT");
+  });
+
+  it("matches Chinese names too", () => {
+    expect(nameSuggestions("HEAVEN LAFA", "阿努").map((x) => x.name)).toContain("神獸阿努比");
   });
 });

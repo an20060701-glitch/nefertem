@@ -109,3 +109,60 @@ export const catalogueFragranceProvider: FragranceDataProvider = {
     return toResult(best.f, confidence, best.source);
   },
 };
+
+const CONCENTRATION_LABEL: Record<NonNullable<Fragrance["concentration"]>, string> = {
+  EDP: "Eau de Parfum",
+  EDT: "Eau de Toilette",
+  EDC: "Eau de Cologne",
+  Parfum: "Parfum",
+  Extrait: "Extrait de Parfum",
+};
+
+export interface NameSuggestion {
+  /** What goes in the name field: the name, plus the concentration when the brand has several bottles of it. */
+  value: string;
+  name: string;
+  nameZh?: string;
+  concentration?: Fragrance["concentration"];
+}
+
+/**
+ * The database's perfumes for a brand (in any spelling the brand list knows), for the
+ * name field to offer as the member types: everything at first, then the names that
+ * contain what was typed, names that start with it first.
+ */
+export function nameSuggestions(brand: string, typed: string): NameSuggestion[] {
+  const b = brand.trim() ? brandKey(brand) : "";
+  if (!b) return [];
+  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...DEMO_FRAGRANCES].filter((f) => {
+    const fb = brandKey(f.brand);
+    return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
+  });
+  const bottles = new Map<string, number>();
+  for (const f of all) bottles.set(fold(f.name), (bottles.get(fold(f.name)) ?? 0) + 1);
+
+  const seen = new Set<string>();
+  const out: { s: NameSuggestion; at: number }[] = [];
+  const q = fold(typed);
+  for (const f of all) {
+    const several = (bottles.get(fold(f.name)) ?? 0) > 1 && f.concentration;
+    const value = several ? `${f.name} ${CONCENTRATION_LABEL[f.concentration!]}` : f.name;
+    if (seen.has(fold(value))) continue;
+    const at = q
+      ? Math.min(
+          ...[value, f.nameZh]
+            .filter((n): n is string => !!n)
+            .map((n) => fold(n).indexOf(q))
+            .map((i) => (i < 0 ? Infinity : i)),
+        )
+      : 0;
+    if (at === Infinity) continue;
+    seen.add(fold(value));
+    out.push({ s: { value, name: f.name, nameZh: f.nameZh, concentration: f.concentration }, at });
+  }
+  return out
+    .sort((x, y) =>
+      (x.at === 0) === (y.at === 0) ? x.s.value.localeCompare(y.s.value) : x.at === 0 ? -1 : 1,
+    )
+    .map((x) => x.s);
+}

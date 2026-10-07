@@ -20,7 +20,10 @@ export function LineFinish() {
     const next = safeNext(params.get("next"));
     // Keep the token out of history and screenshots.
     window.history.replaceState(null, "", window.location.pathname);
-    (token ? signInWithLineToken(token, params.get("name") ?? undefined) : Promise.reject(new Error("no token")))
+    (token
+      ? signInWithLineToken(token, params.get("name") ?? undefined)
+      : Promise.reject(new Error("no token"))
+    )
       .then(() => router.replace(next))
       .catch((error: unknown) => {
         console.error("[sign-in] line token failed", error);
