@@ -26,3 +26,11 @@ export function lastUsed(logs: readonly UsageLog[]): UsageLog | undefined {
     undefined,
   );
 }
+
+/**
+ * The cabinet's order (An, 2026-10-07): most worn first; scents worn equally often,
+ * and those not worn yet, keep the order they were added in, newest first.
+ */
+export function byMostWorn<T extends { usageCount: number; addedAt: number }>(items: readonly T[]): T[] {
+  return [...items].sort((a, b) => b.usageCount - a.usageCount || b.addedAt - a.addedAt);
+}
