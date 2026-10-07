@@ -185,6 +185,11 @@ export function useChoiceFlow() {
     return () => controller.abort();
   }, [fetchKey]);
 
+  /** Back to today's result with answers given earlier today (a saved query string). */
+  const resume = useCallback((saved: string) => {
+    writeUrl("result", parse(saved).selection, "replace");
+  }, []);
+
   let weatherStatus: WeatherStatus = "idle";
   if (locating || needsCoords) weatherStatus = "locating";
   else if (fetchKey) weatherStatus = fetched?.key === fetchKey ? fetched.status : "loading";
@@ -214,5 +219,6 @@ export function useChoiceFlow() {
       update({ moods }, "mood", "replace");
     },
     restart: () => update({ occasion: undefined, moods: [] }, "occasion"),
+    resume,
   };
 }
