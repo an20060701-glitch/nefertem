@@ -2,6 +2,7 @@ import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
+import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
 import { DEMO_SOURCE } from "./mock";
@@ -70,8 +71,8 @@ function toResult(f: Fragrance, confidence: Confidence, source: string): Fragran
 
 /**
  * Smart lookup over An's brand product list (data/catalogue.ts, 146 perfumes from
- * Chanel, Dior, Jo Malone London, Diptyque, Byredo and Le Labo), then the demo
- * catalogue. Brand names match in any spelling the brand list knows (香奈兒 = Chanel).
+ * Chanel, Dior, Jo Malone London, Diptyque, Byredo and Le Labo), HEAVEN LAFA,
+ * TAMBURINS and Calvin Klein, then the demo catalogue. Brand names match in any spelling the brand list knows (香奈兒 = Chanel).
  */
 export const catalogueFragranceProvider: FragranceDataProvider = {
   name: "catalogue",
@@ -84,6 +85,7 @@ export const catalogueFragranceProvider: FragranceDataProvider = {
       [CATALOGUE, CATALOGUE_SOURCE],
       [HEAVEN_LAFA, HEAVEN_LAFA_SOURCE],
       [TAMBURINS, TAMBURINS_SOURCE],
+      [CALVIN_KLEIN, CALVIN_KLEIN_SOURCE],
       [DEMO_FRAGRANCES, DEMO_SOURCE],
     ];
     for (const [list, source] of lists) {
@@ -134,7 +136,7 @@ export interface NameSuggestion {
 export function nameSuggestions(brand: string, typed: string): NameSuggestion[] {
   const b = brand.trim() ? brandKey(brand) : "";
   if (!b) return [];
-  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...DEMO_FRAGRANCES].filter((f) => {
+  const all = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...CALVIN_KLEIN, ...DEMO_FRAGRANCES].filter((f) => {
     const fb = brandKey(f.brand);
     return fb === b || (b.length >= 3 && fold(f.brand).includes(b));
   });

@@ -200,6 +200,18 @@ export const NOTES = {
   praline: { en: "Praline", zh: "果仁糖", family: "gourmand" },
   "red-berries": { en: "Red Berries", zh: "紅莓果", family: "fruity" },
   pomelo: { en: "Pomelo", zh: "柚子", family: "citrus" },
+  // added with the Calvin Klein notes (data/calvin-klein.ts, 2026-10-07)
+  papaya: { en: "Papaya", zh: "木瓜", family: "fruity" },
+  pomegranate: { en: "Pomegranate", zh: "石榴", family: "fruity" },
+  mango: { en: "Mango", zh: "芒果", family: "fruity" },
+  lotus: { en: "Lotus", zh: "蓮花", family: "floral" },
+  orchid: { en: "Orchid", zh: "蘭花", family: "floral" },
+  champaca: { en: "Champaca", zh: "金香木", family: "floral" },
+  coriander: { en: "Coriander", zh: "芫荽", family: "spicy" },
+  civet: { en: "Civet", zh: "靈貓香", family: "musky" },
+  ozonic: { en: "Ozonic Notes", zh: "臭氧調", family: "marine" },
+  suede: { en: "Suede", zh: "麂皮", family: "leather" },
+  cocoa: { en: "Cocoa", zh: "可可", family: "gourmand" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;
