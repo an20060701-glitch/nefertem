@@ -185,10 +185,20 @@ export function useChoiceFlow() {
     return () => controller.abort();
   }, [fetchKey]);
 
-  /** Back to today's result with answers given earlier today (a saved query string). */
-  const resume = useCallback((saved: string) => {
-    writeUrl("result", parse(saved).selection, "replace");
-  }, []);
+  /**
+   * Back to today's result with answers given earlier today (a saved query string).
+   * Answers saved without a place (today's pick came from another device or site) keep
+   * the place already found here, or look for one — the result needs today's weather.
+   */
+  const resume = useCallback(
+    (saved: string) => {
+      const answers = parse(saved).selection;
+      const place = answers.place ?? parse(window.location.search).selection.place;
+      writeUrl("result", { ...answers, place }, "replace");
+      if (!place) locate();
+    },
+    [locate],
+  );
 
   let weatherStatus: WeatherStatus = "idle";
   if (locating || needsCoords) weatherStatus = "locating";
