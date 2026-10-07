@@ -1,6 +1,8 @@
 import "server-only";
 
 import type { BrandInfo } from "@/data/brands";
+import { OFFICIAL_PAGES } from "@/data/official-pages";
+import { findCatalogueBottle } from "@/lib/fragrance/lookup/catalogue";
 import { brandForName } from "@/lib/shopping/normalize";
 import { bestProductEntry, pageImage, parseSitemap, type SitemapEntry } from "./parse";
 import { parseRobots, type RobotsRules } from "./robots";
@@ -177,8 +179,26 @@ function productEntries(origin: string, hosts: readonly string[]): Promise<Sitem
   });
 }
 
+/** The picture on a product page we already know (data/official-pages.ts), when robots.txt allows it. */
+async function fromKnownPage(pageUrl: string, brand: BrandInfo, hosts: readonly string[]) {
+  if (!(await allowed(pageUrl, hosts))) return null;
+  const html = await getText(pageUrl, PAGE_BYTES, hosts).catch(() => undefined);
+  const imageUrl = html && pageImage(html, pageUrl);
+  return imageUrl ? { imageUrl, pageUrl, brand: brand.name } : null;
+}
+
 async function findOnBrandSite(brand: BrandInfo, name: string): Promise<OfficialImage | null> {
   const hosts = brandHosts(brand);
+  // A catalogue bottle with a known product page skips the sitemap search: big brands
+  // (Dior) split their sitemaps over more files than we read.
+  const bottle = findCatalogueBottle({ brand: brand.name, name });
+  const known = bottle && bottle.confidence !== "low" ? OFFICIAL_PAGES[bottle.fragrance.id] : undefined;
+  if (known) {
+    // The page's own host counts as the brand's (e.g. Le Labo's Taiwan site, lelabofragrances.com.tw).
+    const pageHosts = [...hosts, new URL(known).hostname.replace(/^www\./, "")];
+    const image = await fromKnownPage(known, brand, pageHosts);
+    if (image) return image;
+  }
   for (const origin of origins(brand)) {
     // The bare domain is only a fallback for a www. site that did not answer at all.
     if (

@@ -188,6 +188,23 @@ describe("findOfficialImage", () => {
     );
   });
 
+  it("goes straight to a known product page, without reading the sitemaps", async () => {
+    const { findOfficialImage } = await import("./index");
+    const page = "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html";
+    const calls = site({
+      "https://www.dior.com/robots.txt":
+        "User-agent: *\nDisallow: /*.json\nSitemap: https://www.dior.com/sitemap.xml",
+      [page]: '<meta property="og:image" content="https://www.dior.com/on/Y0685240_E01_GHC.jpg">',
+    });
+    const image = await findOfficialImage({ brand: "Dior", name: "Sauvage Eau de Toilette" });
+    expect(image).toEqual({
+      imageUrl: "https://www.dior.com/on/Y0685240_E01_GHC.jpg",
+      pageUrl: page,
+      brand: "Dior",
+    });
+    expect(calls.some((c) => c.includes("sitemap"))).toBe(false);
+  });
+
   it("fetches nothing past robots.txt when the site says no", async () => {
     const { findOfficialImage } = await import("./index");
     const calls = site({ "https://www.byredo.com/robots.txt": "User-agent: *\nDisallow: /" });
