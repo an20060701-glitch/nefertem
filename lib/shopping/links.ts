@@ -4,14 +4,12 @@ export const MAX_KEYWORD_LENGTH = 80;
 
 /** Trim, drop control characters, collapse whitespace and cap the length. */
 export function cleanKeyword(input: string): string {
-  return (
-    input
-      .replace(/[\u0000-\u001f\u007f]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, MAX_KEYWORD_LENGTH)
-      .trim()
-  );
+  return input
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_KEYWORD_LENGTH)
+    .trim();
 }
 
 export type StoreKey = "shopee" | "momo" | "perfume1976";

@@ -15,14 +15,14 @@ cp .env.example .env.local   # 全部留空也能跑：天氣與官網搜尋使�
 npm run dev                  # http://localhost:3000
 ```
 
-| 指令 | 用途 |
-|---|---|
-| `npm run dev` | 開發伺服器 |
-| `npm run build` / `npm start` | Production build 與啟動 |
-| `npm run typecheck` | 產生路由型別並執行 TypeScript 檢查 |
-| `npm run lint` | ESLint |
-| `npm test` | Vitest 單元測試 |
-| `npm run check` | 以上三項一次跑完 |
+| 指令                          | 用途                               |
+| ----------------------------- | ---------------------------------- |
+| `npm run dev`                 | 開發伺服器                         |
+| `npm run build` / `npm start` | Production build 與啟動            |
+| `npm run typecheck`           | 產生路由型別並執行 TypeScript 檢查 |
+| `npm run lint`                | ESLint                             |
+| `npm test`                    | Vitest 單元測試                    |
+| `npm run check`               | 以上三項一次跑完                   |
 
 ## 字體
 

@@ -113,7 +113,10 @@ export function Hero() {
             <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
               BEGIN TODAY&apos;S RITUAL
             </span>
-            <span aria-hidden className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20" />
+            <span
+              aria-hidden
+              className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20"
+            />
           </Link>
           {!user && isFirebaseConfigured && (
             <p className="mt-4 text-small text-muted">使用 Google 或 LINE 帳號登入後開始。</p>

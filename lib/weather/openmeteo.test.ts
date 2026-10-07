@@ -10,7 +10,16 @@ afterEach(() => vi.unstubAllGlobals());
 describe("toCondition", () => {
   it("maps WMO codes", () => {
     expect([0, 1, 2, 3, 45, 53, 63, 81, 73, 95].map(toCondition)).toEqual([
-      "clear", "clear", "cloudy", "cloudy", "fog", "drizzle", "rain", "rain", "snow", "storm",
+      "clear",
+      "clear",
+      "cloudy",
+      "cloudy",
+      "fog",
+      "drizzle",
+      "rain",
+      "rain",
+      "snow",
+      "storm",
     ]);
   });
 });

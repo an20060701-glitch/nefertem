@@ -33,7 +33,10 @@ export async function GET(request: NextRequest) {
 
   try {
     const identity = await identify(config, request.nextUrl.origin, code, pending.nonce);
-    const fragment = new URLSearchParams({ token: firebaseTokenFor(config, identity.sub), next: pending.next });
+    const fragment = new URLSearchParams({
+      token: firebaseTokenFor(config, identity.sub),
+      next: pending.next,
+    });
     if (identity.name) fragment.set("name", identity.name.slice(0, 80));
     const response = NextResponse.redirect(new URL(`/login/line#${fragment}`, request.url));
     response.cookies.delete({ name: LINE_COOKIE, path: "/api/auth/line" });
