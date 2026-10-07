@@ -1,4 +1,5 @@
-import { getLocalUsage, logLocalUsage, subscribeLocalUsage } from "@/lib/usage/local";
+import { getLocalUsage, logLocalUsage, removeLocalUsage, subscribeLocalUsage } from "@/lib/usage/local";
+import { usageAfterUndo } from "./undo";
 import type { UserFragrance } from "@/types";
 import type { CollectionRepo, FragranceDraft } from "./types";
 
@@ -96,6 +97,18 @@ export const deviceRepo: CollectionRepo = {
   async remove(id) {
     // Usage logs stay, matched by fragranceId (architecture §7).
     write(read().filter((f) => f.id !== id));
+  },
+
+  async undoUsage(logs, usage) {
+    if (!logs.length) return;
+    const after = usageAfterUndo(logs, usage);
+    removeLocalUsage(new Set(logs.map((l) => l.id)));
+    write(
+      read().map((f) => {
+        const e = after.get(f.id);
+        return e ? { ...f, usageCount: Math.max(0, f.usageCount - e.count), lastUsedAt: e.lastUsedAt } : f;
+      }),
+    );
   },
 
   async logUsage(entry) {

@@ -50,6 +50,17 @@ export function subscribeLocalUsage(listener: () => void): () => void {
   };
 }
 
+/** Take wears back (重新開始). */
+export function removeLocalUsage(ids: ReadonlySet<string>) {
+  cache = read().filter((u) => !ids.has(u.id));
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(cache));
+  } catch {
+    // Private mode or full storage: the change holds for this visit only.
+  }
+  listeners.forEach((l) => l());
+}
+
 /** Record that a scent was chosen today. Returns the saved log. */
 export function logLocalUsage(entry: Omit<UsageLog, "id" | "timestamp">): UsageLog {
   const log: UsageLog = { ...entry, id: crypto.randomUUID(), timestamp: Date.now() };

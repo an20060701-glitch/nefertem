@@ -365,6 +365,10 @@ export function TodaysChoice() {
                       const now = Date.now();
                       shownPick.current = undefined;
                       setRestart({ repo, at: now });
+                      // Today's pick (and anything layered on it) no longer counts as worn.
+                      void repo
+                        .undoUsage(picks, usage)
+                        .catch((error: unknown) => console.error("[restart] undo", error));
                       void repo
                         .markRestarted(now)
                         .catch((error: unknown) => console.error("[restart]", error));

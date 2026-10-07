@@ -3,6 +3,7 @@
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   increment,
@@ -21,6 +22,7 @@ import type { User } from "firebase/auth";
 import type { UsageLog, UserFragrance } from "@/types";
 import { dayKey } from "@/lib/recommendation/today";
 import type { CollectionRepo } from "./types";
+import { usageAfterUndo } from "./undo";
 
 const USAGE_WINDOW_MS = 120 * 86_400_000;
 
@@ -167,6 +169,21 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
       }
       await batch.commit();
       return log;
+    },
+
+    async undoUsage(logs, usage) {
+      if (!logs.length) return;
+      const batch = writeBatch(db);
+      for (const l of logs) batch.delete(doc(usageLogs, l.id));
+      for (const [fragranceId, e] of usageAfterUndo(logs, usage)) {
+        const owned = await getDoc(doc(fragrances, fragranceId));
+        if (!owned.exists()) continue;
+        batch.update(owned.ref, {
+          usageCount: increment(-e.count),
+          lastUsedAt: e.lastUsedAt ?? deleteField(),
+        });
+      }
+      await batch.commit();
     },
   };
 }
