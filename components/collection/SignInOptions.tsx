@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { afterSignIn } from "@/lib/account";
 import { LINE_SERVER_LOGIN, signInWithGoogle, signInWithLine } from "@/lib/firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
 import { useCollection } from "./CollectionProvider";
@@ -19,10 +20,12 @@ export function SignInOptions({ next, lineFailed = false }: { next: string; line
   const router = useRouter();
   const { user } = useCollection();
   const [pending, setPending] = useState<Provider>();
-  const [error, setError] = useState<string | undefined>(lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined);
+  const [error, setError] = useState<string | undefined>(
+    lineFailed ? "LINE 登入沒有完成，請再試一次。" : undefined,
+  );
 
   useEffect(() => {
-    if (user) router.replace(next);
+    if (user) router.replace(afterSignIn(next, user));
   }, [user, next, router]);
 
   async function signIn(provider: Provider) {
@@ -30,7 +33,9 @@ export function SignInOptions({ next, lineFailed = false }: { next: string; line
     setError(undefined);
     if (provider === "line" && LINE_SERVER_LOGIN) {
       // A full-page trip through our server; any tab LINE returns to can finish it.
-      window.location.assign(new URL(`/api/auth/line/start?next=${encodeURIComponent(next)}`, window.location.origin));
+      window.location.assign(
+        new URL(`/api/auth/line/start?next=${encodeURIComponent(next)}`, window.location.origin),
+      );
       return;
     }
     try {
