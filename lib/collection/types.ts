@@ -21,6 +21,12 @@ export interface CollectionRepo {
   remove(id: string): Promise<void>;
   /** Records a wear; also bumps usageCount / lastUsedAt when the scent is in the collection. */
   logUsage(entry: UsageDraft): Promise<UsageLog>;
+  /**
+   * When today's 香水選擇 was last restarted (重新開始), wherever it was pressed: a
+   * member's devices all follow it; a guest's stays on this device.
+   */
+  subscribeRestart(onRestart: (at: number | undefined) => void, onError?: (e: unknown) => void): () => void;
+  markRestarted(at: number): Promise<void>;
   /** Photos need an account (Storage is per member). */
   supportsImages: boolean;
 }

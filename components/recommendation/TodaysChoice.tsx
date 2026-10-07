@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
-import { markRestarted, restartedAt, saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
+import { saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
 import { FortuneWheel } from "./FortuneWheel";
 import { MoodStep } from "./MoodStep";
 import { OccasionStep } from "./OccasionStep";
@@ -58,40 +58,72 @@ export function TodaysChoice() {
 
   // A scent chosen earlier today (the usage log follows the account): coming back to the
   // page shows that result again instead of asking (An, 2026-10-07).
-  // 「重新開始」 sets earlier picks aside for the day, even after signing out or reopening.
-  const [restartAt, setRestartAt] = useState<number>();
-  useEffect(() => {
-    const at = restartedAt();
-    if (at) window.setTimeout(() => setRestartAt(at), 0);
-  }, []);
+  // 「重新開始」 sets earlier picks aside for the day. It lives on the account, so pressing
+  // it on one device asks again on every device signed in to it (An, 2026-10-07).
+  const [restart, setRestart] = useState<{ repo: unknown; at?: number }>();
+  useEffect(
+    () =>
+      repo.subscribeRestart(
+        (at) => setRestart({ repo, at }),
+        (error) => {
+          console.error("[restart]", error);
+          setRestart({ repo });
+        },
+      ),
+    [repo],
+  );
+  const restartKnown = restart?.repo === repo;
+  const restartAt = restartKnown ? restart?.at : undefined;
   const picks = useMemo(
     () => todaysPicks(usage).filter((p) => !restartAt || p.timestamp > restartAt),
     [usage, restartAt],
   );
   const answersKey = `restored|${selection.occasion}|${selection.moods.join(",")}`;
-  const resumed = useRef(false);
-  const { resume } = flow;
+  const { resume, restart: restartFlow } = flow;
+
+  // Follow today's pick as it changes on any device: show it when one is made (here or
+  // elsewhere), and go back to the questions when it is set aside by 重新開始.
+  const shownPick = useRef<string>(undefined);
+  const firstLook = useRef(true);
+  const first = picks[0];
   useEffect(() => {
-    if (resumed.current || !ready) return;
-    resumed.current = true;
-    // Read the restart here too: the state above may not have caught up on this render.
-    const at = restartedAt();
-    const first = picks.find((p) => !at || p.timestamp > at);
-    if (!first || new URLSearchParams(window.location.search).has("step")) return;
-    const saved =
-      savedSearch() ??
-      new URLSearchParams({ occasion: first.occasion, mood: first.mood.join(",") }).toString();
-    const answers = new URLSearchParams(saved);
-    // After this render; the ref keeps it to once, so no cleanup cancels it.
+    if (!ready || !restartKnown) return;
+    const initial = firstLook.current;
+    firstLook.current = false;
+    if (!first) {
+      if (shownPick.current === undefined) return;
+      shownPick.current = undefined;
+      window.setTimeout(() => {
+        setConfirmed(undefined);
+        setFeatured(undefined);
+        restartFlow();
+      }, 0);
+      return;
+    }
+    if (shownPick.current === first.id) return;
+    shownPick.current = first.id;
+    // On arrival, a link to a particular step is kept (back / forward through the ritual).
+    if (initial && new URLSearchParams(window.location.search).has("step")) return;
+    // The pick carries its own answers (it may come from another device, or from after a
+    // restart); this device adds only the city it last used today.
+    const answers = new URLSearchParams({ occasion: first.occasion, mood: first.mood.join(",") });
+    const city = new URLSearchParams(savedSearch() ?? "").get("city");
+    if (city) answers.set("city", city);
+    const saved = answers.toString();
+    // After this render, so the state change is not part of the effect itself.
     window.setTimeout(() => {
-      setConfirmed({
-        key: `restored|${answers.get("occasion")}|${answers.get("mood")}`,
-        id: first.fragranceId,
-        viaWheel: first.viaWheel,
-      });
+      setConfirmed(
+        (current) =>
+          (current?.id === first.fragranceId ? current : undefined) ?? {
+            key: `restored|${answers.get("occasion")}|${answers.get("mood")}`,
+            id: first.fragranceId,
+            viaWheel: first.viaWheel,
+          },
+      );
+      if (!initial && new URLSearchParams(window.location.search).get("step") === "result") return;
       resume(saved);
     }, 0);
-  }, [ready, picks, resume]);
+  }, [ready, restartKnown, first, resume, restartFlow]);
 
   const confirmedHere =
     confirmed && (confirmed.key === selectionKey || confirmed.key === answersKey) ? confirmed : undefined;
@@ -331,8 +363,11 @@ export function TodaysChoice() {
                     onEditMood={() => flow.goTo("mood")}
                     onRestart={() => {
                       const now = Date.now();
-                      markRestarted(now);
-                      setRestartAt(now);
+                      shownPick.current = undefined;
+                      setRestart({ repo, at: now });
+                      void repo
+                        .markRestarted(now)
+                        .catch((error: unknown) => console.error("[restart]", error));
                       setConfirmed(undefined);
                       setFeatured(undefined);
                       flow.restart();

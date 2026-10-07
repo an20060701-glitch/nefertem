@@ -19,6 +19,7 @@ import {
 import { deleteObject, getDownloadURL, ref, uploadBytes, type FirebaseStorage } from "firebase/storage";
 import type { User } from "firebase/auth";
 import type { UsageLog, UserFragrance } from "@/types";
+import { dayKey } from "@/lib/recommendation/today";
 import type { CollectionRepo } from "./types";
 
 const USAGE_WINDOW_MS = 120 * 86_400_000;
@@ -69,8 +70,26 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
     }
   }
 
+  // Today's 重新開始, shared by every device signed in to this account.
+  const ritual = doc(db, "users", uid, "state", "ritual");
+
   return {
     kind: "account",
+
+    subscribeRestart(onRestart, onError) {
+      return onSnapshot(
+        ritual,
+        (snap) => {
+          const at = snap.get("restartedAt") as unknown;
+          onRestart(typeof at === "number" && dayKey(at) === dayKey(Date.now()) ? at : undefined);
+        },
+        onError,
+      );
+    },
+
+    async markRestarted(at) {
+      await setDoc(ritual, { restartedAt: at }, { merge: true });
+    },
     supportsImages: !!store,
 
     subscribe(onItems, onError) {
