@@ -10,6 +10,8 @@ export async function GET(request: Request) {
     return Response.json({ error: "Provide ?brand= and ?name=" }, { status: 400 });
   }
   const image = await findOfficialImage({ brand, name });
-  // No personal data involved: the answer depends only on the query.
-  return Response.json({ image }, { headers: { "Cache-Control": "public, max-age=86400" } });
+  // No personal data involved: the answer depends only on the query. A miss is not
+  // kept: it may be a brand site that was slow, or a picture added since.
+  const cache = image ? "public, max-age=3600" : "no-store";
+  return Response.json({ image }, { headers: { "Cache-Control": cache } });
 }
