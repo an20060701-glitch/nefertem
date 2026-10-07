@@ -85,7 +85,8 @@
      Latin keeps Cormorant (display) and Inter (UI); Noto TC fills glyphs Ryusenkei lacks. */
   --font-display: var(--font-cormorant), "Ryusenkei", var(--font-noto-serif-tc), Georgia, serif;
   --font-serif-zh: "Ryusenkei", var(--font-noto-serif-tc), "Songti TC", serif;
-  --font-sans: var(--font-inter), "Ryusenkei", var(--font-noto-serif-tc), var(--font-noto-sans-tc), -apple-system,
+  --font-sans:
+    var(--font-inter), "Ryusenkei", var(--font-noto-serif-tc), var(--font-noto-sans-tc), -apple-system,
     "PingFang TC", sans-serif;
 
   /* Type scale — mobile → desktop via clamp() */
@@ -160,6 +161,27 @@
     color: inherit;
     text-decoration: none;
   }
+
+  /* Taps answer at once: no double-tap-zoom wait, no grey flash — the press state is ours. */
+  a,
+  button,
+  label,
+  [role="button"],
+  [role="radio"],
+  [role="checkbox"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Editorial rag: balanced headings, no lonely last word in paragraphs. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 }
 
 /* ── Editorial utilities ──────────────────────────────────────── */
@@ -197,6 +219,42 @@
   &[aria-current="page"]::after {
     transform: scaleX(1);
   }
+}
+
+/* Press feedback: the control gives way the instant it is pressed, and settles back
+   on release. Colours keep their unhurried editorial fade. */
+@utility press {
+  transition:
+    color 0.4s var(--ease-editorial),
+    background-color 0.4s var(--ease-editorial),
+    border-color 0.4s var(--ease-editorial),
+    opacity 0.4s var(--ease-editorial),
+    scale 0.3s var(--ease-editorial);
+  &:active:not(:disabled):not([aria-disabled="true"]) {
+    scale: 0.97;
+    transition: scale 0.08s ease-out;
+  }
+}
+
+/* The same for large surfaces (cards, rows), which give way less. */
+@utility press-soft {
+  transition:
+    color 0.5s var(--ease-editorial),
+    background-color 0.5s var(--ease-editorial),
+    border-color 0.5s var(--ease-editorial),
+    opacity 0.5s var(--ease-editorial),
+    scale 0.35s var(--ease-editorial);
+  &:active:not(:disabled):not([aria-disabled="true"]) {
+    scale: 0.985;
+    transition: scale 0.08s ease-out;
+  }
+}
+
+/* Translucent chrome: content stays faintly visible as it scrolls under the bars. */
+@utility material-bar {
+  background: rgb(247 244 237 / 0.92);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
 }
 
 /* ── Ambient animations (CSS keeps these off the JS thread) ───── */
@@ -294,6 +352,19 @@ html[data-intro-seen] .loading-ritual {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+  }
+  /* Presses still answer, without movement. */
+  .press:active,
+  .press-soft:active {
+    scale: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-bar {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 

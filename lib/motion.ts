@@ -34,6 +34,8 @@ export const transition = {
   slow: { duration: duration.slow, ease: ease.editorial },
   ritual: { duration: duration.ritual, ease: ease.editorial },
   page: { duration: duration.slow, ease: ease.cinematic },
+  /** A page arriving: moving from the first frame, then settling — never a slow start. */
+  enter: { duration: 0.6, ease: ease.editorial },
   micro: { duration: duration.micro, ease: ease.editorial },
 } as const satisfies Record<string, Transition>;
 
@@ -71,10 +73,10 @@ export function staggerChildren(delayChildren = 0, gap: number = stagger.lines):
   };
 }
 
-/** Entering page: ivory curtain lifts, content rises slightly. */
+/** Entering page: content rises slightly, already in motion on the first frame. */
 export const pageTransition: Variants = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: transition.page },
+  visible: { opacity: 1, y: 0, transition: transition.enter },
 };
 
 /** Reduced-motion substitute: a short, position-free fade. */

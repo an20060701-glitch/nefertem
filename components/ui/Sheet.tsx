@@ -30,10 +30,14 @@ export function Sheet({ label, title, onClose, children }: SheetProps) {
       aria-labelledby="sheet-title"
       tabIndex={-1}
       onKeyDown={(e) => modalKeyDown(e, ref.current, onClose)}
+      // Leaves along the path it came in by, a little quicker than it arrived.
       initial={{ opacity: 0, y: reduce ? 0 : 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: reduce ? 0 : 24 }}
-      transition={{ duration: reduce ? 0.2 : 0.8, ease: ease.editorial }}
+      animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0.2 : 0.5, ease: ease.editorial } }}
+      exit={{
+        opacity: 0,
+        y: reduce ? 0 : 40,
+        transition: { duration: reduce ? 0.15 : 0.3, ease: ease.editorial },
+      }}
       className="fixed inset-0 z-[80] overflow-y-auto bg-surface outline-none"
     >
       <div className="page-x mx-auto flex min-h-full max-w-[64rem] flex-col py-6 desk:py-12">
@@ -42,7 +46,7 @@ export function Sheet({ label, title, onClose, children }: SheetProps) {
           <button
             type="button"
             onClick={onClose}
-            className="label min-h-11 px-2 text-muted transition-colors hover:text-ink"
+            className="press label min-h-11 px-2 text-muted hover:text-ink"
           >
             關閉 · CLOSE
           </button>

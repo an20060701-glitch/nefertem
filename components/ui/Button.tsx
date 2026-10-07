@@ -11,8 +11,7 @@ const VARIANTS: Record<Variant, string> = {
   text: "gold-underline text-blue h-11",
 };
 
-const base =
-  "label inline-flex min-h-11 items-center justify-center gap-3 transition-colors duration-300 ease-[var(--ease-editorial)]";
+const base = "label inline-flex min-h-11 items-center justify-center gap-3 press";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant };
 

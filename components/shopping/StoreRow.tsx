@@ -15,7 +15,7 @@ export function StoreRow({ href, name, zh, hint }: StoreRowProps) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative block py-8 outline-none desk:py-10"
+        className="press-soft group relative block py-8 outline-none desk:py-10"
       >
         <span className="flex items-baseline justify-between gap-6">
           <span className="font-display text-display font-light text-ink transition-colors duration-500 group-hover:text-blue group-focus-visible:text-blue">
