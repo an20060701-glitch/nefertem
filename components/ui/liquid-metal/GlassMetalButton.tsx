@@ -52,13 +52,29 @@ type Common = {
   children: React.ReactNode;
   /** "circle" makes a round button as wide as it is tall. */
   shape?: "pill" | "circle";
+  /** Fill the width of its container (the sign-in buttons). */
+  wide?: boolean;
   className?: string;
   "aria-label"?: string;
+  "aria-busy"?: boolean;
 };
 
-type Props = Common & ({ href: string; onClick?: never } | { onClick: () => void; href?: never });
+type Props = Common &
+  (
+    | { href: string; onClick?: never; disabled?: never }
+    | { onClick: () => void; href?: never; disabled?: boolean }
+  );
 
-export function GlassMetalButton({ children, shape = "pill", className, href, onClick, ...aria }: Props) {
+export function GlassMetalButton({
+  children,
+  shape = "pill",
+  wide = false,
+  className,
+  href,
+  onClick,
+  disabled,
+  ...aria
+}: Props) {
   const box = useRef<HTMLSpanElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const [size, setSize] = useState<{ w: number; h: number }>();
@@ -106,10 +122,20 @@ export function GlassMetalButton({ children, shape = "pill", className, href, on
   const face = cn(
     "label relative z-[2] inline-flex h-14 items-center justify-center gap-3 rounded-full text-blue outline-offset-4",
     shape === "circle" ? "w-14" : "px-9",
+    wide && "w-full",
+    "disabled:cursor-not-allowed",
   );
 
   return (
-    <span ref={box} className={cn("relative inline-flex w-fit rounded-full", className)}>
+    <span
+      ref={box}
+      className={cn(
+        "relative inline-flex rounded-full transition-opacity duration-300",
+        wide ? "w-full" : "w-fit",
+        disabled && "opacity-55",
+        className,
+      )}
+    >
       {/* Clear glass: a thin bright edge, a frosted body and a soft lift off the page. */}
       <span
         aria-hidden
@@ -121,7 +147,7 @@ export function GlassMetalButton({ children, shape = "pill", className, href, on
           {children}
         </Link>
       ) : (
-        <button type="button" onClick={onClick} className={face} {...handlers} {...aria}>
+        <button type="button" onClick={onClick} disabled={disabled} className={face} {...handlers} {...aria}>
           {children}
         </button>
       )}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { GlassMetalButton } from "@/components/ui/liquid-metal/GlassMetalButton";
 import { afterSignIn } from "@/lib/account";
 import { LINE_SERVER_LOGIN, signInWithGoogle, signInWithLine } from "@/lib/firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
@@ -63,21 +63,23 @@ export function SignInOptions({ next, lineFailed = false }: { next: string; line
 
   return (
     <div className="flex flex-col items-stretch gap-4">
-      <Button
+      {/* Clear glass with the moving liquid-metal rim, like BEGIN (An, 2026-10-08). */}
+      <GlassMetalButton
+        wide
         onClick={() => signIn("google")}
         disabled={!isFirebaseConfigured || !!pending}
         aria-busy={pending === "google"}
       >
         {pending === "google" ? "CONNECTING…" : "CONTINUE WITH GOOGLE"}
-      </Button>
-      <Button
-        variant="ghost"
+      </GlassMetalButton>
+      <GlassMetalButton
+        wide
         onClick={() => signIn("line")}
         disabled={!isFirebaseConfigured || !!pending}
         aria-busy={pending === "line"}
       >
         {pending === "line" ? "CONNECTING…" : "CONTINUE WITH LINE"}
-      </Button>
+      </GlassMetalButton>
       {!isFirebaseConfigured ? (
         <p className="text-small text-faint">會員服務尚未設定，暫時無法登入。</p>
       ) : null}
