@@ -317,6 +317,161 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat2-mercedes-benz-man-private-edp": "https://parfums.mercedes-benz.com/en/products/man-private",
   "cat2-mercedes-benz-maybach-charismatic-rose-edp":
     "https://parfums.mercedes-benz.com/en/products/recharge-maybach-charismatic-rose",
+  "cat2-mfk-petit-matin-edp":
+    "https://www.franciskurkdjian.com/int-en/p/petit-matin-eau-de-parfum-RA122421.html",
+  "cat2-mfk-leau-a-la-rose-edt":
+    "https://www.franciskurkdjian.com/int-en/p/leau-a-la-rose-eau-de-toilette-RA133021.html",
+  "cat2-mfk-kurky-edp": "https://www.franciskurkdjian.com/int-en/p/kurky-eau-de-parfum-RA12402.html",
+  "cat2-byredo-de-los-santos-edp": "https://www.byredo.com/us_en/p/de-los-santos-eau-de-parfum",
+  "cat2-byredo-eyes-closed-edp": "https://www.byredo.com/us_en/p/eyes-closed-eau-de-parfum",
+  "cat2-byredo-mojave-ghost-absolu-parfum": "https://www.byredo.com/us_en/p/mojave-absolu",
+  "cat2-byredo-bal-dafrique-absolu-parfum": "https://www.byredo.com/us_en/p/bal-dafrique-absolu-de-parfum",
+  "cat2-byredo-blanche-absolu-parfum": "https://www.byredo.com/us_en/p/blanche-absolu-de-parfum",
+  "cat2-byredo-rose-of-no-mans-land-absolu-parfum":
+    "https://www.byredo.com/us_en/p/rose-of-no-mans-land-absolu-de-parfum",
+  "cat2-miller-harris-la-fumee-alexandrie-edp":
+    "https://www.millerharris.com/products/la-fumee-alexandrie-eau-de-parfum",
+  "cat2-mfk-724-edp": "https://www.franciskurkdjian.com/int-en/p/724-eau-de-parfum-RA12352.html",
+  "cat2-mfk-a-la-rose-edp": "https://www.franciskurkdjian.com/int-en/p/a-la-rose-eau-de-parfum-RA128722.html",
+  "cat2-mfk-aqua-vitae-cologne-forte-edp":
+    "https://www.franciskurkdjian.com/int-en/p/aqua-vitae-cologne-forte-eau-de-parfum-RA12332.html",
+  "cat2-mfk-aqua-universalis-edt":
+    "https://www.franciskurkdjian.com/int-en/p/aqua-universalis-eau-de-toilette-RA130321.html",
+  "cat2-mfk-amyris-femme-edp":
+    "https://www.franciskurkdjian.com/int-en/p/amyris-femme-eau-de-parfum-RA121322.html",
+  "cat2-mfk-amyris-femme-extrait":
+    "https://www.franciskurkdjian.com/int-en/p/amyris-femme-extrait-de-parfum-RA141322.html",
+  "cat2-mfk-amyris-homme-edt":
+    "https://www.franciskurkdjian.com/int-en/p/amyris-homme-eau-de-toilette-RA131411.html",
+  "cat2-mfk-amyris-homme-extrait":
+    "https://www.franciskurkdjian.com/int-en/p/amyris-homme-extrait-de-parfum-RA141421.html",
+  "cat2-mfk-apom-edp": "https://www.franciskurkdjian.com/int-en/p/apom-eau-de-parfum-RA120421.html",
+  "cat2-mfk-aqua-media-cologne-forte-edp":
+    "https://www.franciskurkdjian.com/int-en/p/aqua-media-cologne-forte-eau-de-parfum-RA12362.html",
+  "cat2-mfk-feminin-pluriel-edp":
+    "https://www.franciskurkdjian.com/int-en/p/feminin-pluriel-eau-de-parfum-RA122021.html",
+  "cat2-mfk-gentle-fluidity-gold-edp":
+    "https://www.franciskurkdjian.com/int-en/p/gentle-fluidity-gold-edition---eau-de-parfum-RA122821.html",
+  "cat2-mfk-gentle-fluidity-silver-edp":
+    "https://www.franciskurkdjian.com/int-en/p/gentle-fluidity-silver-edition---eau-de-parfum-RA122921.html",
+  "cat2-youssoful-creme-de-the-extrait": "https://www.youssoful.tw/products/edp-00-cremedethe-50ml",
+  "cat2-youssoful-fiine-extrait": "https://www.youssoful.tw/products/edp-01-fiine-50ml",
+  "cat2-youssoful-mary-s-garden-extrait": "https://www.youssoful.tw/products/edp-02-marysgarden-50ml",
+  "cat2-youssoful-berry-sexy-extrait": "https://www.youssoful.tw/products/edp-03-berrysexy-50ml",
+  "cat2-youssoful-je-t-aime-extrait": "https://www.youssoful.tw/products/edp-04-jetaime-50ml",
+  "cat2-youssoful-floralia-extrait": "https://www.youssoful.tw/products/edp-05-floralia-50ml",
+  "cat2-youssoful-stare-m-sto-extrait": "https://www.youssoful.tw/products/edp-06-staremesto-50ml",
+  "cat2-youssoful-saint-moritz-extrait": "https://www.youssoful.tw/products/edp-07-saintmoritz-50ml",
+  "cat2-youssoful-dimanche-a-paris-extrait": "https://www.youssoful.tw/products/edp-08-dimancheaparis-50ml",
+  "cat2-youssoful-lourdes-extrait": "https://www.youssoful.tw/products/edp-09-lourdes-50ml",
+  "cat2-youssoful-puglia-ostuni-extrait": "https://www.youssoful.tw/products/edp-10-pugliaostuni-50ml",
+  "cat2-youssoful-borough-london-extrait": "https://www.youssoful.tw/products/edp-11-boroughlondon-50ml",
+  "cat2-youssoful-beieren-extrait": "https://www.youssoful.tw/products/edp-12-beieren-50ml",
+  "cat2-youssoful-coco-hawaii-extrait": "https://www.youssoful.tw/products/edp-13-cocohawaii-50ml",
+  "cat2-youssoful-biove-extrait": "https://www.youssoful.tw/products/edp-14-biove-50ml",
+  "cat2-youssoful-seychelles-extrait": "https://www.youssoful.tw/products/edp-15-seychelles-50ml",
+  "cat2-youssoful-berry-noir-extrait": "https://www.youssoful.tw/products/edp-16-berrynoir-50ml",
+  "cat2-youssoful-diving-cefalu-spiaggia-extrait":
+    "https://www.youssoful.tw/products/edp-17-divingcefaluspiaggia-50ml",
+  "cat2-youssoful-daiquiri-extrait": "https://www.youssoful.tw/products/edp-18-daiquiri-50ml",
+  "cat2-youssoful-cote-d-azur-extrait": "https://www.youssoful.tw/products/edp-19-cotedazur-50ml",
+  "cat2-youssoful-santal-sequoia-extrait": "https://www.youssoful.tw/products/edp-20-santalsequoia-50ml",
+  "cat2-youssoful-hyperion-extrait": "https://www.youssoful.tw/products/edp-21-hyperion-50ml",
+  "cat2-youssoful-kingsman-extrait": "https://www.youssoful.tw/products/edp-22-kingsman-50ml",
+  "cat2-youssoful-milan-fever-extrait": "https://www.youssoful.tw/products/edp-23-milanfever-50ml",
+  "cat2-youssoful-emporia-cotton-extrait": "https://www.youssoful.tw/products/edp-24-emporiacotton-50ml",
+  "cat2-youssoful-burj-royal-extrait": "https://www.youssoful.tw/products/edp-25-burjroyal-50ml",
+  "cat2-labsolue-10-artemisia-edp": "https://labsolueperfume.com/en/products/10-artemisia-eau-de-parfum",
+  "cat2-labsolue-11-violetta-edp": "https://labsolueperfume.com/en/products/11-violetta-eau-de-parfum",
+  "cat2-labsolue-12-fresia-edp": "https://labsolueperfume.com/en/products/12-fresia-eau-de-parfum",
+  "cat2-labsolue-14-angelica-edp": "https://labsolueperfume.com/en/products/14-angelica-eau-de-parfum",
+  "cat2-labsolue-15-lavanda-edp": "https://labsolueperfume.com/en/products/15-lavanda-eau-de-parfum",
+  "cat2-labsolue-20-gardenia-edp": "https://labsolueperfume.com/en/products/20-gardenia-eau-de-parfum",
+  "cat2-labsolue-21-gelsomino-edp": "https://labsolueperfume.com/en/products/21-gelsomino-eau-de-parfum",
+  "cat2-labsolue-22-osmanto-edp": "https://labsolueperfume.com/en/products/22-osmanto-eau-de-parfum",
+  "cat2-labsolue-23-neroli-edp": "https://labsolueperfume.com/en/products/23-neroli-eau-de-parfum",
+  "cat2-labsolue-24-zagara-edp": "https://labsolueperfume.com/en/products/24-zagara-eau-de-parfum",
+  "cat2-labsolue-25-fiore-d-arancio-edp":
+    "https://labsolueperfume.com/en/products/25-fiore-darancio-eau-de-parfum",
+  "cat2-labsolue-26-frangipani-edp": "https://labsolueperfume.com/en/products/26-frangipani-eau-de-parfum",
+  "cat2-labsolue-30-robinia-edp": "https://labsolueperfume.com/en/products/30-robinia-eau-de-parfum",
+  "cat2-labsolue-31-lilla-edp": "https://labsolueperfume.com/en/products/31-lilla-eau-de-parfum",
+  "cat2-labsolue-32-mimosa-edp": "https://labsolueperfume.com/en/products/32-mimosa-eau-de-parfum",
+  "cat2-labsolue-33-magnolia-edp": "https://labsolueperfume.com/en/products/33-magnolia-eau-de-parfum",
+  "cat2-labsolue-34-ylang-ylang-edp": "https://labsolueperfume.com/en/products/34-ylang-ylang-eau-de-parfum",
+  "cat2-labsolue-35-tiglio-edp": "https://labsolueperfume.com/en/products/35-tiglio-eau-de-parfum",
+  "cat2-labsolue-36-rosa-edp": "https://labsolueperfume.com/en/products/36-rosa-eau-de-parfum",
+  "cat2-labsolue-219-tuberosa-edp": "https://labsolueperfume.com/en/products/219-tuberosa-eau-de-parfum",
+  "cat2-labsolue-221-iris-edp": "https://labsolueperfume.com/en/products/221-iris-eau-de-parfum",
+  "cat2-labsolue-101-bergamotto-edp": "https://labsolueperfume.com/en/products/101-bergamotto-eau-de-parfum",
+  "cat2-labsolue-102-mandarino-edp": "https://labsolueperfume.com/en/products/102-mandarino-eau-de-parfum",
+  "cat2-labsolue-103-mirto-edp": "https://labsolueperfume.com/en/products/103-mirto-eau-de-parfum",
+  "cat2-labsolue-104-gelso-edp": "https://labsolueperfume.com/en/products/104-gelso-eau-de-parfum",
+  "cat2-labsolue-201-ulivo-edp": "https://labsolueperfume.com/en/products/201-ulivo-eau-de-parfum",
+  "cat2-labsolue-202-fico-edp": "https://labsolueperfume.com/en/products/202-fico-eau-de-parfum",
+  "cat2-labsolue-203-melograno-edp": "https://labsolueperfume.com/en/products/203-melograno-eau-de-parfum",
+  "cat2-labsolue-204-nespolo-edp": "https://labsolueperfume.com/en/products/204-nespolo-eau-de-parfum",
+  "cat2-labsolue-301-pesco-edp": "https://labsolueperfume.com/en/products/301-pesco-eau-de-parfum",
+  "cat2-labsolue-302-mandorlo-edp": "https://labsolueperfume.com/en/products/302-mandorlo-eau-de-parfum",
+  "cat2-labsolue-303-ciliegio-edp": "https://labsolueperfume.com/en/products/303-ciliegio-eau-de-parfum",
+  "cat2-labsolue-304-vaniglia-edp": "https://labsolueperfume.com/en/products/304-vaniglia-eau-de-parfum",
+  "cat2-labsolue-312-petitgrain-edp": "https://labsolueperfume.com/en/products/312-petitgrain-eau-de-parfum",
+  "cat2-labsolue-314-cedro-edp": "https://labsolueperfume.com/en/products/314-cedro-eau-de-parfum",
+  "cat2-labsolue-316-ambrette-edp": "https://labsolueperfume.com/en/products/316-ambrette-eau-de-parfum",
+  "cat2-labsolue-305-mentha-aquatica-edp":
+    "https://labsolueperfume.com/en/products/305-mentha-aquatica-eau-de-parfum",
+  "cat2-labsolue-306-salvia-bianca-edp":
+    "https://labsolueperfume.com/en/products/306-salvia-bianca-eau-de-parfum",
+  "cat2-labsolue-307-rosmarino-edp": "https://labsolueperfume.com/en/products/307-rosmarino-eau-de-parfum",
+  "cat2-labsolue-308-santolina-edp": "https://labsolueperfume.com/en/products/308-santolina-eau-de-parfum",
+  "cat2-labsolue-309-timo-edp": "https://labsolueperfume.com/en/products/309-timo-eau-de-parfum",
+  "cat2-labsolue-318-canapa-edp": "https://labsolueperfume.com/en/products/318-canapa-eau-de-parfum",
+  "cat2-labsolue-7-sandalo-edp": "https://labsolueperfume.com/en/products/7-sandalo-eau-de-parfum",
+  "cat2-labsolue-8-patchouli-edp": "https://labsolueperfume.com/en/products/8-patchouli-eau-de-parfum",
+  "cat2-labsolue-9-vetiver-edp": "https://labsolueperfume.com/en/products/9-vetiver-eau-de-parfum",
+  "cat2-labsolue-16-oud-edp": "https://labsolueperfume.com/en/products/16-oud-eau-de-parfum",
+  "cat2-labsolue-18-legno-di-rosa-edp":
+    "https://labsolueperfume.com/en/products/18-legno-di-rosa-eau-de-parfum",
+  "cat2-labsolue-19-legno-di-guaiaco-edp":
+    "https://labsolueperfume.com/en/products/19-legno-di-guaiaco-eau-de-parfum",
+  "cat2-labsolue-27-abete-bianco-edp":
+    "https://labsolueperfume.com/en/products/27-abete-bianco-eau-de-parfum",
+  "cat2-labsolue-28-legno-di-quercia-edp":
+    "https://labsolueperfume.com/en/products/28-legno-di-quercia-eau-de-parfum",
+  "cat2-labsolue-29-legno-di-cedro-edp":
+    "https://labsolueperfume.com/en/products/29-legno-di-cedro-eau-de-parfum",
+  "cat2-labsolue-207-liquidambar-edp":
+    "https://labsolueperfume.com/en/products/207-liquidambar-eau-de-parfum",
+  "cat2-labsolue-208-cipriolo-edp": "https://labsolueperfume.com/en/products/208-cipriolo-eau-de-parfum",
+  "cat2-labsolue-210-tonka-edp": "https://labsolueperfume.com/en/products/210-tonka-eau-de-parfum",
+  "cat2-labsolue-212-amyris-edp": "https://labsolueperfume.com/en/products/212-amyris-eau-de-parfum",
+  "cat2-labsolue-214-legno-di-pepe-edp":
+    "https://labsolueperfume.com/en/products/214-legno-di-pepe-eau-de-parfum",
+  "cat2-labsolue-315-palo-santo-edp": "https://labsolueperfume.com/en/products/315-palo-santo-eau-de-parfum",
+  "cat2-labsolue-205-mirra-edp": "https://labsolueperfume.com/en/products/205-mirra-eau-de-parfum",
+  "cat2-labsolue-206-opoponax-edp": "https://labsolueperfume.com/en/products/206-opoponax-eau-de-parfum",
+  "cat2-labsolue-209-styrax-edp": "https://labsolueperfume.com/en/products/209-styrax-eau-de-parfum",
+  "cat2-labsolue-211-olibanum-edp": "https://labsolueperfume.com/en/products/211-olibanum-eau-de-parfum",
+  "cat2-labsolue-215-labdanum-edp": "https://labsolueperfume.com/en/products/215-labdanum-eau-de-parfum",
+  "cat2-labsolue-320-ambra-grigia-edp":
+    "https://labsolueperfume.com/en/products/320-ambra-grigia-eau-de-parfum",
+  "cat2-labsolue-assoluto-1966-edp": "https://labsolueperfume.com/en/products/assoluto-1966",
+  "cat2-labsolue-sable-blanc-1950-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-sable-blanc-1950-eau-de-parfum",
+  "cat2-labsolue-alpha-1977-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-alpha-1977-eau-de-parfum",
+  "cat2-labsolue-bohemian-spirit-1979-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-bohemian-spirit-1979-eau-de-parfum",
+  "cat2-labsolue-combustion-1978-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-combustion-1978-eau-de-parfum",
+  "cat2-labsolue-heroine-1980-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-heroine-1980-eau-de-parfum",
+  "cat2-labsolue-honorable-1947-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-honorable-1947-eau-de-parfum",
+  "cat2-labsolue-salty-rock-1982-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-salty-rock-1982-eau-de-parfum",
+  "cat2-labsolue-vertigo-1973-edp":
+    "https://labsolueperfume.com/en/products/aqua-adornationis-vertigo-1973-eau-de-parfum",
 };
 
 /*
