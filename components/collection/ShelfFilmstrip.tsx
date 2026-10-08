@@ -23,6 +23,8 @@ const SPEED = 2;
 const REST = 3600;
 /** On opening it starts drifting almost at once (An: it sat still for 5–6 s). */
 const OPENING_REST = 300;
+/** After the mouse leaves the strip, it drifts again sooner (An, 2026-10-08). */
+const LEAVE_REST = 1500;
 
 /**
  * Each card gets its own perspective and the cards are stacked by z-index, not placed in one
@@ -134,7 +136,7 @@ export function ShelfFilmstrip({
     };
     const onLeave = () => {
       s.active = false;
-      s.last = performance.now();
+      s.last = performance.now() - (REST - LEAVE_REST);
       hoverAt = undefined;
       pointer = undefined;
       window.clearTimeout(recheck);
