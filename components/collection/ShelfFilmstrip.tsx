@@ -27,6 +27,9 @@ const OPENING_REST = 300;
 const LEAVE_REST = 1500;
 /** How long each card rests in front while the strip steps on its own (ms). */
 const HOLD = 500;
+/** How long one card takes to turn to the front while stepping on its own (ms). */
+const TURN = 1300 / SPEED;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 /** Extra room between the front card and the cards beside it, in card steps (desktop). */
 const GAP = 0.8;
 
@@ -73,6 +76,8 @@ export function ShelfFilmstrip({
       // Idle stepping: which way the strip moves and when the card in front arrived.
       dir: 1,
       heldAt: 0,
+      // The turn to the next card while stepping on its own: from, to, start time.
+      tween: undefined as { from: number; to: number; at: number } | undefined,
       // Count the wait as nearly over, so the drift begins right after the window opens.
       last: performance.now() - (REST - OPENING_REST),
     };
@@ -88,6 +93,7 @@ export function ShelfFilmstrip({
     const settle = (base: number) => {
       s.base = clamp(base);
       s.target = s.base;
+      s.tween = undefined;
       s.active = false;
       s.last = performance.now();
     };
@@ -208,10 +214,17 @@ export function ShelfFilmstrip({
             s.target = Math.round(s.target) + s.dir;
             s.base = s.target;
             s.heldAt = 0;
+            s.tween = { from: s.phase, to: s.target, at: time };
           }
         } else s.heldAt = 0;
       }
-      s.phase += (s.target - s.phase) * k;
+      if (s.tween) {
+        // A whole, even turn (eased in and out), so the cards are seen swinging round rather
+        // than snapping across (An, 2026-10-08: 不要犧牲轉牌的動畫).
+        const t = Math.min(1, (time - s.tween.at) / TURN);
+        s.phase = s.tween.from + (s.tween.to - s.tween.from) * easeInOut(t);
+        if (t >= 1) s.tween = undefined;
+      } else s.phase += (s.target - s.phase) * k;
       const w = el.clientWidth;
       const h = el.clientHeight;
       const compact = w < 560;
@@ -233,7 +246,11 @@ export function ShelfFilmstrip({
         const z = focus * 145 - dist * 148;
         const scale = 0.54 + side * 0.15 + focus * 0.54;
         const rx = compact ? d * 2.1 : -s.py * focus * 3.5;
-        const ry = compact ? -d * 5 : -dir * (dist > 0.2 ? 14 + Math.min(dist, 3) * 5 : 0) + s.px * focus * 3;
+        // Cards swing round smoothly as they leave or reach the front, with no jump at the edge.
+        const swing = Math.min(1, dist / 0.6);
+        const ry = compact
+          ? -d * 5
+          : -dir * swing * swing * (3 - 2 * swing) * (14 + Math.min(dist, 3) * 5) + s.px * focus * 3;
         const rz = compact ? d * -1.4 : d * 0.7;
         card.style.setProperty("--focus", focus.toFixed(4));
         card.style.zIndex = String(Math.round(1000 - dist * 100));
