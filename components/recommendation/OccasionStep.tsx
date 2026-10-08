@@ -22,7 +22,7 @@ export function OccasionStep({
 }) {
   const reduce = useReducedMotion();
   return (
-    <div className="flex flex-col gap-12 desk:gap-16">
+    <div className="flex flex-col gap-5 md:gap-12 desk:gap-16">
       <StepHeading
         index={1}
         label="THE OCCASION"
@@ -49,7 +49,7 @@ export function OccasionStep({
               transition={transition.base}
               className={cn(
                 // Phones: two compact squares side by side (An, 2026-10-06), not a tall stack.
-                "group relative flex min-h-[12rem] flex-col justify-between gap-6 px-4 py-6 text-left md:min-h-[24rem] md:gap-10 md:px-10 md:py-10 desk:min-h-[22rem] desk:px-8 desk:py-12",
+                "group relative flex flex-col justify-between gap-3 px-4 py-4 text-left md:min-h-[24rem] md:gap-10 md:px-10 md:py-10 desk:min-h-[22rem] desk:px-8 desk:py-12",
                 i === 1 && "border-l border-line",
               )}
             >

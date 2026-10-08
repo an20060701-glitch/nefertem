@@ -217,20 +217,26 @@ export function TodaysChoice() {
       ref={sectionRef}
       id="todays-choice"
       aria-labelledby="choice-title"
-      className="page-x relative scroll-mt-20 pb-20 pt-6 md:pt-[calc(var(--nav-desktop-height)+3rem)] desk:scroll-mt-16 desk:pb-28"
+      // No scroll anchoring: swapping one question for the next would otherwise shift the page
+      // after it has been scrolled to the progress line.
+      className="page-x relative scroll-mt-20 [overflow-anchor:none] pb-20 pt-6 md:pt-[calc(var(--nav-desktop-height)+3rem)] desk:scroll-mt-16 desk:pb-28"
     >
       <PetalScatter side="left" />
 
       {/* Two columns on desktop (An, 2026-10-06): the title and today's weather on the left,
           the progress line and the question being asked on the right; the result spans both. */}
-      <div className="relative grid gap-10 desk:grid-cols-12 desk:gap-x-6 desk:gap-y-0">
+      {/* On phones (An, 2026-10-08) the weather sits beside the title, the progress line right
+          under it and the question straight after, so the questions are answered by scrolling.
+          While the city list is open the header stacks again to give it the full width. */}
+      <div className="relative grid gap-6 md:gap-10 desk:grid-cols-12 desk:gap-x-6 desk:gap-y-0">
         <header
           className={cn(
+            "max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:items-start max-md:gap-x-5 max-md:has-[[role=radiogroup]]:grid-cols-1",
             "desk:col-span-5",
             asking && "desk:sticky desk:top-28 desk:row-span-2 desk:self-start",
           )}
         >
-          <p className="label text-muted desk:text-[0.875rem]">TODAY&apos;S CHOICE</p>
+          <p className="label text-muted max-md:col-span-full desk:text-[0.875rem]">TODAY&apos;S CHOICE</p>
           <h2
             id="choice-title"
             className="mt-5 font-serif-zh text-h1-zh text-ink desk:mt-8 desk:text-[clamp(2.75rem,3.4vw,4rem)] desk:leading-[1.3]"
@@ -252,7 +258,7 @@ export function TodaysChoice() {
         <nav
           ref={progressRef}
           aria-label="儀式進度"
-          className="scroll-mt-24 desk:col-span-7 desk:col-start-6 desk:scroll-mt-28 desk:pt-1"
+          className="scroll-mt-4 md:scroll-mt-24 desk:col-span-7 desk:col-start-6 desk:scroll-mt-28 desk:pt-1"
         >
           <ol className="grid grid-cols-3 gap-3 desk:gap-6">
             {STEPS.map((s, i) => {
@@ -298,7 +304,9 @@ export function TodaysChoice() {
           ref={stageRef}
           className={cn(
             "relative min-h-[40svh] scroll-mt-24 md:min-h-[70svh] desk:scroll-mt-28",
-            asking ? "mt-4 desk:col-span-7 desk:col-start-6 desk:mt-16" : "mt-16 desk:col-span-12 desk:mt-24",
+            asking
+              ? "md:mt-4 desk:col-span-7 desk:col-start-6 desk:mt-16"
+              : "mt-16 desk:col-span-12 desk:mt-24",
           )}
         >
           <AnimatePresence mode="wait" initial={false}>
