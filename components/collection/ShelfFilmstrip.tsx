@@ -1,10 +1,12 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { FragranceVisual } from "@/components/fragrance/FragranceVisual";
+import { GlassMetalButton } from "@/components/ui/liquid-metal/GlassMetalButton";
 import { modalKeyDown, useModal } from "@/hooks/useModal";
 import { ease } from "@/lib/motion";
 import type { UserFragrance } from "@/types";
@@ -14,8 +16,8 @@ import type { Shelf } from "./CabinetShelves";
  * One shelf's scents in a small window, as a moving filmstrip (An, 2026-10-08, after ThreeUI's
  * CharacterCarousel "filmstrip"; its motion is ported here, MIT, since the package's own
  * version only shows its fixed demo portraits). Cards fan out in depth round the one in
- * focus, come forward when pointed at, step on their own when left alone, and turn with the wheel,
- * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
+ * focus, step on their own when left alone, and turn with the glass arrow buttons at either
+ * side, the wheel, the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
 /** The strip turns 1.7 times as fast as the package's (An, 2026-10-08). */
 const SPEED = 1.7;
@@ -109,36 +111,8 @@ export function ShelfFilmstrip({
       settle(Math.round(s.phase) + d);
     };
 
-    // With a mouse, pointing at the middle of a card brings that card to the front (An,
-    // 2026-10-08: the strip used to chase the pointer). The strip holds still while pointed at.
-    let hoverAt: { x: number; y: number; t: number } | undefined;
-    let pointer: { x: number; y: number } | undefined;
-    let recheck = 0;
-    const LOCK = 350;
-    // The pointer has to come to rest on a card first, so passing over cards on the way to
-    // another one doesn't pull them in.
-    const DWELL = 140;
-    const bringUnder = () => {
-      if (!pointer) return;
-      const { x, y } = pointer;
-      const now = performance.now();
-      // Only answer a pointer that moved: the card sliding away from under a still pointer
-      // shouldn't pull the next one in.
-      if (hoverAt && Math.hypot(x - hoverAt.x, y - hoverAt.y) < 8) return;
-      // Let a card finish arriving before the next one.
-      if (hoverAt && now - hoverAt.t < LOCK) {
-        recheck = window.setTimeout(bringUnder, LOCK - (now - hoverAt.t) + 10);
-        return;
-      }
-      const card = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest("a");
-      const i = card ? cards.current.indexOf(card as HTMLAnchorElement) : -1;
-      if (i < 0 || i === nearest()) return;
-      const cr = card!.getBoundingClientRect();
-      if (Math.abs(x - (cr.left + cr.width / 2)) > cr.width * 0.3) return;
-      focusOn(i);
-      s.active = true;
-      hoverAt = { x, y, t: now };
-    };
+    // The strip holds still while the mouse is over it. Cards are picked with the arrow
+    // buttons at either side (An, 2026-10-08), no longer by pointing at them.
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const r = el.getBoundingClientRect();
@@ -147,16 +121,10 @@ export function ShelfFilmstrip({
       s.active = true;
       s.last = performance.now();
       el.style.setProperty("--pointer-x", `${(s.px + 1) * 50}%`);
-      pointer = { x: e.clientX, y: e.clientY };
-      window.clearTimeout(recheck);
-      recheck = window.setTimeout(bringUnder, DWELL);
     };
     const onLeave = () => {
       s.active = false;
       s.last = performance.now() - (REST - LEAVE_REST);
-      hoverAt = undefined;
-      pointer = undefined;
-      window.clearTimeout(recheck);
       s.px = 0;
       s.py = 0;
       s.target = s.base;
@@ -275,7 +243,6 @@ export function ShelfFilmstrip({
     el.addEventListener("pointerup", onUp);
     return () => {
       cancelAnimationFrame(frame);
-      window.clearTimeout(recheck);
       clicks.forEach((off) => off());
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerleave", onLeave);
@@ -412,6 +379,27 @@ export function ShelfFilmstrip({
               </Link>
             ))}
           </div>
+          {/* Arrows on computers and tablets; on phones the strip is swiped (An, 2026-10-08). */}
+          {count > 1 ? (
+            <>
+              <GlassMetalButton
+                shape="circle"
+                onClick={() => turn.current(-1)}
+                aria-label="上一瓶"
+                className="!absolute left-6 top-1/2 z-[5] -translate-y-1/2 max-[600px]:hidden"
+              >
+                <ChevronLeft aria-hidden className="size-5" strokeWidth={1.5} />
+              </GlassMetalButton>
+              <GlassMetalButton
+                shape="circle"
+                onClick={() => turn.current(1)}
+                aria-label="下一瓶"
+                className="!absolute right-6 top-1/2 z-[5] -translate-y-1/2 max-[600px]:hidden"
+              >
+                <ChevronRight aria-hidden className="size-5" strokeWidth={1.5} />
+              </GlassMetalButton>
+            </>
+          ) : null}
         </div>
       </motion.div>
     </motion.div>,
