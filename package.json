@@ -13,6 +13,7 @@
     "check": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
+    "@designcodeio/threeui": "^1.2.0",
     "clsx": "^2.1.1",
     "firebase": "^12.19.0",
     "lucide-react": "^1.52.0",
