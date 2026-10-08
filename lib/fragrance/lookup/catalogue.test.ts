@@ -57,7 +57,7 @@ describe("catalogue lookup", () => {
   });
 
   it("still falls back to the demo catalogue", async () => {
-    const r = await lookup({ brand: "Creed", name: "Aventus" });
+    const r = await lookup({ brand: "Guerlain", name: "Shalimar" });
     expect(r?.sources).toEqual([DEMO_SOURCE]);
   });
 
@@ -67,6 +67,15 @@ describe("catalogue lookup", () => {
     );
     expect(brandHomeLink({ brandKey: "byredo" })?.url).toBe("https://www.byredo.com/tw/zh-tw/");
     expect(brandHomeLink({ brandKey: "chanel" })?.url).toBe("https://www.chanel.com/tw/");
+  });
+});
+
+describe("Creed", () => {
+  it("is found with the notes from Creed's own page", async () => {
+    const r = await lookup({ brand: "Creed", name: "Aventus" });
+    expect(r?.sources).toEqual([BRAND_LISTS_SOURCE]);
+    expect(r?.fragrance.topNotes).toEqual(["bergamot", "lemon", "blackcurrant"]);
+    expect(r?.fragrance.nameZh).toBe("阿文圖斯");
   });
 });
 
