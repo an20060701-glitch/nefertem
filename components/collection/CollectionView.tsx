@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PetalScatter } from "@/components/brand/PetalScatter";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { LiquidMetalAdd } from "@/components/ui/LiquidMetalLink";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { findDemoFragrance } from "@/data/fragrances";
@@ -75,9 +76,7 @@ export function CollectionView() {
         <div className="relative mb-12 flex flex-wrap items-center justify-between gap-6">
           <AccountBar />
           {items.length > 0 && (
-            <Button variant="ghost" onClick={() => setAdding(true)}>
-              + 新增香水 · ADD SCENT
-            </Button>
+            <LiquidMetalAdd label="新增香水" caption="新增香水 · ADD SCENT" onClick={() => setAdding(true)} />
           )}
         </div>
 
