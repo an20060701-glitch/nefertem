@@ -1741,6 +1741,19 @@ const ENTRIES: readonly Entry[] = [
     baseNotes: ["oak"],
     description: "花香、美食調、木質",
   },
+  {
+    // 香水1976 (https://www.1976.com.tw/prod/15285): the brand's site gives no notes
+    id: "cat2-mercedes-benz-le-parfum-edp",
+    brand: "Mercedes-Benz",
+    name: "Le Parfum",
+    concentration: "EDP",
+    family: "woody",
+    subFamilies: ["floral", "amber"],
+    topNotes: ["bergamot", "pink-pepper"],
+    heartNotes: ["violet-leaf", "saffron"],
+    baseNotes: ["patchouli", "vetiver", "oud", "amber"],
+    description: "木質花香調（香調依香水1976），2015 年推出",
+  },
 ];
 
 export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>
