@@ -43,7 +43,7 @@ export function WeatherBar({
   const showPicker = changing || failed;
 
   return (
-    <div aria-live="polite" className="mt-5 md:mt-6 desk:mt-12">
+    <div aria-live="polite" className="mt-5 desk:mt-8">
       {(busy || (status === "idle" && !failed)) && (
         <p className="label text-muted">
           {status === "loading" ? "正在查詢當地今天的天氣…" : "正在確認你的位置…"}
@@ -60,7 +60,7 @@ export function WeatherBar({
             {weather.city} · {Math.round(weather.temperature)}°C · {CONDITION_LABELS[weather.condition].en}
             {weather.source === "mock" && " · DEMO WEATHER"}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-small text-faint max-md:mt-2 max-md:gap-y-1.5 max-md:text-[0.6875rem] max-md:leading-snug desk:mt-6">
+          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-small text-faint max-md:mt-2 max-md:gap-y-1.5 max-md:text-[0.6875rem] max-md:leading-snug desk:mt-4">
             <button
               type="button"
               aria-expanded={changing}

@@ -22,7 +22,7 @@ export function MoodStep({
 }) {
   const full = moods.length >= MAX_MOODS;
   return (
-    <div className="flex flex-col gap-5 md:gap-12 desk:gap-16">
+    <div className="flex flex-col gap-5 md:gap-8">
       <StepHeading
         index={2}
         label="THE IMPRESSION"
@@ -41,7 +41,7 @@ export function MoodStep({
           role="group"
           aria-labelledby="step-mood"
           // Phones: two columns of smaller words, so the question fits on one screen (An, 2026-10-08).
-          className="mt-2 grid grid-cols-2 gap-x-4 md:mt-6 md:flex md:flex-wrap md:gap-x-6 md:gap-y-1 desk:gap-x-10"
+          className="mt-2 grid grid-cols-2 gap-x-4 md:mt-4 md:flex md:flex-wrap md:gap-x-8 md:gap-y-0 desk:gap-x-10"
         >
           {MOODS.map((mood) => {
             const checked = moods.includes(mood.key);
@@ -131,7 +131,7 @@ function MagneticTag({
             checked ? "scale-100 opacity-100" : "scale-50 opacity-0",
           )}
         />
-        <span className="font-display text-h1 font-light tracking-[0.02em] max-md:text-[1.125rem] max-md:tracking-normal">
+        <span className="font-display text-h1 font-light tracking-[0.02em] max-md:text-[1.125rem] max-md:tracking-normal md:text-[clamp(2rem,3.4vw,2.75rem)] desk:text-[clamp(2rem,2.4vw,2.75rem)]">
           {en}
         </span>
         <span
