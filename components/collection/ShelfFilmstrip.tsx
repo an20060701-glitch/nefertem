@@ -17,8 +17,8 @@ import type { Shelf } from "./CabinetShelves";
  * focus, come forward when pointed at, step on their own when left alone, and turn with the wheel,
  * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
-/** The strip turns twice as fast as the package's (An, 2026-10-08). */
-const SPEED = 2;
+/** The strip turns 1.7 times as fast as the package's (An, 2026-10-08). */
+const SPEED = 1.7;
 /** Left alone this long after a touch, the strip starts drifting again (ms). */
 const REST = 3600;
 /** On opening it starts drifting almost at once (An: it sat still for 5–6 s). */
