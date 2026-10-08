@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { GrainOverlay } from "@/components/brand/GrainOverlay";
 import { CollectionProvider } from "@/components/collection/CollectionProvider";
 import { SiteFooter } from "@/components/brand/SiteFooter";
@@ -71,6 +72,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </CollectionProvider>
         <CustomCursor />
         <GrainOverlay />
+        {/* Vercel Web Analytics: page views and visitors (enable it in the Vercel project). */}
+        <Analytics />
       </body>
     </html>
   );
