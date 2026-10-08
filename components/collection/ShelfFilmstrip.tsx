@@ -17,8 +17,8 @@ import type { Shelf } from "./CabinetShelves";
  * focus, follow the pointer, drift on their own when left alone, and turn with the wheel,
  * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
-/** The strip turns 1.6 times as fast as the package's (An, 2026-10-08). */
-const SPEED = 1.6;
+/** The strip turns twice as fast as the package's (An, 2026-10-08). */
+const SPEED = 2;
 /** Left alone this long after a touch, the strip starts drifting again (ms). */
 const REST = 3600;
 /** On opening it starts drifting almost at once (An: it sat still for 5–6 s). */
@@ -92,20 +92,52 @@ export function ShelfFilmstrip({
       settle(Math.round(s.phase) + d);
     };
 
+    // With a mouse, pointing at the middle of a card brings that card to the front (An,
+    // 2026-10-08: the strip used to chase the pointer). The strip holds still while pointed at.
+    let hoverAt: { x: number; y: number; t: number } | undefined;
+    let pointer: { x: number; y: number } | undefined;
+    let recheck = 0;
+    const LOCK = 350;
+    const bringUnder = (x: number, y: number) => {
+      const now = performance.now();
+      // Let a card finish arriving before the next one, and only answer a pointer that moved:
+      // the card sliding away from under a still pointer shouldn't pull the next one in.
+      if (hoverAt && Math.hypot(x - hoverAt.x, y - hoverAt.y) < 8) return;
+      if (hoverAt && now - hoverAt.t < LOCK) {
+        // Passing over cards on the way: look again where the pointer is once this one lands.
+        window.clearTimeout(recheck);
+        recheck = window.setTimeout(
+          () => pointer && bringUnder(pointer.x, pointer.y),
+          LOCK - (now - hoverAt.t) + 10,
+        );
+        return;
+      }
+      const card = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest("a");
+      const i = card ? cards.current.indexOf(card as HTMLAnchorElement) : -1;
+      if (i < 0 || i === nearest()) return;
+      const cr = card!.getBoundingClientRect();
+      if (Math.abs(x - (cr.left + cr.width / 2)) > cr.width * 0.3) return;
+      focusOn(i);
+      s.active = true;
+      hoverAt = { x, y, t: now };
+    };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const r = el.getBoundingClientRect();
-      const nx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
-      const ny = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
-      s.px = nx;
-      s.py = ny;
+      s.px = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+      s.py = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
       s.active = true;
-      s.target = clamp(s.base + (r.width < 560 ? ny * 2.2 : nx * 3.1) * Math.min(1, count / 5));
       s.last = performance.now();
-      el.style.setProperty("--pointer-x", `${(nx + 1) * 50}%`);
+      el.style.setProperty("--pointer-x", `${(s.px + 1) * 50}%`);
+      pointer = { x: e.clientX, y: e.clientY };
+      bringUnder(e.clientX, e.clientY);
     };
     const onLeave = () => {
       s.active = false;
+      s.last = performance.now();
+      hoverAt = undefined;
+      pointer = undefined;
+      window.clearTimeout(recheck);
       s.px = 0;
       s.py = 0;
       s.target = s.base;
@@ -202,6 +234,7 @@ export function ShelfFilmstrip({
     el.addEventListener("pointerup", onUp);
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(recheck);
       clicks.forEach((off) => off());
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerleave", onLeave);
