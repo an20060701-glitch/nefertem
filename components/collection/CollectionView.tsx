@@ -11,6 +11,7 @@ import { findDemoFragrance } from "@/data/fragrances";
 import { byMostWorn, lastUsed, mostUsedThisMonth } from "@/lib/collection/stats";
 import { AccountBar } from "./AccountBar";
 import { AddFragranceSheet } from "./AddFragranceSheet";
+import { CabinetShelves, type Shelf, shelfOf } from "./CabinetShelves";
 import { useCollection } from "./CollectionProvider";
 import { FragranceCard } from "./FragranceCard";
 
@@ -18,6 +19,13 @@ import { FragranceCard } from "./FragranceCard";
 export function CollectionView() {
   const { items, usage, ready, error } = useCollection();
   const [adding, setAdding] = useState(false);
+  const [shelf, setShelf] = useState<Shelf>();
+  const [newestFirst, setNewestFirst] = useState(false);
+  const sorted = newestFirst ? [...items].sort((a, b) => b.addedAt - a.addedAt) : byMostWorn(items);
+  const openShelf = (s: Shelf | undefined) => {
+    setShelf(s);
+    document.getElementById("cabinet")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const nameOf = (id: string) => {
     const f = items.find((i) => i.id === id) ?? findDemoFragrance(id);
@@ -62,7 +70,7 @@ export function CollectionView() {
         }
       />
 
-      <section className="page-x relative pb-24" aria-label="香水櫃">
+      <section id="cabinet" className="page-x relative scroll-mt-24 pb-24" aria-label="香水櫃">
         <PetalScatter side="right" />
         <div className="relative mb-12 flex flex-wrap items-center justify-between gap-6">
           <AccountBar />
@@ -99,13 +107,52 @@ export function CollectionView() {
             action={<Button onClick={() => setAdding(true)}>新增第一瓶香水</Button>}
           />
         ) : (
-          <div className="relative gap-8 md:columns-2 desk:columns-3 desk:gap-10">
-            {byMostWorn(items).map((f, i) => (
-              <Reveal key={f.id} amount={0.15}>
-                <FragranceCard fragrance={f} tall={i % 3 === 1} />
-              </Reveal>
-            ))}
-          </div>
+          <>
+            <div className="relative mb-6 flex items-center justify-between gap-4">
+              {shelf ? (
+                <button
+                  type="button"
+                  onClick={() => openShelf(undefined)}
+                  className="press-soft label text-blue"
+                >
+                  ← 所有香調
+                </button>
+              ) : (
+                <h2 className="font-display text-h2 font-light text-ink">我的收藏</h2>
+              )}
+              <button
+                type="button"
+                onClick={() => setNewestFirst((v) => !v)}
+                className="press-soft label flex items-center gap-2 text-blue"
+                aria-label={
+                  newestFirst ? "目前依最新加入排序，改為最常使用" : "目前依最常使用排序，改為最新加入"
+                }
+              >
+                <span aria-hidden className="text-lead">
+                  ↑↓
+                </span>
+                {newestFirst ? "最新加入" : "最常使用"}
+              </button>
+            </div>
+            {shelf ? (
+              <>
+                <h2 className="mb-10 font-display text-h1 font-light" style={{ color: shelf.color }}>
+                  {shelf.zh}
+                </h2>
+                <div className="relative gap-8 md:columns-2 desk:columns-3 desk:gap-10">
+                  {sorted
+                    .filter((f) => shelfOf(f.family).key === shelf.key)
+                    .map((f, i) => (
+                      <Reveal key={f.id} amount={0.15}>
+                        <FragranceCard fragrance={f} tall={i % 3 === 1} />
+                      </Reveal>
+                    ))}
+                </div>
+              </>
+            ) : (
+              <CabinetShelves items={sorted} onOpenShelf={openShelf} />
+            )}
+          </>
         )}
       </section>
 
