@@ -223,6 +223,12 @@ export const NOTE_TAGS: Record<string, string[]> = {
   styrax: ["樹脂", "溫暖"],
   "fir-balsam": ["森林", "樹脂"],
   "tomato-leaf": ["綠意", "清新"],
+  mugwort: ["草本", "清新"],
+  "turmeric-leaf": ["辛香", "清新"],
+  gentian: ["草本", "自然"],
+  "green-tea": ["平靜", "清新"],
+  "apple-blossom": ["清新", "溫柔"],
+  amberwood: ["溫暖", "成熟"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;

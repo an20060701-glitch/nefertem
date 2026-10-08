@@ -245,6 +245,12 @@ export const NOTES = {
   styrax: { en: "Styrax", zh: "蘇合香", family: "amber" },
   "fir-balsam": { en: "Fir Balsam", zh: "冷杉香脂", family: "woody" },
   "tomato-leaf": { en: "Tomato Leaf", zh: "番茄葉", family: "fresh" },
+  mugwort: { en: "Mugwort", zh: "艾草", family: "fresh" },
+  "turmeric-leaf": { en: "Turmeric Leaf", zh: "薑黃葉", family: "spicy" },
+  gentian: { en: "Gentian", zh: "龍膽", family: "fresh" },
+  "green-tea": { en: "Green Tea", zh: "綠茶", family: "fresh" },
+  "apple-blossom": { en: "Apple Blossom", zh: "蘋果花", family: "floral" },
+  amberwood: { en: "Amber Wood", zh: "琥珀木", family: "amber" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;
