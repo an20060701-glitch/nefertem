@@ -196,7 +196,15 @@ function ShelfPanel({
       ) : (
         <div className="mt-5 flex items-center justify-between">
           <h2 className="font-display text-h2 font-light" style={{ color: shelf.ink }}>
-            {shelf.zh}
+            {/* The shelf's name opens it too, like 全部 (An, 2026-10-08). */}
+            <button
+              type="button"
+              onClick={onOpen}
+              disabled={bottles.length === 0}
+              className="press-soft text-left"
+            >
+              {shelf.zh}
+            </button>
             <span className="label ml-3 align-middle text-faint lining-nums">{bottles.length}</span>
           </h2>
           <button

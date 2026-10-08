@@ -15,12 +15,14 @@ import { AddFragranceSheet } from "./AddFragranceSheet";
 import { CabinetShelves, type Shelf, shelfOf } from "./CabinetShelves";
 import { useCollection } from "./CollectionProvider";
 import { FragranceCard } from "./FragranceCard";
+import { ShelfFilmstrip } from "./ShelfFilmstrip";
 
 /** MY COLLECTION — stats, the Digital Perfume Cabinet, and the way to add a scent. */
 export function CollectionView() {
   const { items, usage, ready, error } = useCollection();
   const [adding, setAdding] = useState(false);
   const [shelf, setShelf] = useState<Shelf>();
+  const [film, setFilm] = useState<Shelf>();
   const [newestFirst, setNewestFirst] = useState(false);
   const sorted = newestFirst ? [...items].sort((a, b) => b.addedAt - a.addedAt) : byMostWorn(items);
   const openShelf = (s: Shelf | undefined) => {
@@ -165,13 +167,27 @@ export function CollectionView() {
                 </div>
               </>
             ) : (
-              <CabinetShelves items={sorted} onOpenShelf={openShelf} />
+              <CabinetShelves items={sorted} onOpenShelf={setFilm} />
             )}
           </>
         )}
       </section>
 
       <AnimatePresence>{adding && <AddFragranceSheet onClose={() => setAdding(false)} />}</AnimatePresence>
+      <AnimatePresence>
+        {film && (
+          // A shelf opens as a small window with its scents on a moving filmstrip (An, 2026-10-08).
+          <ShelfFilmstrip
+            shelf={film}
+            bottles={sorted.filter((f) => shelfOf(f.family).key === film.key)}
+            onClose={() => setFilm(undefined)}
+            onList={() => {
+              setFilm(undefined);
+              openShelf(film);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
