@@ -379,13 +379,14 @@ export function ShelfFilmstrip({
               </Link>
             ))}
           </div>
+          {/* Arrows on computers and tablets; on phones the strip is swiped (An, 2026-10-08). */}
           {count > 1 ? (
             <>
               <GlassMetalButton
                 shape="circle"
                 onClick={() => turn.current(-1)}
                 aria-label="上一瓶"
-                className="!absolute left-3 top-1/2 z-[5] -translate-y-1/2 sm:left-6"
+                className="!absolute left-6 top-1/2 z-[5] -translate-y-1/2 max-[600px]:hidden"
               >
                 <ChevronLeft aria-hidden className="size-5" strokeWidth={1.5} />
               </GlassMetalButton>
@@ -393,7 +394,7 @@ export function ShelfFilmstrip({
                 shape="circle"
                 onClick={() => turn.current(1)}
                 aria-label="下一瓶"
-                className="!absolute right-3 top-1/2 z-[5] -translate-y-1/2 sm:right-6"
+                className="!absolute right-6 top-1/2 z-[5] -translate-y-1/2 max-[600px]:hidden"
               >
                 <ChevronRight aria-hidden className="size-5" strokeWidth={1.5} />
               </GlassMetalButton>
