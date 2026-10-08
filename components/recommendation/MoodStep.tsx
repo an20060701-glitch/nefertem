@@ -22,7 +22,7 @@ export function MoodStep({
 }) {
   const full = moods.length >= MAX_MOODS;
   return (
-    <div className="flex flex-col gap-12 desk:gap-16">
+    <div className="flex flex-col gap-5 md:gap-12 desk:gap-16">
       <StepHeading
         index={2}
         label="THE IMPRESSION"
@@ -40,7 +40,8 @@ export function MoodStep({
         <div
           role="group"
           aria-labelledby="step-mood"
-          className="mt-6 flex flex-wrap gap-x-6 gap-y-1 desk:gap-x-10"
+          // Phones: two columns of smaller words, so the question fits on one screen (An, 2026-10-08).
+          className="mt-2 grid grid-cols-2 gap-x-4 md:mt-6 md:flex md:flex-wrap md:gap-x-6 md:gap-y-1 desk:gap-x-10"
         >
           {MOODS.map((mood) => {
             const checked = moods.includes(mood.key);
@@ -104,7 +105,7 @@ function MagneticTag({
   };
 
   return (
-    <div className="-m-4 p-4" onPointerMove={onPointerMove} onPointerLeave={release}>
+    <div className="md:-m-4 md:p-4" onPointerMove={onPointerMove} onPointerLeave={release}>
       <motion.button
         ref={ref}
         type="button"
@@ -115,7 +116,7 @@ function MagneticTag({
         style={{ x, y }}
         whileTap={disabled ? undefined : { scale: 0.97, transition: { duration: 0.08 } }}
         className={cn(
-          "group flex min-h-11 items-baseline gap-3 py-1 text-left transition-colors duration-500",
+          "group flex min-h-11 items-baseline gap-2 py-1 text-left md:gap-3 transition-colors duration-500",
           checked
             ? "text-blue"
             : disabled
@@ -130,8 +131,17 @@ function MagneticTag({
             checked ? "scale-100 opacity-100" : "scale-50 opacity-0",
           )}
         />
-        <span className="font-display text-h1 font-light tracking-[0.02em]">{en}</span>
-        <span className={cn("font-serif-zh text-lead", checked ? "text-blue" : "text-muted")}>{zh}</span>
+        <span className="font-display text-h1 font-light tracking-[0.02em] max-md:text-[1.125rem] max-md:tracking-normal">
+          {en}
+        </span>
+        <span
+          className={cn(
+            "shrink-0 font-serif-zh text-lead max-md:text-small",
+            checked ? "text-blue" : "text-muted",
+          )}
+        >
+          {zh}
+        </span>
       </motion.button>
     </div>
   );

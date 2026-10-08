@@ -20,8 +20,12 @@ export function StepHeading({
   return (
     <div className="flex items-start justify-between gap-6">
       <div>
-        <EditorialNumber index={index} label={label} />
-        <h3 id={id} tabIndex={-1} className="mt-6 font-serif-zh text-h1-zh text-ink outline-none">
+        <EditorialNumber index={index} label={label} className="max-md:[&>span:first-child]:text-[2rem]" />
+        <h3
+          id={id}
+          tabIndex={-1}
+          className="mt-2 font-serif-zh text-h1-zh text-ink outline-none max-md:text-[1.375rem] max-md:leading-snug md:mt-6"
+        >
           {question}
         </h3>
       </div>
