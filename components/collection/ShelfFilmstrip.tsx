@@ -17,6 +17,13 @@ import type { Shelf } from "./CabinetShelves";
  * focus, follow the pointer, drift on their own when left alone, and turn with the wheel,
  * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
+/** The strip turns 1.3 times as fast as the package's (An, 2026-10-08). */
+const SPEED = 1.3;
+
+/**
+ * Each card gets its own perspective and the cards are stacked by z-index, not placed in one
+ * shared 3D space: in a shared space Safari lets neighbouring tilted cards cut through each other.
+ */
 export function ShelfFilmstrip({
   shelf,
   bottles,
@@ -44,7 +51,8 @@ export function ShelfFilmstrip({
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     // Fewer than five cards don't go round: the strip stops at either end.
     const wraps = count >= 5;
-    const start = wraps ? Math.min(3, count - 1) : (count - 1) / 2;
+    // Open on a card, never between two (An, 2026-10-08: two cards opened half over each other).
+    const start = wraps ? Math.min(3, count - 1) : Math.floor((count - 1) / 2);
     const s = {
       phase: start,
       target: start,
@@ -141,12 +149,12 @@ export function ShelfFilmstrip({
     const render = (time: number) => {
       const dt = Math.min(32, time - prev);
       prev = time;
-      const k = calm ? 1 : 1 - Math.pow(0.001, dt / 1000);
+      const k = calm ? 1 : 1 - Math.pow(0.001, (dt * SPEED) / 1000);
       if (!calm && !s.active && time - s.last > 3600 && count > 1) {
         const idle = time - s.last - 3600;
         const reach = wraps ? 2.45 : (count - 1) / 2;
         const centre = wraps ? s.base : (count - 1) / 2;
-        s.target = centre + Math.sin(idle * 0.00042) * reach;
+        s.target = centre + Math.sin(idle * 0.00042 * SPEED) * reach;
       }
       s.phase += (s.target - s.phase) * k;
       const w = el.clientWidth;
@@ -173,7 +181,7 @@ export function ShelfFilmstrip({
         card.style.zIndex = String(Math.round(1000 - dist * 100));
         card.style.opacity = String(Math.max(0.13, side * 0.76 + focus * 0.24));
         card.style.filter = `blur(${(Math.max(0, dist - 1.5) * 0.38).toFixed(2)}px)`;
-        card.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
+        card.style.transform = `translate(-50%, -50%) perspective(1450px) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
         card.toggleAttribute("data-front", i === front);
       });
       frame = requestAnimationFrame(render);
@@ -259,7 +267,7 @@ export function ShelfFilmstrip({
         <div
           ref={stage}
           aria-label={`${shelf.zh}的香水，可用方向鍵、滾輪或滑動瀏覽`}
-          className="relative isolate flex-1 touch-none overflow-hidden [perspective:1450px]"
+          className="relative isolate flex-1 touch-none overflow-hidden"
           style={
             {
               "--pointer-x": "50%",
@@ -278,7 +286,7 @@ export function ShelfFilmstrip({
               background: `linear-gradient(90deg, color-mix(in oklab, ${shelf.color} 30%, rgb(84 58 29 / 0.2)), transparent 14%, transparent 86%, color-mix(in oklab, ${shelf.color} 30%, rgb(84 58 29 / 0.2)))`,
             }}
           />
-          <div className="absolute inset-0 z-[2] [transform-style:preserve-3d]">
+          <div className="absolute inset-0 z-[2]">
             {bottles.map((f, i) => (
               <Link
                 key={f.id}
@@ -287,7 +295,7 @@ export function ShelfFilmstrip({
                 }}
                 href={`/collection/${encodeURIComponent(f.id)}`}
                 aria-label={`${f.brand} ${f.nameZh ?? f.name}`}
-                className="group absolute left-1/2 top-1/2 aspect-[0.72] w-[clamp(150px,22%,220px)] overflow-hidden rounded-[6px] border border-[rgb(47_34_19/0.35)] bg-[#fbf8f1] p-[7px] outline-none [--focus:0] [box-shadow:0_calc(10px+var(--focus)*24px)_calc(18px+var(--focus)*36px)_rgb(57_38_19/calc(0.18+var(--focus)*0.24)),inset_0_0_0_1px_rgb(255_255_255/0.7)] [transform-style:preserve-3d] [will-change:transform,opacity,filter] focus-visible:ring-4 focus-visible:ring-gold/40 max-[560px]:w-[clamp(140px,44%,180px)]"
+                className="group absolute left-1/2 top-1/2 aspect-[0.72] w-[clamp(150px,22%,220px)] overflow-hidden rounded-[6px] border border-[rgb(47_34_19/0.35)] bg-[#fbf8f1] p-[7px] outline-none [--focus:0] [box-shadow:0_calc(10px+var(--focus)*24px)_calc(18px+var(--focus)*36px)_rgb(57_38_19/calc(0.18+var(--focus)*0.24)),inset_0_0_0_1px_rgb(255_255_255/0.7)] [will-change:transform,opacity,filter] focus-visible:ring-4 focus-visible:ring-gold/40 max-[560px]:w-[clamp(140px,44%,180px)]"
                 style={{ transform: "translate(-50%, -50%) scale(0.6)", opacity: 0 }}
               >
                 <span
