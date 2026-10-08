@@ -424,6 +424,14 @@ export const BRANDS: readonly BrandInfo[] = [
   },
   { key: "klower-pandor", name: "Klower Pandor", aliases: ["KLOWER PANDOR"] },
   {
+    key: "labsolue",
+    name: "LabSolue",
+    aliases: ["Lab Solue", "L'absolue"],
+    domain: "labsolueperfume.com",
+    site: "https://labsolueperfume.com/en/",
+    fragrancePage: "https://labsolueperfume.com/en/collections/eau-de-parfum-labsolue",
+  },
+  {
     key: "lacoste",
     name: "Lacoste",
     zh: "法國鱷魚",
@@ -520,6 +528,11 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Benz", "賓士"],
     domain: "mercedes-benz.com.tw",
     site: "https://www.mercedes-benz.com.tw/",
+  },
+  {
+    key: "miller-et-bertaux",
+    name: "Miller et Bertaux",
+    aliases: ["Miller & Bertaux"],
   },
   {
     key: "miller-harris",
@@ -734,6 +747,14 @@ export const BRANDS: readonly BrandInfo[] = [
     site: "https://www.viktor-rolf.com/",
   },
   { key: "xerjoff", name: "Xerjoff", zh: "希爵夫", domain: "xerjoff.com", site: "https://www.xerjoff.com/" },
+  {
+    key: "youssoful",
+    name: "Youssoful",
+    aliases: ["YOUSSOFUL"],
+    domain: "youssoful.tw",
+    site: "https://www.youssoful.tw/",
+    fragrancePage: "https://www.youssoful.tw/collections/perfume",
+  },
   {
     key: "ysl",
     name: "Yves Saint Laurent",
