@@ -9,6 +9,7 @@ import { loginHref, RITUAL_HOME } from "@/lib/account";
 import { BRAND } from "@/lib/brand";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
 import { GlassMetalButton } from "@/components/ui/liquid-metal/GlassMetalButton";
+import { ChromaticTitle } from "./ChromaticTitle";
 import { GoldParticles } from "./GoldParticles";
 import { SmokeLayer } from "./SmokeLayer";
 import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/motion";
@@ -82,13 +83,13 @@ export function Hero() {
         <motion.p variants={item} className="label text-muted">
           {BRAND.museLine}
         </motion.p>
-        <motion.h1
+        {/* The wordmark assembles letter by letter in chromatic light (An, 2026-10-08). */}
+        <ChromaticTitle
           id="hero-title"
-          variants={item}
+          text={BRAND.coverTitle}
+          delay={delay + 0.42}
           className="mt-6 font-display text-[clamp(3.75rem,8.5vw,8rem)] font-light leading-[0.95] tracking-[0.01em] text-ink desk:mt-10"
-        >
-          {BRAND.coverTitle}
-        </motion.h1>
+        />
         <motion.p variants={item} className="mt-3 font-display text-h2 font-light italic text-lotus-deep">
           {BRAND.logoLine}
         </motion.p>
