@@ -21,6 +21,7 @@ import { cityLabel } from "@/lib/weather/cities";
 import { CONDITION_LABELS } from "@/lib/weather/labels";
 import { useCollection } from "./CollectionProvider";
 import { FragranceForm } from "./FragranceForm";
+import { CONCENTRATION_GUIDE } from "@/data/concentrations";
 import { updateFromForm } from "./saveFragrance";
 
 const LAYERS = [
@@ -133,11 +134,17 @@ export function FragranceDetail({ id }: { id: string }) {
           {f.nameZh && <p className="mt-2 font-serif-zh text-lead text-muted">{f.nameZh}</p>}
           <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
             <FamilyDot family={f.family} />
-            {[f.concentration, f.volumeMl && `${f.volumeMl} ML`].filter(Boolean).map((t) => (
-              <span key={String(t)} className="label text-faint">
-                {t}
-              </span>
-            ))}
+            {[
+              f.concentration &&
+                (f.concentration.length === 3 ? f.concentration : CONCENTRATION_GUIDE[f.concentration].en),
+              f.volumeMl && `${f.volumeMl} ML`,
+            ]
+              .filter(Boolean)
+              .map((t) => (
+                <span key={String(t)} className="label text-faint">
+                  {t}
+                </span>
+              ))}
           </div>
           {moods.length > 0 && (
             <p className="mt-4 font-serif-zh text-small text-lotus-deep">

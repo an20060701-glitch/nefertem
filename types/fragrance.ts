@@ -28,7 +28,7 @@ export interface Fragrance {
   brand: string;
   name: string;
   nameZh?: string;
-  concentration?: "EDC" | "EDT" | "EDP" | "Parfum" | "Extrait";
+  concentration?: "EDC" | "EDT" | "EDP" | "Parfum" | "Extrait" | "Fraiche";
   volumeMl?: number;
   imageUrl?: string;
   /** The brand's product page when `imageUrl` is its official picture (shown as the credit). */

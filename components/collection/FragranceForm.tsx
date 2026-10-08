@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { type Concentration, CONCENTRATION_GUIDE, CONCENTRATIONS } from "@/data/concentrations";
 import { cn } from "@/lib/cn";
 import { imageCredit } from "@/lib/fragrance/image/credit";
 import type { FragranceDraft } from "@/lib/collection/types";
@@ -11,7 +12,6 @@ import type { Fragrance, FragranceFamily, Mood } from "@/types";
 import { NameSuggestInput } from "./NameSuggestInput";
 import { NoteInput } from "./NoteInput";
 
-const CONCENTRATIONS = ["EDC", "EDT", "EDP", "Parfum", "Extrait"] as const;
 const FAMILY_KEYS = Object.keys(FAMILIES) as FragranceFamily[];
 
 export interface FragranceFormResult {
@@ -154,7 +154,7 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
             <option value="">—</option>
             {CONCENTRATIONS.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {optionLabel(c)}
               </option>
             ))}
           </select>
@@ -167,6 +167,15 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
             className={fieldClass}
           />
         </Field>
+        {/* What the picked grade means (An, 2026-10-08). */}
+        <p aria-live="polite" className="col-span-2 -mt-4 text-small text-muted empty:hidden">
+          {concentration && (
+            <>
+              {CONCENTRATION_GUIDE[concentration].en}（{CONCENTRATION_GUIDE[concentration].zh}）· 香精濃度{" "}
+              {CONCENTRATION_GUIDE[concentration].oil} · 持久度 {CONCENTRATION_GUIDE[concentration].lasting}
+            </>
+          )}
+        </p>
       </div>
 
       <fieldset className="desk:col-span-2">
@@ -299,6 +308,12 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
       </div>
     </form>
   );
+}
+
+/** "EDP · Eau de Parfum（淡香精 / 濃香水）", "Extrait de Parfum（濃香精）" in the concentration list. */
+function optionLabel(c: Concentration) {
+  const { en, zh } = CONCENTRATION_GUIDE[c];
+  return `${c.length === 3 ? `${c} · ` : ""}${en}（${zh}）`;
 }
 
 function Field({
