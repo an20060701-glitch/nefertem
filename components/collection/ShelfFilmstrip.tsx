@@ -62,10 +62,12 @@ export function ShelfFilmstrip({
     const el = stage.current;
     if (!el || count === 0) return;
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Fewer than five cards don't go round: the strip stops at either end.
-    const wraps = count >= 5;
-    // Open on a card, never between two (An, 2026-10-08: two cards opened half over each other).
-    const start = wraps ? Math.min(3, count - 1) : Math.floor((count - 1) / 2);
+    // The strip goes round: after the last card comes the first again (An, 2026-10-08). Two
+    // cards just take turns, so they stop at either end.
+    const wraps = count >= 3;
+    // Open on the first card, never between two (An, 2026-10-08: two cards opened half over
+    // each other), and step on in order from there.
+    const start = 0;
     const s = {
       phase: start,
       target: start,
@@ -206,7 +208,7 @@ export function ShelfFilmstrip({
       const k = calm ? 1 : 1 - Math.pow(0.001, (dt * SPEED) / 1000);
       if (!calm && !s.active && time - s.last > REST && count > 1) {
         // Left alone, the strip steps card by card: each one rests in front for HOLD, then the
-        // next comes in (An, 2026-10-08). Short strips turn back at either end.
+        // next comes in, always in order (An, 2026-10-08). Two cards just take turns.
         if (Math.abs(s.target - s.phase) < 0.01) {
           if (!s.heldAt) s.heldAt = time;
           else if (time - s.heldAt >= HOLD) {
@@ -254,7 +256,10 @@ export function ShelfFilmstrip({
         const rz = compact ? d * -1.4 : d * 0.7;
         card.style.setProperty("--focus", focus.toFixed(4));
         card.style.zIndex = String(Math.round(1000 - dist * 100));
-        card.style.opacity = String(Math.max(0.13, side * 0.76 + focus * 0.24));
+        // Fade out where the strip joins round, so a card crossing from one end to the other
+        // isn't seen jumping across.
+        const seam = wraps ? Math.min(1, Math.max(0, (count / 2 - dist) / 0.5)) : 1;
+        card.style.opacity = String(Math.max(0.13, side * 0.76 + focus * 0.24) * seam);
         card.style.filter = `blur(${(Math.max(0, dist - 1.5) * 0.38).toFixed(2)}px)`;
         card.style.transform = `translate(-50%, -50%) perspective(1450px) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
         card.toggleAttribute("data-front", i === front);
