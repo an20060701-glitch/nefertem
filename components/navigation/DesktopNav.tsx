@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV_ITEMS, isActive, showsSections } from "@/lib/navigation";
+import { showsSections } from "@/lib/navigation";
 import { cn } from "@/lib/cn";
 import { NefertemLogo } from "@/components/brand/NefertemLogo";
+import { GlassDock } from "./GlassDock";
 
 /**
- * Tablet / desktop editorial masthead: wordmark left, three labels right,
- * generous emptiness between. Condenses after the first scroll.
+ * Tablet / desktop editorial masthead: wordmark left, the three sections right in a
+ * glass dock, generous emptiness between. Condenses after the first scroll.
  */
 export function DesktopNav() {
   const pathname = usePathname();
@@ -37,28 +37,10 @@ export function DesktopNav() {
         // Larger at desktop width while the masthead is open (An, 2026-10-06).
         className={cn("transition-all duration-500", !condensed && "desk:text-[2.25rem]")}
       />
-      <nav aria-label="主要導覽" hidden={!showsSections(pathname)}>
-        <ul className="flex items-center gap-10 desk:gap-14">
-          {NAV_ITEMS.map((item) => {
-            const active = isActive(item, pathname);
-            return (
-              <li key={item.key}>
-                <Link
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "label gold-underline transition-colors duration-300",
-                    active ? "text-blue" : "text-ink/70 hover:text-ink",
-                  )}
-                >
-                  {item.labelEnShort}
-                  <span className="sr-only">（{item.labelZh}）</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      {/* The sections as a clear-glass dock (An, 2026-10-08). */}
+      <div hidden={!showsSections(pathname)}>
+        <GlassDock pathname={pathname} />
+      </div>
     </header>
   );
 }
