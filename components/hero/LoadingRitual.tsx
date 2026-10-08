@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { NefertemEmblem } from "@/components/brand/NefertemEmblem";
+import { ChromaticTitle } from "./ChromaticTitle";
 import { INTRO_DONE_EVENT, INTRO_DURATION, INTRO_STORAGE_KEY, hasSeenIntro } from "@/lib/intro";
 import { ease } from "@/lib/motion";
 
@@ -51,14 +52,15 @@ export function LoadingRitual() {
               <NefertemEmblem className="h-[150px] w-auto" />
             </motion.span>
           </span>
-          <motion.p
+          {/* The name assembles in chromatic light, like the cover's wordmark (An, 2026-10-08). */}
+          <ChromaticTitle
+            as="p"
+            text="Nefertem"
+            delay={0.6}
+            assemble={1.3}
+            replayOnHover={false}
             className="mt-10 font-display text-[2rem] tracking-[0.08em] text-inverse"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: reduce ? 0 : 0.8, duration: 1, ease: ease.editorial }}
-          >
-            Nefertem
-          </motion.p>
+          />
           <motion.p
             className="label mt-5 text-[0.6875rem] tracking-[0.42em] text-inverse/80"
             initial={{ opacity: 0, y: 8 }}

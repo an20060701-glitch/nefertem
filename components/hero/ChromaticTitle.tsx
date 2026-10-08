@@ -7,7 +7,8 @@ import { useEffect, useRef } from "react";
  * "threeui-intro", light mode): each letter flies in from a scattered spot, slightly enlarged,
  * with its red, green and blue split apart and blurred, and settles sharp. Motion ported (MIT)
  * from the package's chromatic wordmark; its own component only spells "ThreeUI".
- * Plays once as the page opens, again when the pointer comes back to the title.
+ * Plays once as the page opens, again when the pointer comes back to the title. Also spells
+ * the name on the loading ritual (An, 2026-10-08).
  */
 const ASSEMBLE = 1.5; // seconds for the slowest letter to land
 
@@ -32,14 +33,21 @@ export function ChromaticTitle({
   delay,
   className,
   id,
+  as: Tag = "h1",
+  assemble = ASSEMBLE,
+  replayOnHover = true,
 }: {
   text: string;
   /** Seconds before the letters start, to follow the page's own entrance. */
   delay: number;
   className?: string;
   id?: string;
+  as?: "h1" | "p";
+  /** Seconds for the slowest letter to land. */
+  assemble?: number;
+  replayOnHover?: boolean;
 }) {
-  const title = useRef<HTMLHeadingElement>(null);
+  const title = useRef<HTMLHeadingElement & HTMLParagraphElement>(null);
   const letters = [...text];
 
   useEffect(() => {
@@ -69,7 +77,7 @@ export function ChromaticTitle({
       });
     };
     const tick = (now: number) => {
-      const p = clamp((now - started) / 1000 / ASSEMBLE, 0, 1);
+      const p = clamp((now - started) / 1000 / assemble, 0, 1);
       paint(p);
       if (p < 1) frame = requestAnimationFrame(tick);
       else running = false;
@@ -84,15 +92,15 @@ export function ChromaticTitle({
     const replay = (e: PointerEvent) => e.pointerType === "mouse" && play();
 
     play(delay);
-    el.addEventListener("pointerenter", replay);
+    if (replayOnHover) el.addEventListener("pointerenter", replay);
     return () => {
       cancelAnimationFrame(frame);
       el.removeEventListener("pointerenter", replay);
     };
-  }, [delay]);
+  }, [delay, assemble, replayOnHover]);
 
   return (
-    <h1 ref={title} id={id} aria-label={text} className={className}>
+    <Tag ref={title} id={id} aria-label={text} className={className}>
       {letters.map((ch, i) => (
         <span
           key={i}
@@ -103,6 +111,6 @@ export function ChromaticTitle({
           {ch === " " ? " " : ch}
         </span>
       ))}
-    </h1>
+    </Tag>
   );
 }
