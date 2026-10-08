@@ -14,7 +14,7 @@ import type { Shelf } from "./CabinetShelves";
  * One shelf's scents in a small window, as a moving filmstrip (An, 2026-10-08, after ThreeUI's
  * CharacterCarousel "filmstrip"; its motion is ported here, MIT, since the package's own
  * version only shows its fixed demo portraits). Cards fan out in depth round the one in
- * focus, follow the pointer, drift on their own when left alone, and turn with the wheel,
+ * focus, come forward when pointed at, step on their own when left alone, and turn with the wheel,
  * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
 /** The strip turns twice as fast as the package's (An, 2026-10-08). */
@@ -25,6 +25,10 @@ const REST = 3600;
 const OPENING_REST = 300;
 /** After the mouse leaves the strip, it drifts again sooner (An, 2026-10-08). */
 const LEAVE_REST = 1500;
+/** How long each card rests in front while the strip steps on its own (ms). */
+const HOLD = 500;
+/** Extra room between the front card and the cards beside it, in card steps (desktop). */
+const GAP = 0.8;
 
 /**
  * Each card gets its own perspective and the cards are stacked by z-index, not placed in one
@@ -66,6 +70,9 @@ export function ShelfFilmstrip({
       px: 0,
       py: 0,
       active: false,
+      // Idle stepping: which way the strip moves and when the card in front arrived.
+      dir: 1,
+      heldAt: 0,
       // Count the wait as nearly over, so the drift begins right after the window opens.
       last: performance.now() - (REST - OPENING_REST),
     };
@@ -100,18 +107,19 @@ export function ShelfFilmstrip({
     let pointer: { x: number; y: number } | undefined;
     let recheck = 0;
     const LOCK = 350;
-    const bringUnder = (x: number, y: number) => {
+    // The pointer has to come to rest on a card first, so passing over cards on the way to
+    // another one doesn't pull them in.
+    const DWELL = 140;
+    const bringUnder = () => {
+      if (!pointer) return;
+      const { x, y } = pointer;
       const now = performance.now();
-      // Let a card finish arriving before the next one, and only answer a pointer that moved:
-      // the card sliding away from under a still pointer shouldn't pull the next one in.
+      // Only answer a pointer that moved: the card sliding away from under a still pointer
+      // shouldn't pull the next one in.
       if (hoverAt && Math.hypot(x - hoverAt.x, y - hoverAt.y) < 8) return;
+      // Let a card finish arriving before the next one.
       if (hoverAt && now - hoverAt.t < LOCK) {
-        // Passing over cards on the way: look again where the pointer is once this one lands.
-        window.clearTimeout(recheck);
-        recheck = window.setTimeout(
-          () => pointer && bringUnder(pointer.x, pointer.y),
-          LOCK - (now - hoverAt.t) + 10,
-        );
+        recheck = window.setTimeout(bringUnder, LOCK - (now - hoverAt.t) + 10);
         return;
       }
       const card = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest("a");
@@ -132,7 +140,8 @@ export function ShelfFilmstrip({
       s.last = performance.now();
       el.style.setProperty("--pointer-x", `${(s.px + 1) * 50}%`);
       pointer = { x: e.clientX, y: e.clientY };
-      bringUnder(e.clientX, e.clientY);
+      window.clearTimeout(recheck);
+      recheck = window.setTimeout(bringUnder, DWELL);
     };
     const onLeave = () => {
       s.active = false;
@@ -190,12 +199,17 @@ export function ShelfFilmstrip({
       prev = time;
       const k = calm ? 1 : 1 - Math.pow(0.001, (dt * SPEED) / 1000);
       if (!calm && !s.active && time - s.last > REST && count > 1) {
-        const idle = time - s.last - REST;
-        const reach = wraps ? 2.45 : (count - 1) / 2;
-        const centre = wraps ? s.base : (count - 1) / 2;
-        // Start the swing from the card in front, so it moves off smoothly instead of jumping.
-        const from = Math.asin(Math.max(-1, Math.min(1, (s.base - centre) / reach)));
-        s.target = centre + Math.sin(idle * 0.00042 * SPEED + from) * reach;
+        // Left alone, the strip steps card by card: each one rests in front for HOLD, then the
+        // next comes in (An, 2026-10-08). Short strips turn back at either end.
+        if (Math.abs(s.target - s.phase) < 0.01) {
+          if (!s.heldAt) s.heldAt = time;
+          else if (time - s.heldAt >= HOLD) {
+            if (!wraps && (s.target + s.dir > count - 1 || s.target + s.dir < 0)) s.dir = -s.dir;
+            s.target = Math.round(s.target) + s.dir;
+            s.base = s.target;
+            s.heldAt = 0;
+          }
+        } else s.heldAt = 0;
       }
       s.phase += (s.target - s.phase) * k;
       const w = el.clientWidth;
@@ -211,7 +225,10 @@ export function ShelfFilmstrip({
         const focus = Math.exp(-dist * dist * 1.28);
         const side = Math.max(0, 1 - dist / 5);
         const dir = Math.sign(d);
-        const x = compact ? d * 24 + Math.sin(d * 0.9) * 25 : d * across;
+        // On desktop the cards beside the front one stand apart from it (An, 2026-10-08), so the
+        // pointer has room to land on a card's middle without catching its neighbour.
+        const gap = compact ? 0 : Math.min(dist, 1) * dir * across * GAP;
+        const x = compact ? d * 24 + Math.sin(d * 0.9) * 25 : d * across + gap;
         const y = compact ? d * down : dist * 8 + s.py * focus * 10;
         const z = focus * 145 - dist * 148;
         const scale = 0.54 + side * 0.15 + focus * 0.54;
