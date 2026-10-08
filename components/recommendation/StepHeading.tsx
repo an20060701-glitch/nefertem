@@ -24,7 +24,7 @@ export function StepHeading({
         <h3
           id={id}
           tabIndex={-1}
-          className="mt-2 font-serif-zh text-h1-zh text-ink outline-none max-md:text-[1.375rem] max-md:leading-snug md:mt-6"
+          className="mt-2 font-serif-zh text-h1-zh text-ink outline-none max-md:text-[1.375rem] max-md:leading-snug md:mt-4"
         >
           {question}
         </h3>
