@@ -179,6 +179,13 @@ const NAMES: Readonly<Record<string, readonly string[]>> = {
   "Maison Margiela|REPLICA From The Garden": ["田園拾果"],
   "Maison Margiela|Replica Lazy Sunday Morning": ["慵懶週末", "慵懶週日早晨"],
   "Maison Margiela|Replica By the Fireplace": ["溫暖壁爐", "壁爐火光"],
+  // Mercedes-Benz (names as 香水1976 lists them)
+  "Mercedes-Benz|SIGN": ["星兆", "星芒"],
+  "Mercedes-Benz|Man": ["王者之星", "王者之峰"],
+  "Mercedes-Benz|AIR": ["三芒星 天空", "天空"],
+  "Mercedes-Benz|SEA": ["三芒星 海洋", "海洋"],
+  "Mercedes-Benz|LAND": ["三芒星 大地", "大地"],
+  "Mercedes-Benz|Le Parfum": ["極致紳士", "入木之水"],
   // Demo scents of other brands
   "Creed|Aventus": ["阿文圖斯", "拿破崙之水"],
   "Giorgio Armani|Acqua di Giò": ["寄情水"],
