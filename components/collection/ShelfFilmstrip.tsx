@@ -25,6 +25,8 @@ const REST = 3600;
 const OPENING_REST = 300;
 /** After the mouse leaves the strip, it drifts again sooner (An, 2026-10-08). */
 const LEAVE_REST = 1500;
+/** Extra room between the front card and the cards beside it, in card steps (desktop). */
+const GAP = 0.8;
 
 /**
  * Each card gets its own perspective and the cards are stacked by z-index, not placed in one
@@ -100,18 +102,19 @@ export function ShelfFilmstrip({
     let pointer: { x: number; y: number } | undefined;
     let recheck = 0;
     const LOCK = 350;
-    const bringUnder = (x: number, y: number) => {
+    // The pointer has to come to rest on a card first, so passing over cards on the way to
+    // another one doesn't pull them in.
+    const DWELL = 140;
+    const bringUnder = () => {
+      if (!pointer) return;
+      const { x, y } = pointer;
       const now = performance.now();
-      // Let a card finish arriving before the next one, and only answer a pointer that moved:
-      // the card sliding away from under a still pointer shouldn't pull the next one in.
+      // Only answer a pointer that moved: the card sliding away from under a still pointer
+      // shouldn't pull the next one in.
       if (hoverAt && Math.hypot(x - hoverAt.x, y - hoverAt.y) < 8) return;
+      // Let a card finish arriving before the next one.
       if (hoverAt && now - hoverAt.t < LOCK) {
-        // Passing over cards on the way: look again where the pointer is once this one lands.
-        window.clearTimeout(recheck);
-        recheck = window.setTimeout(
-          () => pointer && bringUnder(pointer.x, pointer.y),
-          LOCK - (now - hoverAt.t) + 10,
-        );
+        recheck = window.setTimeout(bringUnder, LOCK - (now - hoverAt.t) + 10);
         return;
       }
       const card = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest("a");
@@ -132,7 +135,8 @@ export function ShelfFilmstrip({
       s.last = performance.now();
       el.style.setProperty("--pointer-x", `${(s.px + 1) * 50}%`);
       pointer = { x: e.clientX, y: e.clientY };
-      bringUnder(e.clientX, e.clientY);
+      window.clearTimeout(recheck);
+      recheck = window.setTimeout(bringUnder, DWELL);
     };
     const onLeave = () => {
       s.active = false;
@@ -211,7 +215,10 @@ export function ShelfFilmstrip({
         const focus = Math.exp(-dist * dist * 1.28);
         const side = Math.max(0, 1 - dist / 5);
         const dir = Math.sign(d);
-        const x = compact ? d * 24 + Math.sin(d * 0.9) * 25 : d * across;
+        // On desktop the cards beside the front one stand apart from it (An, 2026-10-08), so the
+        // pointer has room to land on a card's middle without catching its neighbour.
+        const gap = compact ? 0 : Math.min(dist, 1) * dir * across * GAP;
+        const x = compact ? d * 24 + Math.sin(d * 0.9) * 25 : d * across + gap;
         const y = compact ? d * down : dist * 8 + s.py * focus * 10;
         const z = focus * 145 - dist * 148;
         const scale = 0.54 + side * 0.15 + focus * 0.54;
