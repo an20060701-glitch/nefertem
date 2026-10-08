@@ -2,14 +2,13 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRef } from "react";
 import { useCollection } from "@/components/collection/CollectionProvider";
 import { useIntroDelay } from "@/hooks/useIntroDelay";
 import { loginHref, RITUAL_HOME } from "@/lib/account";
 import { BRAND } from "@/lib/brand";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
-import { LiquidMetalLink } from "@/components/ui/LiquidMetalLink";
+import { GlassMetalButton } from "@/components/ui/liquid-metal/GlassMetalButton";
 import { GoldParticles } from "./GoldParticles";
 import { SmokeLayer } from "./SmokeLayer";
 import { ease, fadeUp, reducedFade, staggerChildren, transition } from "@/lib/motion";
@@ -110,20 +109,11 @@ export function Hero() {
         </p>
         <motion.div variants={item} className="mt-10 desk:mt-14">
           {/* Signed in: straight into the ritual. Otherwise sign in first, then continue there. */}
-          {reduce ? (
-            <Link href={beginHref} className="group inline-flex w-fit items-center gap-4 text-blue">
-              <span className="label gold-underline text-[0.875rem] desk:text-[0.9375rem]">
-                BEGIN TODAY&apos;S RITUAL
-              </span>
-              <span
-                aria-hidden
-                className="h-px w-12 bg-blue transition-[width] duration-500 group-hover:w-20"
-              />
-            </Link>
-          ) : (
-            // A moving liquid-metal pill (An, 2026-10-08); reduced motion keeps the quiet link.
-            <LiquidMetalLink href={beginHref} label="BEGIN TODAY'S RITUAL" />
-          )}
+          {/* Clear glass with a moving liquid-metal rim (An, 2026-10-08). */}
+          <GlassMetalButton href={beginHref}>
+            <span className="text-[0.875rem] desk:text-[0.9375rem]">BEGIN TODAY&apos;S RITUAL</span>
+            <span aria-hidden className="h-px w-8 bg-blue" />
+          </GlassMetalButton>
           {!user && isFirebaseConfigured && (
             <p className="mt-4 text-small text-muted">使用 Google 或 LINE 帳號登入後開始。</p>
           )}

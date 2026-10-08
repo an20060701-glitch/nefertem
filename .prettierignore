@@ -3,3 +3,4 @@ node_modules
 docs
 package-lock.json
 app/ryusenkei.css
+components/ui/liquid-metal/liquid-metal.html.ts

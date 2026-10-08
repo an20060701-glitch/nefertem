@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PetalScatter } from "@/components/brand/PetalScatter";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { LiquidMetalAdd } from "@/components/ui/LiquidMetalLink";
+import { GlassMetalButton } from "@/components/ui/liquid-metal/GlassMetalButton";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { findDemoFragrance } from "@/data/fragrances";
@@ -76,7 +76,23 @@ export function CollectionView() {
         <div className="relative mb-12 flex flex-wrap items-center justify-between gap-6">
           <AccountBar />
           {items.length > 0 && (
-            <LiquidMetalAdd label="新增香水" caption="新增香水 · ADD SCENT" onClick={() => setAdding(true)} />
+            <div className="flex items-center gap-4">
+              <GlassMetalButton shape="circle" onClick={() => setAdding(true)} aria-label="新增香水">
+                <span aria-hidden className="relative size-4">
+                  <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-current" />
+                  <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-current" />
+                </span>
+              </GlassMetalButton>
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-hidden
+                onClick={() => setAdding(true)}
+                className="press-soft label text-ink"
+              >
+                新增香水 · ADD SCENT
+              </button>
+            </div>
           )}
         </div>
 
