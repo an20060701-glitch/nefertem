@@ -36,6 +36,18 @@ const byNewest = (items: UserFragrance[]) => [...items].sort((a, b) => b.addedAt
 
 import { markRestarted, restartedAt, subscribeRestarted } from "@/lib/recommendation/today";
 
+const HIDDEN_KEY = "nefertem:cabinet-hidden";
+const hiddenListeners = new Set<() => void>();
+
+function readHiddenShelves(): string[] {
+  try {
+    const parsed: unknown = JSON.parse(window.localStorage.getItem(HIDDEN_KEY) ?? "[]");
+    return Array.isArray(parsed) ? parsed.filter((k): k is string => typeof k === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
 export const deviceRepo: CollectionRepo = {
   kind: "device",
   supportsImages: false,
@@ -63,6 +75,29 @@ export const deviceRepo: CollectionRepo = {
 
   async markRestarted(at) {
     markRestarted(at);
+  },
+
+  subscribeHiddenShelves(onKeys) {
+    const emit = () => onKeys(readHiddenShelves());
+    hiddenListeners.add(emit);
+    emit();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === HIDDEN_KEY) emit();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => {
+      hiddenListeners.delete(emit);
+      window.removeEventListener("storage", onStorage);
+    };
+  },
+
+  async setHiddenShelves(keys) {
+    try {
+      window.localStorage.setItem(HIDDEN_KEY, JSON.stringify(keys));
+    } catch {
+      // Private mode: the shelves come back on the next visit.
+    }
+    hiddenListeners.forEach((l) => l());
   },
 
   subscribeUsage(onLogs) {

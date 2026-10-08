@@ -32,6 +32,12 @@ export interface CollectionRepo {
    */
   subscribeRestart(onRestart: (at: number | undefined) => void, onError?: (e: unknown) => void): () => void;
   markRestarted(at: number): Promise<void>;
+  /**
+   * Shelves of 我的香水櫃 the member took away with their X (An, 2026-10-08): only the shelf
+   * is hidden, never its scents. A member's devices all follow it; a guest's stays on this device.
+   */
+  subscribeHiddenShelves(onKeys: (keys: string[]) => void, onError?: (e: unknown) => void): () => void;
+  setHiddenShelves(keys: readonly string[]): Promise<void>;
   /** Photos need an account (Storage is per member). */
   supportsImages: boolean;
 }

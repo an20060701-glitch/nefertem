@@ -136,7 +136,7 @@ export function CollectionView() {
             </div>
             {shelf ? (
               <>
-                <h2 className="mb-10 font-display text-h1 font-light" style={{ color: shelf.color }}>
+                <h2 className="mb-10 font-display text-h1 font-light" style={{ color: shelf.ink }}>
                   {shelf.zh}
                 </h2>
                 <div className="relative gap-8 md:columns-2 desk:columns-3 desk:gap-10">

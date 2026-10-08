@@ -75,6 +75,7 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
 
   // Today's 重新開始, shared by every device signed in to this account.
   const ritual = doc(db, "users", uid, "state", "ritual");
+  const cabinet = doc(db, "users", uid, "state", "cabinet");
 
   return {
     kind: "account",
@@ -92,6 +93,21 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
 
     async markRestarted(at) {
       await setDoc(ritual, { restartedAt: at }, { merge: true });
+    },
+
+    subscribeHiddenShelves(onKeys, onError) {
+      return onSnapshot(
+        cabinet,
+        (snap) => {
+          const keys = snap.get("hiddenShelves") as unknown;
+          onKeys(Array.isArray(keys) ? keys.filter((k): k is string => typeof k === "string") : []);
+        },
+        onError,
+      );
+    },
+
+    async setHiddenShelves(keys) {
+      await setDoc(cabinet, { hiddenShelves: [...keys] }, { merge: true });
     },
     supportsImages: !!store,
 
