@@ -303,6 +303,20 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
     "https://www.maisonmargiela.com/wx/replica-autumn-vibes-eau-de-toilette-S33YX0128SV0049961.html",
   "cat2-maison-margiela-replica-from-the-garden-edt":
     "https://www.maisonmargiela.com/en-tw/replica-from-the-garden-eau-de-toilette-S33YX0177M10053961.html",
+  "cat2-mercedes-benz-sign-edp": "https://parfums.mercedes-benz.com/en/products/sign",
+  "cat2-mercedes-benz-amg-red-thrill-edp":
+    "https://parfums.mercedes-benz.com/en/products/mercedes-benz-amg-red",
+  "cat2-mercedes-benz-land-edp": "https://parfums.mercedes-benz.com/en/products/land",
+  "cat2-mercedes-benz-sea-edp": "https://parfums.mercedes-benz.com/en/products/sea",
+  "cat2-mercedes-benz-air-edp": "https://parfums.mercedes-benz.com/en/products/air",
+  "cat2-mercedes-benz-woman-edp": "https://parfums.mercedes-benz.com/en/products/woman-edp",
+  "cat2-mercedes-benz-for-women-floral-fantasy-edt":
+    "https://parfums.mercedes-benz.com/en/products/mercedes-benz-for-women-floral-fantasy-edition",
+  "cat2-mercedes-benz-man-edt": "https://parfums.mercedes-benz.com/en/products/man",
+  "cat2-mercedes-benz-the-move-edt": "https://parfums.mercedes-benz.com/en/products/the-move",
+  "cat2-mercedes-benz-man-private-edp": "https://parfums.mercedes-benz.com/en/products/man-private",
+  "cat2-mercedes-benz-maybach-charismatic-rose-edp":
+    "https://parfums.mercedes-benz.com/en/products/recharge-maybach-charismatic-rose",
 };
 
 /*
