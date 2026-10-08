@@ -17,8 +17,12 @@ import type { Shelf } from "./CabinetShelves";
  * focus, follow the pointer, drift on their own when left alone, and turn with the wheel,
  * the arrow keys, a swipe or a tap; the card in focus opens that scent's page.
  */
-/** The strip turns 1.3 times as fast as the package's (An, 2026-10-08). */
-const SPEED = 1.3;
+/** The strip turns 1.6 times as fast as the package's (An, 2026-10-08). */
+const SPEED = 1.6;
+/** Left alone this long after a touch, the strip starts drifting again (ms). */
+const REST = 3600;
+/** On opening it starts drifting almost at once (An: it sat still for 5–6 s). */
+const OPENING_REST = 300;
 
 /**
  * Each card gets its own perspective and the cards are stacked by z-index, not placed in one
@@ -60,7 +64,8 @@ export function ShelfFilmstrip({
       px: 0,
       py: 0,
       active: false,
-      last: performance.now(),
+      // Count the wait as nearly over, so the drift begins right after the window opens.
+      last: performance.now() - (REST - OPENING_REST),
     };
     const clamp = (v: number) => (wraps ? v : Math.min(count - 1, Math.max(0, v)));
     const delta = (i: number, phase: number) => {
@@ -150,11 +155,13 @@ export function ShelfFilmstrip({
       const dt = Math.min(32, time - prev);
       prev = time;
       const k = calm ? 1 : 1 - Math.pow(0.001, (dt * SPEED) / 1000);
-      if (!calm && !s.active && time - s.last > 3600 && count > 1) {
-        const idle = time - s.last - 3600;
+      if (!calm && !s.active && time - s.last > REST && count > 1) {
+        const idle = time - s.last - REST;
         const reach = wraps ? 2.45 : (count - 1) / 2;
         const centre = wraps ? s.base : (count - 1) / 2;
-        s.target = centre + Math.sin(idle * 0.00042 * SPEED) * reach;
+        // Start the swing from the card in front, so it moves off smoothly instead of jumping.
+        const from = Math.asin(Math.max(-1, Math.min(1, (s.base - centre) / reach)));
+        s.target = centre + Math.sin(idle * 0.00042 * SPEED + from) * reach;
       }
       s.phase += (s.target - s.phase) * k;
       const w = el.clientWidth;
