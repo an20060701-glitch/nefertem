@@ -19,10 +19,11 @@ const CONCENTRATION_WORDS: Record<NonNullable<Fragrance["concentration"]>, strin
   EDC: ["cologne", "eau de cologne", "edc"],
   Parfum: ["parfum"],
   Extrait: ["extrait", "extrait de parfum"],
+  Fraiche: ["eau fraiche"],
 };
 
 /** When a name fits several bottles (Sauvage EDT / EDP / Parfum), the eau de parfum comes first. */
-const CONCENTRATION_ORDER = ["EDP", "EDT", "Parfum", "Extrait", "EDC"];
+const CONCENTRATION_ORDER = ["EDP", "EDT", "Parfum", "Extrait", "EDC", "Fraiche"];
 
 /** Brand and its known spellings ("香奈兒", "Chanel") reduced to the brand list's key when we know it. */
 function brandKey(name: string): string {
@@ -134,6 +135,7 @@ const CONCENTRATION_LABEL: Record<NonNullable<Fragrance["concentration"]>, strin
   EDC: "Eau de Cologne",
   Parfum: "Parfum",
   Extrait: "Extrait de Parfum",
+  Fraiche: "Eau Fraîche",
 };
 
 export interface NameSuggestion {
