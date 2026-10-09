@@ -1,25 +1,14 @@
 "use client";
 
-import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
-import { firebaseConfig, firestoreDatabaseId, isFirebaseConfigured } from "./config";
+import { firebaseApp as app } from "./app";
+import { firestoreDatabaseId } from "./config";
 
 /*
- * Lazily initialised so pages that never touch Firebase don't pay for it,
- * and so a missing config degrades to `null` instead of throwing.
+ * Firestore and Storage, imported dynamically (CollectionProvider) so they stay
+ * out of every page's first download; a missing config degrades to `null`.
  */
-
-function app(): FirebaseApp | null {
-  if (!isFirebaseConfigured) return null;
-  return getApps().length ? getApp() : initializeApp(firebaseConfig);
-}
-
-export function firebaseAuth(): Auth | null {
-  const a = app();
-  return a ? getAuth(a) : null;
-}
 
 export function firestore(): Firestore | null {
   const a = app();

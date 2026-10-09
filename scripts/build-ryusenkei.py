@@ -5,10 +5,12 @@ The source TTFs are ~24 MB each, far too large to ship. This script cuts them
 into small WOFF2 slices and writes the matching @font-face rules, so a page
 downloads only the slices whose characters it actually renders:
 
-  slice 00  every character used in the site's own source text, plus ASCII
-            and CJK punctuation — what nearly every page needs;
-  slice 01+ the rest of the Big5 common-character set, in code-point chunks,
-            fetched only when dynamic text (perfume names, notes) uses them.
+  slice 00  every character in the site's own copy (app, components, lib),
+            plus ASCII and CJK punctuation — what nearly every page needs;
+  slice 01  the further characters of the perfume data (data/), fetched by
+            the pages that show perfume names and notes;
+  slice 02+ the rest of the Big5 common-character set, in code-point chunks,
+            fetched only when other dynamic text uses them.
 
 Glyphs the font lacks fall back to Noto Serif TC via the font stack.
 
@@ -30,9 +32,9 @@ WEIGHTS = {"ExtraLight": 200, "Regular": 400, "Bold": 700}
 CHUNK = 600
 
 
-def site_characters() -> set[str]:
+def site_characters(*patterns: str) -> set[str]:
     text = ""
-    for pattern in ("app/**/*.tsx", "app/**/*.ts", "components/**/*.tsx", "lib/**/*.ts", "data/**/*.ts"):
+    for pattern in patterns:
         for path in ROOT.glob(pattern):
             text += path.read_text(encoding="utf-8")
     return {c for c in text if ord(c) >= 0x2000}
@@ -72,9 +74,12 @@ def main() -> None:
 
     cmap = TTFont(src / "02Ryusenkei-Regular.ttf", lazy=True).getBestCmap()
     basic = set(range(0x20, 0x7F)) | set(range(0x3000, 0x3040)) | set(range(0xFF01, 0xFF5F)) | set(range(0x2010, 0x2070))
-    primary = sorted(cp for cp in basic | {ord(c) for c in site_characters()} if cp in cmap)
-    rest = sorted(cp for cp in {ord(c) for c in big5_common()} if cp in cmap and cp not in set(primary))
-    slices = [primary] + [rest[i : i + CHUNK] for i in range(0, len(rest), CHUNK)]
+    copy = site_characters("app/**/*.tsx", "app/**/*.ts", "components/**/*.tsx", "lib/**/*.ts")
+    primary = sorted(cp for cp in basic | {ord(c) for c in copy} if cp in cmap)
+    data = sorted(cp for cp in {ord(c) for c in site_characters("data/**/*.ts")} if cp in cmap and cp not in set(primary))
+    taken = set(primary) | set(data)
+    rest = sorted(cp for cp in {ord(c) for c in big5_common()} if cp in cmap and cp not in taken)
+    slices = [primary, data] + [rest[i : i + CHUNK] for i in range(0, len(rest), CHUNK)]
 
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.woff2"):

@@ -12,7 +12,7 @@ import {
   updateProfile,
   type User,
 } from "firebase/auth";
-import { firebaseAuth } from "./client";
+import { firebaseAuth } from "./app";
 
 export class FirebaseNotConfiguredError extends Error {
   constructor() {
