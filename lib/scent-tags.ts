@@ -247,6 +247,12 @@ export const NOTE_TAGS: Record<string, string[]> = {
   fir: ["自然", "平靜"],
   liquidambar: ["溫暖", "神秘"],
   "tolu-balsam": ["溫暖", "甜美"],
+  "rose-stem": ["清新", "自然"],
+  "ginger-lily": ["清新", "溫柔"],
+  "blackcurrant-leaf": ["清新", "果香"],
+  "precious-woods": ["溫暖", "神秘"],
+  "ice-musk": ["清新", "乾淨"],
+  "velvet-musk": ["溫柔", "平靜"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;

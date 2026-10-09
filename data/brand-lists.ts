@@ -3726,6 +3726,79 @@ const ENTRIES: readonly Entry[] = [
     baseNotes: ["white-musk", "ambroxan", "cedar"],
     description: "Citrus, Floral, Fruity & Green",
   },
+  /*
+   * 植薰言 (An, 2026-10-09): the brand's six 香氛噴霧, notes as each product page on
+   * zhixunyan.com gives them, every one kept (An: 照官網給的), so 玫瑰莖, 薑花, 黑醋栗葉,
+   * 珍貴木材, 冰麝香 and 天鵝絨麝香 are new notes; 佛手柑 is bergamot, 夜來香 tuberose. The
+   * brand sells them for rooms, cars and fabrics (clothes included) and states no
+   * concentration, so none is set.
+   */
+  {
+    id: "cat2-zhixunyan-spring",
+    brand: "植薰言",
+    name: "春之初綻",
+    family: "floral",
+    subFamilies: ["fresh"],
+    topNotes: ["blackcurrant", "rose"],
+    heartNotes: ["orange-blossom", "geranium"],
+    baseNotes: ["rose-stem"],
+    description: "清新花香調性。香氛噴霧（空間、織品）",
+  },
+  {
+    id: "cat2-zhixunyan-summer",
+    brand: "植薰言",
+    name: "夏之未語",
+    family: "fresh",
+    subFamilies: ["floral", "musky"],
+    topNotes: ["eucalyptus", "citrus"],
+    heartNotes: ["jasmine", "ginger-lily", "mint"],
+    baseNotes: ["ice-musk", "sage"],
+    description: "清爽花草與涼感麝香調性。香氛噴霧（空間、織品）",
+  },
+  {
+    id: "cat2-zhixunyan-autumn",
+    brand: "植薰言",
+    name: "秋之微光",
+    family: "floral",
+    subFamilies: ["fruity", "musky"],
+    topNotes: ["jasmine", "mandarin", "orange"],
+    heartNotes: ["orange-blossom", "rose", "osmanthus"],
+    baseNotes: ["velvet-musk"],
+    description: "柔和花香與溫潤果香調性。香氛噴霧（空間、織品）",
+  },
+  {
+    id: "cat2-zhixunyan-winter",
+    brand: "植薰言",
+    name: "冬之呢喃",
+    family: "citrus",
+    subFamilies: ["floral", "musky"],
+    topNotes: ["bergamot", "lemon", "citrus"],
+    heartNotes: ["jasmine", "green-tea"],
+    baseNotes: ["white-musk"],
+    description: "清新柑橘與溫潤茶香調性。香氛噴霧（空間、織品）",
+  },
+  {
+    id: "cat2-zhixunyan-orange",
+    brand: "植薰言",
+    name: "橘之約定",
+    family: "citrus",
+    subFamilies: ["fruity", "floral"],
+    topNotes: ["orange", "fig"],
+    heartNotes: ["orange-blossom", "tuberose"],
+    baseNotes: ["blackcurrant-leaf"],
+    description: "明亮柑橘果香，細緻花香調性。香氛噴霧（空間、織品）",
+  },
+  {
+    id: "cat2-zhixunyan-sandalwood",
+    brand: "植薰言",
+    name: "檀之寧靜",
+    family: "woody",
+    subFamilies: ["amber"],
+    topNotes: ["sandalwood"],
+    heartNotes: ["amber"],
+    baseNotes: ["sandalwood", "cedar", "precious-woods"],
+    description: "溫潤木質調性。香氛噴霧（空間、織品）",
+  },
 ];
 
 export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>

@@ -512,6 +512,12 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat2-creed-acqua-fiorentina-edp": "https://creedboutique.com/products/acqua-fiorentina",
   "cat2-creed-jardin-d-amalfi-edp": "https://creedboutique.com/products/jardin-d-amalfi",
   "cat2-creed-pure-white-cologne-edp": "https://creedboutique.com/products/pure-white-cologne",
+  "cat2-zhixunyan-spring": "https://www.zhixunyan.com/item/PD6941253b89a1d",
+  "cat2-zhixunyan-summer": "https://www.zhixunyan.com/item/PD69412483710a3",
+  "cat2-zhixunyan-autumn": "https://www.zhixunyan.com/item/PD69412401811ec",
+  "cat2-zhixunyan-winter": "https://www.zhixunyan.com/item/PD69412352c0971",
+  "cat2-zhixunyan-orange": "https://www.zhixunyan.com/item/PD694250734fb8a",
+  "cat2-zhixunyan-sandalwood": "https://www.zhixunyan.com/item/PD694252cd6d890",
 };
 
 /*
