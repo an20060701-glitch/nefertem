@@ -471,6 +471,12 @@ export const BRANDS: readonly BrandInfo[] = [
     fragrancePage: "https://www.lelabofragrances.com/eau-de-parfum.html",
   },
   {
+    key: "liwu",
+    name: "Liwu",
+    zh: "立霧",
+    site: "https://myship.7-11.com.tw/general/detail/GM2410054582342",
+  },
+  {
     key: "l-occitane",
     name: "L'Occitane",
     zh: "歐舒丹",

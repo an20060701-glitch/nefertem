@@ -280,6 +280,18 @@ const NAMES: Readonly<Record<string, readonly string[]>> = {
   "Penhaligon's|Blenheim Bouquet": ["布倫海姆"],
   "Penhaligon's|Opus 1870": ["詠序曲"],
   "Penhaligon's|Bluebell": ["風中鈴藍"],
+  // Liwu 立霧 (the brand's one-character names)
+  "Liwu|Mountain": ["山", "立霧山"],
+  "Liwu|Valley": ["谷", "立霧谷"],
+  "Liwu|Luna": ["月", "立霧月"],
+  "Liwu|Glow": ["光", "立霧光"],
+  "Liwu|Ocean": ["海", "立霧海"],
+  "Liwu|Forest": ["森", "立霧森"],
+  "Liwu|Mist": ["霧", "立霧霧"],
+  "Liwu|Leeway": ["餘", "立霧餘"],
+  "Liwu|Dawn": ["旭", "立霧旭"],
+  "Liwu|River": ["川", "立霧川"],
+  "Liwu|Wood": ["木", "立霧木"],
   // Demo scents of other brands
   "Creed|Aventus": ["阿文圖斯", "拿破崙之水"],
   "Giorgio Armani|Acqua di Giò": ["寄情水"],
