@@ -305,6 +305,15 @@ export const NOTES = {
   "orange-brandy": { en: "Orange Brandy", zh: "柑橘白蘭地", family: "gourmand" },
   bourbon: { en: "Bourbon", zh: "波本酒", family: "gourmand" },
   "ciara-wood": { en: "Ciara Wood", zh: "Ciara 木", family: "woody" },
+  dandelion: { en: "Dandelion", zh: "蒲公英", family: "fresh" },
+  maqaw: { en: "Taiwan Mountain Pepper", zh: "馬告山胡椒", family: "citrus" },
+  "maqaw-leaf": { en: "Taiwan Mountain Pepper Leaf", zh: "山胡椒葉", family: "fresh" },
+  "cinnamon-leaf": { en: "Taiwanese Cinnamon Leaf", zh: "土肉桂葉", family: "spicy" },
+  "luanta-fir": { en: "Taiwan Luanta Fir", zh: "台灣香杉", family: "woody" },
+  "capillary-wormwood": { en: "Capillary Wormwood", zh: "茵陳蒿", family: "fougere" },
+  "shell-ginger": { en: "Taiwan Shell Ginger", zh: "月桃", family: "spicy" },
+  "white-magnolia": { en: "White Magnolia", zh: "白玉蘭", family: "floral" },
+  "red-cypress": { en: "Taiwanese Red Cypress", zh: "台灣紅檜", family: "woody" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;

@@ -283,6 +283,15 @@ export const NOTE_TAGS: Record<string, string[]> = {
   "orange-brandy": ["溫暖", "微醺"],
   bourbon: ["溫暖", "微醺"],
   "ciara-wood": ["溫暖", "平靜"],
+  dandelion: ["清新", "自然"],
+  maqaw: ["清新", "活力"],
+  "maqaw-leaf": ["清新", "自然"],
+  "cinnamon-leaf": ["溫暖", "辛香"],
+  "luanta-fir": ["平靜", "自然"],
+  "capillary-wormwood": ["平靜", "自然"],
+  "shell-ginger": ["清新", "辛香"],
+  "white-magnolia": ["優雅", "清新"],
+  "red-cypress": ["平靜", "神秘"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;
