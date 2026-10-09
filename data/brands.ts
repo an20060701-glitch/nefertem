@@ -763,6 +763,13 @@ export const BRANDS: readonly BrandInfo[] = [
     domain: "yslbeauty.com",
     site: "https://www.yslbeauty.com.tw/",
   },
+  {
+    key: "zhixunyan",
+    name: "植薰言",
+    aliases: ["zhixunyan"],
+    domain: "zhixunyan.com",
+    site: "https://www.zhixunyan.com/",
+  },
 ];
 
 export function findBrand(key: string | null | undefined): BrandInfo | undefined {
