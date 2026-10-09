@@ -4607,10 +4607,12 @@ const ENTRIES: readonly Entry[] = [
    * 台灣香杉, 茵陳蒿, 月桃, 白玉蘭, 台灣紅檜, 蒲公英) are new notes. Sold as 織品淡香水 (EDT).
    * 旭 Dawn and 川 River are discontinued, 木 Wood is a winter limited edition; the 8 × 2ml
    * discovery box is skipped. The shop has no per-product page, so no OFFICIAL_PAGES link.
-   * Bottle pictures (public/images/liwu) are the ones An supplied (all but 山 and 谷).
+   * Bottle pictures (public/images/liwu) are the ones An supplied.
    */
   {
     id: "cat2-liwu-mountain",
+    imageUrl: "/images/liwu/mountain.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Mountain",
     concentration: "EDT",
@@ -4623,6 +4625,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-valley",
+    imageUrl: "/images/liwu/valley.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Valley",
     concentration: "EDT",
