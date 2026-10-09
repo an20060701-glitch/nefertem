@@ -3728,10 +3728,10 @@ const ENTRIES: readonly Entry[] = [
   },
   /*
    * 植薰言 (An, 2026-10-09): the brand's six 香氛噴霧, notes as each product page on
-   * zhixunyan.com gives them. The brand sells them for rooms, cars and fabrics (clothes
-   * included) and states no concentration, so none is set. Notes with no entry in the
-   * note dictionary (玫瑰莖, 薑花, 黑醋栗葉, 珍貴木材) are left out; 冰麝香 and 天鵝絨麝香
-   * count as musk, 佛手柑 as bergamot, 夜來香 as tuberose.
+   * zhixunyan.com gives them, every one kept (An: 照官網給的), so 玫瑰莖, 薑花, 黑醋栗葉,
+   * 珍貴木材, 冰麝香 and 天鵝絨麝香 are new notes; 佛手柑 is bergamot, 夜來香 tuberose. The
+   * brand sells them for rooms, cars and fabrics (clothes included) and states no
+   * concentration, so none is set.
    */
   {
     id: "cat2-zhixunyan-spring",
@@ -3741,7 +3741,7 @@ const ENTRIES: readonly Entry[] = [
     subFamilies: ["fresh"],
     topNotes: ["blackcurrant", "rose"],
     heartNotes: ["orange-blossom", "geranium"],
-    baseNotes: [],
+    baseNotes: ["rose-stem"],
     description: "清新花香調性。香氛噴霧（空間、織品）",
   },
   {
@@ -3751,8 +3751,8 @@ const ENTRIES: readonly Entry[] = [
     family: "fresh",
     subFamilies: ["floral", "musky"],
     topNotes: ["eucalyptus", "citrus"],
-    heartNotes: ["jasmine", "mint"],
-    baseNotes: ["musk", "sage"],
+    heartNotes: ["jasmine", "ginger-lily", "mint"],
+    baseNotes: ["ice-musk", "sage"],
     description: "清爽花草與涼感麝香調性。香氛噴霧（空間、織品）",
   },
   {
@@ -3763,7 +3763,7 @@ const ENTRIES: readonly Entry[] = [
     subFamilies: ["fruity", "musky"],
     topNotes: ["jasmine", "mandarin", "orange"],
     heartNotes: ["orange-blossom", "rose", "osmanthus"],
-    baseNotes: ["musk"],
+    baseNotes: ["velvet-musk"],
     description: "柔和花香與溫潤果香調性。香氛噴霧（空間、織品）",
   },
   {
@@ -3785,7 +3785,7 @@ const ENTRIES: readonly Entry[] = [
     subFamilies: ["fruity", "floral"],
     topNotes: ["orange", "fig"],
     heartNotes: ["orange-blossom", "tuberose"],
-    baseNotes: [],
+    baseNotes: ["blackcurrant-leaf"],
     description: "明亮柑橘果香，細緻花香調性。香氛噴霧（空間、織品）",
   },
   {
@@ -3796,7 +3796,7 @@ const ENTRIES: readonly Entry[] = [
     subFamilies: ["amber"],
     topNotes: ["sandalwood"],
     heartNotes: ["amber"],
-    baseNotes: ["sandalwood", "cedar"],
+    baseNotes: ["sandalwood", "cedar", "precious-woods"],
     description: "溫潤木質調性。香氛噴霧（空間、織品）",
   },
 ];
