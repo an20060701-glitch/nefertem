@@ -12,6 +12,8 @@ import { withZhName } from "./name-zh";
 export const BRAND_LISTS_SOURCE = "An 提供的品牌香水資料（2026-10-07，整理自各品牌官網）";
 
 const CREATED = Date.UTC(2026, 9, 7);
+/** Liwu 立霧 sells on its own 7-11 賣貨便 shop; credited for the bottle pictures An supplied. */
+const LIWU_SHOP = "https://myship.7-11.com.tw/general/detail/GM2410054582342";
 
 type Entry = Omit<Fragrance, "origin" | "createdAt" | "tags">;
 
@@ -4605,6 +4607,7 @@ const ENTRIES: readonly Entry[] = [
    * 台灣香杉, 茵陳蒿, 月桃, 白玉蘭, 台灣紅檜, 蒲公英) are new notes. Sold as 織品淡香水 (EDT).
    * 旭 Dawn and 川 River are discontinued, 木 Wood is a winter limited edition; the 8 × 2ml
    * discovery box is skipped. The shop has no per-product page, so no OFFICIAL_PAGES link.
+   * Bottle pictures (public/images/liwu) are the ones An supplied (all but 山 and 谷).
    */
   {
     id: "cat2-liwu-mountain",
@@ -4632,6 +4635,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-luna",
+    imageUrl: "/images/liwu/luna.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Luna",
     concentration: "EDT",
@@ -4644,6 +4649,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-glow",
+    imageUrl: "/images/liwu/glow.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Glow",
     concentration: "EDT",
@@ -4656,6 +4663,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-ocean",
+    imageUrl: "/images/liwu/ocean.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Ocean",
     concentration: "EDT",
@@ -4668,6 +4677,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-forest",
+    imageUrl: "/images/liwu/forest.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Forest",
     concentration: "EDT",
@@ -4680,6 +4691,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-mist",
+    imageUrl: "/images/liwu/mist.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Mist",
     concentration: "EDT",
@@ -4692,6 +4705,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-leeway",
+    imageUrl: "/images/liwu/leeway.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Leeway",
     concentration: "EDT",
@@ -4704,6 +4719,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-dawn",
+    imageUrl: "/images/liwu/dawn.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Dawn",
     concentration: "EDT",
@@ -4716,6 +4733,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-river",
+    imageUrl: "/images/liwu/river.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "River",
     concentration: "EDT",
@@ -4728,6 +4747,8 @@ const ENTRIES: readonly Entry[] = [
   },
   {
     id: "cat2-liwu-wood",
+    imageUrl: "/images/liwu/wood.webp",
+    imageSource: LIWU_SHOP,
     brand: "Liwu",
     name: "Wood",
     concentration: "EDT",
