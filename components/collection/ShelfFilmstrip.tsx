@@ -64,9 +64,12 @@ export function ShelfFilmstrip({
     const el = stage.current;
     if (!el || count === 0) return;
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // The strip goes round: after the last card comes the first again (An, 2026-10-08). Two
-    // cards just take turns, so they stop at either end.
-    const wraps = count >= 3;
+    // The strip goes round: after the last card comes the first again (An, 2026-10-08), with
+    // any shelf of two or more scents (An, 2026-10-09).
+    const wraps = count >= 2;
+    // Two cards: the other one waits on the right. The card leaving the front fades out to the
+    // left and comes back in from the right, so the pair still reads as a loop.
+    const pair = count === 2;
     // Open on the first card, never between two (An, 2026-10-08: two cards opened half over
     // each other), and step on in order from there.
     const start = 0;
@@ -89,6 +92,11 @@ export function ShelfFilmstrip({
     const delta = (i: number, phase: number) => {
       let d = i - phase;
       if (!wraps) return d;
+      if (pair) {
+        while (d > 1.5) d -= 2;
+        while (d <= -0.5) d += 2;
+        return d;
+      }
       while (d > count / 2) d -= count;
       while (d < -count / 2) d += count;
       return d;
@@ -176,7 +184,7 @@ export function ShelfFilmstrip({
       const k = calm ? 1 : 1 - Math.pow(0.001, (dt * SPEED) / 1000);
       if (!calm && !s.active && time - s.last > REST && count > 1) {
         // Left alone, the strip steps card by card: each one rests in front for HOLD, then the
-        // next comes in, always in order (An, 2026-10-08). Two cards just take turns.
+        // next comes in, always in order (An, 2026-10-08).
         if (Math.abs(s.target - s.phase) < 0.01) {
           if (!s.heldAt) s.heldAt = time;
           else if (time - s.heldAt >= HOLD) {
@@ -226,7 +234,11 @@ export function ShelfFilmstrip({
         card.style.zIndex = String(Math.round(1000 - dist * 100));
         // Fade out where the strip joins round, so a card crossing from one end to the other
         // isn't seen jumping across.
-        const seam = wraps ? Math.min(1, Math.max(0, (count / 2 - dist) / 0.5)) : 1;
+        const seam = pair
+          ? Math.min(1, Math.max(0, (d < 0 ? 0.5 + d : 1.5 - d) / 0.5))
+          : wraps
+            ? Math.min(1, Math.max(0, (count / 2 - dist) / 0.5))
+            : 1;
         card.style.opacity = String(Math.max(0.13, side * 0.76 + focus * 0.24) * seam);
         card.style.filter = `blur(${(Math.max(0, dist - 1.5) * 0.38).toFixed(2)}px)`;
         card.style.transform = `translate(-50%, -50%) perspective(1450px) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
