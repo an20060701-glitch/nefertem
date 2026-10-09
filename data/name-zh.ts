@@ -223,6 +223,8 @@ const NAMES: Readonly<Record<string, readonly string[]>> = {
   "Mercedes-Benz|SEA": ["三芒星 海洋", "海洋"],
   "Mercedes-Benz|LAND": ["三芒星 大地", "大地"],
   "Mercedes-Benz|Le Parfum": ["極致紳士", "入木之水"],
+  // Issey Miyake (name as 香水1976 lists it)
+  "Issey Miyake|Le Sel d'Issey": ["一生之鹽"],
   // Demo scents of other brands
   "Creed|Aventus": ["阿文圖斯", "拿破崙之水"],
   "Giorgio Armani|Acqua di Giò": ["寄情水"],

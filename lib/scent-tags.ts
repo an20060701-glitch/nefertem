@@ -161,6 +161,7 @@ export const NOTE_TAGS: Record<string, string[]> = {
   angelica: ["清新", "平靜"],
   "salty-mineral": ["清冷", "清新"],
   "paw-accord": ["溫暖", "療癒"],
+  "salt-accord": ["微鹹", "清新"],
   "dry-wood": ["成熟", "溫暖"],
   perilla: ["清新", "活力"],
   galbanum: ["清新", "侵略性"],

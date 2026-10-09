@@ -518,6 +518,7 @@ export const OFFICIAL_PAGES: Readonly<Record<string, string>> = {
   "cat2-zhixunyan-winter": "https://www.zhixunyan.com/item/PD69412352c0971",
   "cat2-zhixunyan-orange": "https://www.zhixunyan.com/item/PD694250734fb8a",
   "cat2-zhixunyan-sandalwood": "https://www.zhixunyan.com/item/PD694252cd6d890",
+  "cat2-issey-miyake-le-sel-d-issey-edp": "https://www.isseymiyake.com/products/ip75az853",
 };
 
 /*

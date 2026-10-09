@@ -353,6 +353,15 @@ export const BRANDS: readonly BrandInfo[] = [
     aliases: ["Initio"],
     domain: "initioparfums.com",
   },
+  {
+    key: "issey-miyake",
+    name: "Issey Miyake",
+    zh: "三宅一生",
+    aliases: ["ISSEY MIYAKE"],
+    domain: "isseymiyake.com",
+    site: "https://www.isseymiyake.com/",
+    fragrancePage: "https://www.isseymiyake.com/collections/parfums",
+  },
   { key: "jaguar", name: "Jaguar", zh: "積架", domain: "jaguar.com", site: "https://www.jaguar.com/" },
   {
     key: "jean-paul-gaultier",

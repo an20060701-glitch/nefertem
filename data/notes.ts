@@ -183,6 +183,7 @@ export const NOTES = {
   angelica: { en: "Angelica", zh: "白芷", family: "fougere" },
   "salty-mineral": { en: "Salty Mineral", zh: "鹹感礦物", family: "mineral" },
   "paw-accord": { en: "Paw Accord", zh: "肉球香調", family: "avantgarde" },
+  "salt-accord": { en: "Salt Accord", zh: "鹽調", family: "mineral" },
   "dry-wood": { en: "Dry Wood", zh: "乾木", family: "woody" },
   perilla: { en: "Perilla Leaf", zh: "紫蘇葉", family: "fresh" },
   galbanum: { en: "Galbanum", zh: "白松香", family: "fresh" },

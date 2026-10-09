@@ -3799,6 +3799,24 @@ const ENTRIES: readonly Entry[] = [
     baseNotes: ["sandalwood", "cedar", "precious-woods"],
     description: "溫潤木質調性。香氛噴霧（空間、織品）",
   },
+  /*
+   * Issey Miyake (An, 2026-10-09): LE SEL D'ISSEY EAU DE PARFUM, the scent isseymiyake.com
+   * introduces in its news post 18078. The product page lists one 香調 line, ソルトアコード、
+   * インセンス、アンバーウッド, split here as top / heart / base; ソルトアコード is the new
+   * note salt-accord. Taiwan name 一生之鹽 as 香水1976 lists it.
+   */
+  {
+    id: "cat2-issey-miyake-le-sel-d-issey-edp",
+    brand: "Issey Miyake",
+    name: "Le Sel d'Issey",
+    concentration: "EDP",
+    family: "mineral",
+    subFamilies: ["amber", "woody"],
+    topNotes: ["salt-accord"],
+    heartNotes: ["incense"],
+    baseNotes: ["amberwood"],
+    description: "鹽調、焚香與琥珀木",
+  },
 ];
 
 export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>
