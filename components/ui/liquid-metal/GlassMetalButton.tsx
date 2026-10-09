@@ -38,11 +38,16 @@ window.addEventListener('message', ev => {
   if(typeof c.over === 'boolean'){ on.over = c.over; sync(); }
   if(typeof c.focus === 'boolean'){ on.focus = c.focus; sync(); }
   if(typeof c.press === 'boolean'){ on.press = c.press; sync(); if(c.press) addRipple(ptr.x, ptr.y); }
+  if(typeof c.paused === 'boolean') window.__paused = c.paused;
 });
 parent.postMessage({ glassMetal: 'ready' }, '*');`;
 
+// Off screen the shader skips its drawing (the rim's clock stands still) instead of being torn down.
+const PAUSE = "function frame(now){\n  if(window.__paused){ last = now; requestAnimationFrame(frame); return; }";
+
 const PAGE = LIQUID_METAL_HTML.replace(/<link[^>]*>\n?/g, "") // no Google Fonts: the label is ours
   .replace("</style>", GLASS_CSS)
+  .replace("function frame(now){", PAUSE)
   .replace("window.__seek   = v => { clock = v; drawn = null; };", BRIDGE);
 
 /** The stage keeps a margin of 900/516 of the button's height round it for the glow. */
@@ -79,13 +84,22 @@ export function GlassMetalButton({
   const frame = useRef<HTMLIFrameElement>(null);
   const [size, setSize] = useState<{ w: number; h: number }>();
   const [inView, setInView] = useState(false);
+  // The shader frame mounts the first time the button is seen and then stays, paused while off
+  // screen: building it again on every scroll back recompiled the shaders and stalled the page.
+  const [seen, setSeen] = useState(false);
 
   // Follow the button's size, and only run the shader while it is on screen.
   useEffect(() => {
     const el = box.current;
     if (!el) return;
     const ro = new ResizeObserver(() => setSize({ w: el.offsetWidth, h: el.offsetHeight }));
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: "80px" });
+    const io = new IntersectionObserver(
+      ([e]) => {
+        setInView(e.isIntersecting);
+        if (e.isIntersecting) setSeen(true);
+      },
+      { rootMargin: "80px" },
+    );
     ro.observe(el);
     io.observe(el);
     return () => {
@@ -141,7 +155,7 @@ export function GlassMetalButton({
         aria-hidden
         className="absolute inset-0 z-0 rounded-full border border-white/70 bg-white/25 shadow-[inset_0_1px_0_rgb(255_255_255/0.9),inset_0_-10px_18px_-12px_rgb(24_59_104/0.18),0_14px_30px_-16px_rgb(24_59_104/0.45)] backdrop-blur-md backdrop-saturate-150"
       />
-      {inView && size && <Rim ref={frame} size={size} />}
+      {seen && size && <Rim ref={frame} size={size} paused={!inView} />}
       {href ? (
         <Link href={href} className={face} {...handlers} {...aria}>
           {children}
@@ -155,13 +169,15 @@ export function GlassMetalButton({
   );
 }
 
-/** The shader frame, mounted only while on screen; it fades in once the page reports ready. */
+/** The shader frame; it fades in once the page reports ready. */
 function Rim({
   ref,
   size,
+  paused,
 }: {
   ref: React.RefObject<HTMLIFrameElement | null>;
   size: { w: number; h: number };
+  paused: boolean;
 }) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -174,6 +190,9 @@ function Rim({
   useEffect(() => {
     if (ready) ref.current?.contentWindow?.postMessage({ glassMetal: { size } }, "*");
   }, [ready, size, ref]);
+  useEffect(() => {
+    if (ready) ref.current?.contentWindow?.postMessage({ glassMetal: { paused } }, "*");
+  }, [ready, paused, ref]);
 
   const pad = size.h * MARGIN;
   return (
