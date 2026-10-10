@@ -87,6 +87,9 @@ export function GlassMetalButton({
   // The shader frame mounts the first time the button is seen and then stays, paused while off
   // screen: building it again on every scroll back recompiled the shaders and stalled the page.
   const [seen, setSeen] = useState(false);
+  // The rim also holds still while the page scrolls: drawing it and scrolling in the same frames
+  // dropped desktop scrolling to about 35 fps (the cover's button is in the first view there).
+  const [scrolling, setScrolling] = useState(false);
 
   // Follow the button's size, and only run the shader while it is on screen.
   useEffect(() => {
@@ -100,11 +103,20 @@ export function GlassMetalButton({
       },
       { rootMargin: "80px" },
     );
+    let settle = 0;
+    const onScroll = () => {
+      setScrolling(true);
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => setScrolling(false), 160);
+    };
     ro.observe(el);
     io.observe(el);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       ro.disconnect();
       io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(settle);
     };
   }, []);
 
@@ -155,7 +167,7 @@ export function GlassMetalButton({
         aria-hidden
         className="absolute inset-0 z-0 rounded-full border border-white/70 bg-white/25 shadow-[inset_0_1px_0_rgb(255_255_255/0.9),inset_0_-10px_18px_-12px_rgb(24_59_104/0.18),0_14px_30px_-16px_rgb(24_59_104/0.45)] backdrop-blur-md backdrop-saturate-150"
       />
-      {seen && size && <Rim ref={frame} size={size} paused={!inView} />}
+      {seen && size && <Rim ref={frame} size={size} paused={!inView || scrolling} />}
       {href ? (
         <Link href={href} className={face} {...handlers} {...aria}>
           {children}
