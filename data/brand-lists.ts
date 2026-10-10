@@ -4765,10 +4765,13 @@ const ENTRIES: readonly Entry[] = [
   },
   // Jaguar from 香水1976's brand page (https://www.1976.com.tw/brand/56), An 2026-10-10.
   // Notes are 香水1976's 前味 / 中味 / 後味; the brand's fragrance site (jaguar-fragrances.com)
-  // no longer answers, so there are no official product links.
+  // no longer answers, so there are no official product links. Bottle pictures are
+  // 香水1976's product pictures (public/images/jaguar), credited to the product page.
   {
     // 香水1976 (https://www.1976.com.tw/prod/3108)
     id: "cat2-jaguar-for-men-edt",
+    imageUrl: "/images/jaguar/for-men.webp",
+    imageSource: "https://www.1976.com.tw/prod/3108",
     brand: "Jaguar",
     name: "Jaguar for Men",
     concentration: "EDT",
@@ -4782,6 +4785,8 @@ const ENTRIES: readonly Entry[] = [
   {
     // 香水1976 (https://www.1976.com.tw/prod/2640)
     id: "cat2-jaguar-classic-edt",
+    imageUrl: "/images/jaguar/classic.webp",
+    imageSource: "https://www.1976.com.tw/prod/2640",
     brand: "Jaguar",
     name: "Classic",
     concentration: "EDT",
@@ -4795,6 +4800,8 @@ const ENTRIES: readonly Entry[] = [
   {
     // 香水1976 (https://www.1976.com.tw/prod/7424)
     id: "cat2-jaguar-classic-black-edt",
+    imageUrl: "/images/jaguar/classic-black.webp",
+    imageSource: "https://www.1976.com.tw/prod/7424",
     brand: "Jaguar",
     name: "Classic Black",
     concentration: "EDT",
@@ -4808,6 +4815,8 @@ const ENTRIES: readonly Entry[] = [
   {
     // 香水1976 (https://www.1976.com.tw/prod/10333)
     id: "cat2-jaguar-classic-red-edt",
+    imageUrl: "/images/jaguar/classic-red.webp",
+    imageSource: "https://www.1976.com.tw/prod/10333",
     brand: "Jaguar",
     name: "Classic Red",
     concentration: "EDT",
