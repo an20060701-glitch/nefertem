@@ -4827,6 +4827,23 @@ const ENTRIES: readonly Entry[] = [
     baseNotes: ["tonka", "patchouli", "amber", "vanilla", "cedar"],
     description: "木質調、辛辣調（香調依香水1976），2012 年推出",
   },
+  // Adidas Get Ready! For Him from Fragrantica (An 2026-10-10:
+  // https://www.fragrantica.com/perfume/Adidas/Adidas-Get-Ready-For-Him-23743.html);
+  // the brand publishes no notes; the bottle (Fragrantica's picture) reads Eau de Toilette.
+  {
+    id: "cat2-adidas-get-ready-for-him-edt",
+    imageUrl: "/images/adidas/get-ready-for-him.webp",
+    imageSource: "https://www.fragrantica.com/perfume/Adidas/Adidas-Get-Ready-For-Him-23743.html",
+    brand: "Adidas",
+    name: "Get Ready! For Him",
+    concentration: "EDT",
+    family: "woody",
+    subFamilies: ["fougere", "fruity"],
+    topNotes: ["sea-notes", "pineapple", "mandarin"],
+    heartNotes: ["exotic-fruits", "lavender", "clary-sage"],
+    baseNotes: ["cedar", "patchouli", "sandalwood"],
+    description: "木質芳香調（依 Fragrantica），2014 年推出，調香師 Jacques Huclier",
+  },
 ];
 
 export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>
