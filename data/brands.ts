@@ -44,6 +44,7 @@ export const BRANDS: readonly BrandInfo[] = [
     domain: "acquadiparma.com",
     site: "https://www.acquadiparma.com/zh-tw/",
   },
+  { key: "adidas", name: "Adidas", zh: "愛迪達", domain: "adidas.com", site: "https://www.adidas.com/" },
   { key: "aesop", name: "Aesop", zh: "伊索", domain: "aesop.com", site: "https://www.aesop.com/tw/" },
   {
     key: "anna-sui",

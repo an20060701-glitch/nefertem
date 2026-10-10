@@ -294,6 +294,7 @@ export const NOTE_TAGS: Record<string, string[]> = {
   "red-cypress": ["平靜", "神秘"],
   "green-apple": ["清新", "活力"],
   "jasmine-leaf": ["清新", "綠意"],
+  "exotic-fruits": ["活力", "果香"],
 };
 
 const LAYER_WEIGHT = { top: 0.8, heart: 1.2, base: 1 } as const;

@@ -316,6 +316,7 @@ export const NOTES = {
   "red-cypress": { en: "Taiwanese Red Cypress", zh: "台灣紅檜", family: "woody" },
   "green-apple": { en: "Green Apple", zh: "青蘋果", family: "fruity" },
   "jasmine-leaf": { en: "Jasmine Leaf", zh: "茉莉花葉", family: "fresh" },
+  "exotic-fruits": { en: "Exotic Fruits", zh: "熱帶水果", family: "fruity" },
 } as const satisfies Record<string, NoteDefinition>;
 
 export type NoteKey = keyof typeof NOTES;
