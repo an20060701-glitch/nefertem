@@ -292,6 +292,11 @@ const NAMES: Readonly<Record<string, readonly string[]>> = {
   "Liwu|Dawn": ["旭", "立霧旭"],
   "Liwu|River": ["川", "立霧川"],
   "Liwu|Wood": ["木", "立霧木"],
+  // Jaguar (香水1976's Taiwan names)
+  "Jaguar|Jaguar for Men": ["尊爵綠色經典", "尊爵"],
+  "Jaguar|Classic": ["新尊爵"],
+  "Jaguar|Classic Black": ["黑爵"],
+  "Jaguar|Classic Red": ["紅色捷豹"],
   // Demo scents of other brands
   "Creed|Aventus": ["阿文圖斯", "拿破崙之水"],
   "Giorgio Armani|Acqua di Giò": ["寄情水"],

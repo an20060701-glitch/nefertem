@@ -4763,6 +4763,61 @@ const ENTRIES: readonly Entry[] = [
     baseNotes: ["cedar"],
     description: "花蓮太魯閣立霧山系列，台灣艾草、紅檜香氣，冬季限定（每年 12 月至隔年 4 月）。台灣東海岸中性自然感織品淡香水，濃度約 20–25%",
   },
+  // Jaguar from 香水1976's brand page (https://www.1976.com.tw/brand/56), An 2026-10-10.
+  // Notes are 香水1976's 前味 / 中味 / 後味; the brand's fragrance site (jaguar-fragrances.com)
+  // no longer answers, so there are no official product links.
+  {
+    // 香水1976 (https://www.1976.com.tw/prod/3108)
+    id: "cat2-jaguar-for-men-edt",
+    brand: "Jaguar",
+    name: "Jaguar for Men",
+    concentration: "EDT",
+    family: "woody",
+    subFamilies: ["fresh"],
+    topNotes: ["citron", "coriander", "sage", "cinnamon", "verbena"],
+    heartNotes: ["saffron", "lily", "cypress", "geranium", "cardamom"],
+    baseNotes: ["musk", "amber", "sandalwood", "vetiver"],
+    description: "木質清新調（香調依香水1976），1988 年推出",
+  },
+  {
+    // 香水1976 (https://www.1976.com.tw/prod/2640)
+    id: "cat2-jaguar-classic-edt",
+    brand: "Jaguar",
+    name: "Classic",
+    concentration: "EDT",
+    family: "woody",
+    subFamilies: ["floral", "marine"],
+    topNotes: ["citrus", "bergamot", "juniper", "lavender", "basil", "anise"],
+    heartNotes: ["orange-blossom", "lotus", "ginger"],
+    baseNotes: ["white-musk", "sandalwood", "benzoin"],
+    description: "木質花香調、海洋清新調（香調依香水1976），2002 年推出",
+  },
+  {
+    // 香水1976 (https://www.1976.com.tw/prod/7424)
+    id: "cat2-jaguar-classic-black-edt",
+    brand: "Jaguar",
+    name: "Classic Black",
+    concentration: "EDT",
+    family: "amber",
+    subFamilies: ["floral"],
+    topNotes: ["mandarin", "green-apple", "bitter-orange"],
+    heartNotes: ["cardamom", "black-tea", "nutmeg", "geranium", "sea-notes"],
+    baseNotes: ["moss", "sandalwood", "cedar", "vetiver", "tonka", "musk"],
+    description: "東方花香調（香調依香水1976），2009 年推出",
+  },
+  {
+    // 香水1976 (https://www.1976.com.tw/prod/10333)
+    id: "cat2-jaguar-classic-red-edt",
+    brand: "Jaguar",
+    name: "Classic Red",
+    concentration: "EDT",
+    family: "woody",
+    subFamilies: ["spicy"],
+    topNotes: ["raspberry", "blackcurrant", "bergamot"],
+    heartNotes: ["chili", "jasmine-leaf", "ozonic"],
+    baseNotes: ["tonka", "patchouli", "amber", "vanilla", "cedar"],
+    description: "木質調、辛辣調（香調依香水1976），2012 年推出",
+  },
 ];
 
 export const BRAND_LISTS: readonly Fragrance[] = ENTRIES.map((e) =>
