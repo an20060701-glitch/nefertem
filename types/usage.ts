@@ -1,4 +1,4 @@
-import type { Mood, Occasion } from "./fragrance";
+import type { Feeling, Mood, Occasion, Scene } from "./fragrance";
 import type { WeatherCondition } from "./weather";
 
 export interface UsageLog {
@@ -8,8 +8,11 @@ export interface UsageLog {
   weather: WeatherCondition;
   temperature: number;
   city: string;
-  occasion: Occasion;
-  mood: Mood[];
+  scene?: Scene;
+  feeling?: Feeling;
+  /** Answers asked before the scene guide (2026-10-11); older logs carry these instead. */
+  occasion?: Occasion;
+  mood?: Mood[];
   viaWheel: boolean;
 }
 

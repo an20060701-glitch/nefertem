@@ -1,22 +1,24 @@
-import { noteInfo } from "@/data/notes";
-import type { Fragrance, FragranceFamily, Mood, Occasion, WeatherSnapshot } from "@/types";
+import type { Feeling, Fragrance, Scene, WeatherSnapshot } from "@/types";
 import {
-  COLD_LEAN,
+  AVOID_FACTOR,
   FAVOURITE_FIT_THRESHOLD,
   FAVOURITE_MIN_USES,
-  type FamilyWeights,
-  HOT_LEAN,
-  type Lean,
-  MOOD_FAMILIES,
   NOTE_LAYER_WEIGHT,
-  OCCASION_LEAN,
-  RAIN_LEAN,
+  NOTE_MATCH_FULL,
   recentlyUsedPenalty,
   type ScoreKey,
   SUB_FAMILY_FACTOR,
   USAGE_WINDOW_DAYS,
   WEIGHTS,
 } from "./rules";
+import {
+  type FamilyWeights,
+  feelingInfo,
+  type Leaning,
+  sceneInfo,
+  WEATHER_BUCKETS,
+  weatherBucket,
+} from "./scenes";
 import { tagToMood } from "@/lib/scent-tags";
 
 export interface UsageEntry {
@@ -26,8 +28,8 @@ export interface UsageEntry {
 
 export interface RecommendationInput {
   weather: WeatherSnapshot;
-  occasion: Occasion;
-  moods: Mood[];
+  scene: Scene;
+  feeling: Feeling;
   candidates: readonly Fragrance[];
   usage?: readonly UsageEntry[];
   now?: number;
@@ -58,75 +60,59 @@ export function familyAffinity(fragrance: Fragrance, weights: FamilyWeights): nu
   return best;
 }
 
-function toWeights(families: FragranceFamily[]): FamilyWeights {
-  return Object.fromEntries(families.map((f) => [f, 1]));
+/** Fit for a place or the weather, 0–1: its families, less any it avoids. */
+export function leaningScore(fragrance: Fragrance, leaning: Leaning): number {
+  const avoid = familyAffinity(fragrance, Object.fromEntries(leaning.avoid.map((f) => [f, 1])));
+  if (Object.keys(leaning.families).length === 0) return 0.5 * (1 - avoid);
+  return clamp01(familyAffinity(fragrance, leaning.families) - AVOID_FACTOR * avoid);
 }
 
-/** 0.5 is neutral; leaning families pull toward 1 or 0. */
-function leanScore(fragrance: Fragrance, lean: Lean): number {
-  return clamp01(
-    0.5 +
-      0.5 *
-        (familyAffinity(fragrance, toWeights(lean.plus)) - familyAffinity(fragrance, toWeights(lean.minus))),
-  );
+export function feelingScore(fragrance: Fragrance, feeling: Feeling): number {
+  return familyAffinity(fragrance, feelingInfo(feeling).families);
 }
 
-/** Combined mood→family weights for one or two moods (averaged). */
-export function moodWeights(moods: Mood[]): FamilyWeights {
-  const merged: FamilyWeights = {};
-  if (moods.length === 0) return merged;
-  for (const mood of moods) {
-    for (const [family, w] of Object.entries(MOOD_FAMILIES[mood]) as [FragranceFamily, number][]) {
-      merged[family] = (merged[family] ?? 0) + w / moods.length;
-    }
-  }
-  return merged;
-}
-
-export function moodScore(fragrance: Fragrance, moods: Mood[]): number {
-  if (moods.length === 0) return 0.5;
-  const each = moods.map((m) => familyAffinity(fragrance, MOOD_FAMILIES[m]));
-  return each.reduce((a, b) => a + b, 0) / each.length;
+export function sceneScore(fragrance: Fragrance, scene: Scene): number {
+  return leaningScore(fragrance, sceneInfo(scene));
 }
 
 export function weatherScore(fragrance: Fragrance, weather: WeatherSnapshot): number {
-  return weather.isRainy ? leanScore(fragrance, RAIN_LEAN) : 0.5;
+  return leaningScore(fragrance, WEATHER_BUCKETS[weatherBucket(weather)]);
 }
 
-export function temperatureScore(fragrance: Fragrance, weather: WeatherSnapshot): number {
-  if (weather.isHot) return leanScore(fragrance, HOT_LEAN);
-  if (weather.isCold) return leanScore(fragrance, COLD_LEAN);
-  return 0.5;
+function guideNoteSet(scene: Scene, weather: WeatherSnapshot): Set<string> {
+  return new Set([...sceneInfo(scene).notes, ...WEATHER_BUCKETS[weatherBucket(weather)].notes]);
 }
 
-export function occasionScore(fragrance: Fragrance, occasion: Occasion): number {
-  return leanScore(fragrance, OCCASION_LEAN[occasion]);
+/** The scent's notes that the guide names for this place or weather, heart first. */
+export function guideNotes(fragrance: Fragrance, scene: Scene, weather: WeatherSnapshot): string[] {
+  const wanted = guideNoteSet(scene, weather);
+  return [...new Set([...fragrance.heartNotes, ...fragrance.topNotes, ...fragrance.baseNotes])].filter((n) =>
+    wanted.has(n),
+  );
 }
 
-/** Note-level match: how many of the notes belong to today's mood families (heart ×1.2). */
-export function noteFamilyScore(fragrance: Fragrance, moods: Mood[]): number {
-  const weights = moodWeights(moods);
-  let total = 0;
-  let matched = 0;
+/** Note-level match against the guide's 適合的氣味; two hits (heart ×1.2) count fully. */
+export function noteScore(fragrance: Fragrance, scene: Scene, weather: WeatherSnapshot): number {
+  const wanted = guideNoteSet(scene, weather);
   const layers: [readonly string[], number][] = [
     [fragrance.topNotes, NOTE_LAYER_WEIGHT.top],
     [fragrance.heartNotes, NOTE_LAYER_WEIGHT.heart],
     [fragrance.baseNotes, NOTE_LAYER_WEIGHT.base],
   ];
-  for (const [notes, layerWeight] of layers) {
-    for (const note of notes) {
-      const family = noteInfo(note)?.family;
-      total += layerWeight;
-      if (family) matched += layerWeight * Math.min(1, weights[family] ?? 0);
-    }
-  }
-  return total === 0 ? 0 : matched / total;
+  let hits = 0;
+  for (const [notes, layerWeight] of layers) for (const n of notes) if (wanted.has(n)) hits += layerWeight;
+  return Math.min(1, hits / NOTE_MATCH_FULL);
 }
 
-export function preferenceScore(fragrance: Fragrance, moods: Mood[]): number {
-  if (moods.length === 0) return 0;
-  const tagged = new Set(fragrance.tags.map(tagToMood).filter(Boolean));
-  return moods.filter((m) => tagged.has(m)).length / moods.length;
+/** The member's own tags (神秘、清新…) agreeing with today's feeling. */
+export function preferenceScore(fragrance: Fragrance, feeling: Feeling): number {
+  const moods = feelingInfo(feeling).moods;
+  return fragrance.tags.some((t) => {
+    const m = tagToMood(t);
+    return !!m && moods.includes(m);
+  })
+    ? 1
+    : 0;
 }
 
 function startOfDay(t: number): number {
@@ -158,7 +144,7 @@ function usageStats(usage: readonly UsageEntry[], now: number): Map<string, Usag
  * Deterministic for the same input — randomness belongs to the wheel only.
  */
 export function recommend(input: RecommendationInput): Recommendation[] {
-  const { weather, occasion, moods, candidates, usage = [], now = Date.now() } = input;
+  const { weather, scene, feeling, candidates, usage = [], now = Date.now() } = input;
   const stats = usageStats(usage, now);
   const maxCount = Math.max(0, ...candidates.map((f) => stats.get(f.id)?.count ?? 0));
   const today = startOfDay(now);
@@ -169,12 +155,11 @@ export function recommend(input: RecommendationInput): Recommendation[] {
     const daysSinceUsed =
       s?.lastUsedAt === undefined ? undefined : Math.round((today - startOfDay(s.lastUsedAt)) / DAY);
     const scores: Record<ScoreKey, number> = {
-      mood: moodScore(fragrance, moods),
+      feeling: feelingScore(fragrance, feeling),
+      scene: sceneScore(fragrance, scene),
       weather: weatherScore(fragrance, weather),
-      temperature: temperatureScore(fragrance, weather),
-      occasion: occasionScore(fragrance, occasion),
-      family: noteFamilyScore(fragrance, moods),
-      preference: preferenceScore(fragrance, moods),
+      notes: noteScore(fragrance, scene, weather),
+      preference: preferenceScore(fragrance, feeling),
       usageFrequency: maxCount === 0 ? 0 : Math.log(1 + usageCount) / Math.log(1 + maxCount),
     };
     const penalty = recentlyUsedPenalty(daysSinceUsed);
@@ -196,7 +181,7 @@ export function recommend(input: RecommendationInput): Recommendation[] {
   ranked.sort(
     (a, b) =>
       b.totalScore - a.totalScore ||
-      b.scores.mood - a.scores.mood ||
+      b.scores.feeling - a.scores.feeling ||
       a.fragrance.id.localeCompare(b.fragrance.id),
   );
 
@@ -213,7 +198,7 @@ function promoteFavourite(ranked: Recommendation[]): Recommendation[] {
     undefined,
   );
   if (!favourite || favourite.usageCount < FAVOURITE_MIN_USES) return ranked;
-  if (favourite.scores.mood + favourite.scores.temperature < FAVOURITE_FIT_THRESHOLD) return ranked;
+  if (favourite.scores.feeling + favourite.scores.weather < FAVOURITE_FIT_THRESHOLD) return ranked;
 
   const rest = ranked.filter((r) => r !== favourite);
   const promoted = { ...favourite, favourite: true };

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
+import { noteInfo } from "@/data/notes";
 import type { WeatherSnapshot } from "@/types";
 import { recommend, type UsageEntry } from "./engine";
 import { explain } from "./explain";
+import { FEELINGS, SCENES, WEATHER_BUCKETS, weatherBucket } from "./scenes";
 import { pickWeightedIndex, pickWheelIndex, wheelCandidates, wheelWeights } from "./wheel";
 
 const NOW = new Date(2026, 9, 5, 9, 0).getTime();
@@ -25,15 +27,44 @@ const coldRain = weather({ temperature: 14, condition: "rain", isRainy: true, is
 
 const ids = (recs: { fragrance: { id: string } }[]) => recs.map((r) => r.fragrance.id);
 
+const sunnyFresh = { scene: "sunny" as const, feeling: "fresh" as const };
+
+describe("scene guide", () => {
+  it("only names notes the note dictionary knows, so every guide note can match", () => {
+    const leanings = [...SCENES, ...Object.values(WEATHER_BUCKETS)];
+    for (const { notes } of leanings) for (const n of notes) expect(noteInfo(n), n).toBeDefined();
+  });
+
+  it("asks the guide's six places and five feelings", () => {
+    expect(SCENES.map((s) => s.zh)).toEqual([
+      "陽光戶外",
+      "辦公與工作",
+      "約會時刻",
+      "藝術與展覽",
+      "居家獨處",
+      "夜晚聚會",
+    ]);
+    expect(FEELINGS.map((f) => f.zh)).toEqual([
+      "平靜、沉穩",
+      "清新、充滿活力",
+      "優雅、知性",
+      "神秘、個性鮮明",
+      "溫柔、浪漫",
+    ]);
+  });
+
+  it("reads today's weather into the guide's four kinds, rain first", () => {
+    expect(weatherBucket(hot)).toBe("hot");
+    expect(weatherBucket(weather())).toBe("warm");
+    expect(weatherBucket(weather({ temperature: 15, isCold: true }))).toBe("cool");
+    expect(weatherBucket(coldRain)).toBe("rainy");
+    expect(weatherBucket(weather({ temperature: 30, isHot: true, isRainy: true }))).toBe("rainy");
+  });
+});
+
 describe("recommend", () => {
   it("ranks every candidate, deterministically", () => {
-    const input = {
-      weather: hot,
-      occasion: "outdoor" as const,
-      moods: ["fresh" as const],
-      candidates: DEMO_FRAGRANCES,
-      now: NOW,
-    };
+    const input = { weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, now: NOW };
     const a = recommend(input);
     expect(a).toHaveLength(DEMO_FRAGRANCES.length);
     expect(ids(recommend(input))).toEqual(ids(a));
@@ -41,53 +72,52 @@ describe("recommend", () => {
   });
 
   it("puts a fresh citrus or marine scent first on a hot day outdoors", () => {
-    const [top] = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      now: NOW,
-    });
+    const [top] = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, now: NOW });
     expect(["citrus", "fresh", "marine", "mineral"]).toContain(top.fragrance.family);
   });
 
-  it("favours amber, woody or gourmand for a mysterious, warm rainy evening", () => {
+  it("goes deep and dark for a mysterious night out in the cold rain", () => {
     const top3 = recommend({
       weather: coldRain,
-      occasion: "indoor",
-      moods: ["mysterious", "warm"],
+      scene: "night",
+      feeling: "mysterious",
       candidates: DEMO_FRAGRANCES,
       now: NOW,
     }).slice(0, 3);
-    for (const r of top3) expect(["amber", "woody", "gourmand"]).toContain(r.fragrance.family);
+    for (const r of top3)
+      expect(["amber", "woody", "leather", "spicy", "gourmand"]).toContain(r.fragrance.family);
   });
 
-  it("follows each mood's family rule", () => {
-    const cases = [
-      ["bold", ["marine", "mineral", "avantgarde"]],
-      ["seductive", ["floral", "amber", "chypre", "gourmand"]],
-      ["mature", ["fougere", "chypre", "woody"]],
-    ] as const;
-    for (const [mood, families] of cases) {
-      const [top] = recommend({
-        weather: weather(),
-        occasion: "indoor",
-        moods: [mood],
-        candidates: DEMO_FRAGRANCES,
-        now: NOW,
-      });
-      expect(families).toContain(top.fragrance.family);
-    }
+  it("keeps sweet and leathery scents out of the office (guide §02: low projection)", () => {
+    const top3 = recommend({
+      weather: weather(),
+      scene: "work",
+      feeling: "calm",
+      candidates: DEMO_FRAGRANCES,
+      now: NOW,
+    }).slice(0, 3);
+    for (const r of top3) expect(["gourmand", "leather"]).not.toContain(r.fragrance.family);
+  });
+
+  it("answers a romantic date with florals and musks (guide §07)", () => {
+    const [top] = recommend({
+      weather: weather(),
+      scene: "date",
+      feeling: "romantic",
+      candidates: DEMO_FRAGRANCES,
+      now: NOW,
+    });
+    expect(["floral", "musky", "chypre", "amber"]).toContain(top.fragrance.family);
+  });
+
+  it("lets the place change the answer for the same feeling", () => {
+    const at = (scene: "sunny" | "night") =>
+      recommend({ weather: weather(), scene, feeling: "calm", candidates: DEMO_FRAGRANCES, now: NOW })[0];
+    expect(at("sunny").fragrance.id).not.toBe(at("night").fragrance.id);
   });
 
   it("penalises a scent worn yesterday", () => {
-    const base = {
-      weather: hot,
-      occasion: "outdoor" as const,
-      moods: ["fresh" as const],
-      candidates: DEMO_FRAGRANCES,
-      now: NOW,
-    };
+    const base = { weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, now: NOW };
     const [first] = recommend(base);
     const after = recommend({ ...base, usage: [{ fragranceId: first.fragrance.id, timestamp: NOW - DAY }] });
     const again = after.find((r) => r.fragrance.id === first.fragrance.id)!;
@@ -101,14 +131,7 @@ describe("recommend", () => {
       fragranceId: favourite,
       timestamp: NOW - d * DAY,
     }));
-    const ranked = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      usage,
-      now: NOW,
-    });
+    const ranked = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, usage, now: NOW });
     expect(ranked[0].fragrance.id).toBe(favourite);
     expect(ranked[0].favourite).toBe(true);
   });
@@ -119,14 +142,7 @@ describe("recommend", () => {
       fragranceId: favourite,
       timestamp: NOW - d * DAY,
     }));
-    const ranked = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      usage,
-      now: NOW,
-    });
+    const ranked = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, usage, now: NOW });
     expect(ranked[1].fragrance.id).toBe(favourite);
     expect(ranked[0].fragrance.id).not.toBe(favourite);
   });
@@ -137,14 +153,7 @@ describe("recommend", () => {
       fragranceId: favourite,
       timestamp: NOW - d * DAY,
     }));
-    const ranked = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      usage,
-      now: NOW,
-    });
+    const ranked = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, usage, now: NOW });
     expect(ranked[0].fragrance.id).not.toBe(favourite);
     expect(ranked.find((r) => r.fragrance.id === favourite)!.favourite).toBe(false);
   });
@@ -153,8 +162,8 @@ describe("recommend", () => {
     const usage: UsageEntry[] = [{ fragranceId: "demo-chanel-no5", timestamp: NOW - 120 * DAY }];
     const ranked = recommend({
       weather: weather(),
-      occasion: "indoor",
-      moods: ["calm"],
+      scene: "home",
+      feeling: "calm",
       candidates: DEMO_FRAGRANCES,
       usage,
       now: NOW,
@@ -164,28 +173,37 @@ describe("recommend", () => {
 });
 
 describe("explain", () => {
-  it("names the city, weather and moods", () => {
-    const ctx = { weather: coldRain, occasion: "indoor" as const, moods: ["mysterious" as const] };
+  it("names the city, the weather, the place and the feeling", () => {
+    const ctx = { weather: coldRain, scene: "art" as const, feeling: "mysterious" as const };
     const [top] = recommend({ ...ctx, candidates: DEMO_FRAGRANCES, now: NOW });
-    const { lead, details } = explain(top, ctx);
+    const { lead, details, tip } = explain(top, ctx);
     expect(lead).toContain("台北");
-    expect(lead).toContain("潮濕的雨天");
-    expect(lead).toContain("「神秘」");
+    expect(lead).toContain("陰雨、潮濕");
+    expect(lead).toContain("藝術與展覽");
+    expect(lead).toContain("「神秘、個性鮮明」");
     expect(lead).toContain(top.fragrance.name);
     expect(details.length).toBeLessThanOrEqual(2);
+    expect(tip).toBe("展覽多在室內，記得控制擴散度。");
+  });
+
+  it("points at the guide's notes the scent carries", () => {
+    const ctx = { weather: weather(), scene: "work" as const, feeling: "calm" as const };
+    const santal = DEMO_FRAGRANCES.find((f) => f.id === "demo-le-labo-santal-33")!;
+    const [rec] = recommend({ ...ctx, candidates: [santal], now: NOW });
+    expect(explain(rec, ctx).details.join("")).toMatch(/正是辦公與工作時合適的香材/);
   });
 
   it("mentions a favourite", () => {
     const favourite = "demo-armani-acqua-di-gio";
     const usage: UsageEntry[] = [5, 8, 12].map((d) => ({ fragranceId: favourite, timestamp: NOW - d * DAY }));
-    const ctx = { weather: hot, occasion: "outdoor" as const, moods: ["fresh" as const] };
+    const ctx = { weather: hot, ...sunnyFresh };
     const [top] = recommend({ ...ctx, candidates: DEMO_FRAGRANCES, usage, now: NOW });
     expect(explain(top, ctx).details).toContain("這也是你最近最常使用的香氣。");
   });
 });
 
 it("does not call a scent worn once a favourite", () => {
-  const ctx = { weather: hot, occasion: "outdoor" as const, moods: ["fresh" as const] };
+  const ctx = { weather: hot, ...sunnyFresh };
   const [first] = recommend({ ...ctx, candidates: DEMO_FRAGRANCES, now: NOW });
   const usage: UsageEntry[] = [{ fragranceId: first.fragrance.id, timestamp: NOW - 5 * DAY }];
   const again = recommend({ ...ctx, candidates: DEMO_FRAGRANCES, usage, now: NOW }).find(
@@ -196,24 +214,12 @@ it("does not call a scent worn once a favourite", () => {
 
 describe("wheel", () => {
   it("offers the top six", () => {
-    const ranked = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      now: NOW,
-    });
+    const ranked = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, now: NOW });
     expect(ids(wheelCandidates(ranked))).toEqual(ids(ranked.slice(0, 6)));
   });
 
   it("leans toward the better match but keeps every candidate in play", () => {
-    const ranked = recommend({
-      weather: hot,
-      occasion: "outdoor",
-      moods: ["fresh"],
-      candidates: DEMO_FRAGRANCES,
-      now: NOW,
-    });
+    const ranked = recommend({ weather: hot, ...sunnyFresh, candidates: DEMO_FRAGRANCES, now: NOW });
     const weights = wheelWeights(wheelCandidates(ranked));
     for (let i = 1; i < weights.length; i++) expect(weights[i - 1]).toBeGreaterThanOrEqual(weights[i]!);
     expect(Math.min(...weights)).toBeGreaterThan(0);

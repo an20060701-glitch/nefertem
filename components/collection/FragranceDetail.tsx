@@ -16,6 +16,7 @@ import { noteInfo } from "@/data/notes";
 import { imageCredit } from "@/lib/fragrance/image/credit";
 import { withSuppliedImage } from "@/lib/fragrance/supplied-image";
 import { MOODS } from "@/lib/fragrance/families";
+import { sceneInfo } from "@/lib/recommendation/scenes";
 import { tagToMood } from "@/lib/scent-tags";
 import { cityLabel } from "@/lib/weather/cities";
 import { CONDITION_LABELS } from "@/lib/weather/labels";
@@ -198,7 +199,8 @@ export function FragranceDetail({ id }: { id: string }) {
                     <span className="text-ink">{dateFormat.format(log.timestamp)}</span>
                     <span className="text-muted">
                       {cityLabel(log.city)} · {Math.round(log.temperature)}°C ·{" "}
-                      {CONDITION_LABELS[log.weather]?.zh} · {log.occasion === "indoor" ? "室內" : "戶外"}
+                      {CONDITION_LABELS[log.weather]?.zh} ·{" "}
+                      {log.scene ? sceneInfo(log.scene).zh : log.occasion === "indoor" ? "室內" : "戶外"}
                       {log.viaWheel ? " · 輪盤" : ""}
                     </span>
                   </li>
