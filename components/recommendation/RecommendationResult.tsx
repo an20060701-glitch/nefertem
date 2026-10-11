@@ -190,6 +190,12 @@ export function RecommendationResult({
                 {d}
               </p>
             ))}
+            {explanation.tip && (
+              <p className="mt-5 text-small text-muted">
+                <span className="label mr-3 text-gold-text">使用提醒</span>
+                {explanation.tip}
+              </p>
+            )}
           </blockquote>
         </motion.section>
 
@@ -275,7 +281,7 @@ export function RecommendationResult({
 
         <motion.div variants={item} className={cn("mt-14 flex flex-wrap gap-x-10 gap-y-2")}>
           <Button variant="text" onClick={onEditMood}>
-            ← 換個印象
+            ← 換個感覺
           </Button>
           <Button variant="text" onClick={onRestart}>
             重新開始 · START OVER

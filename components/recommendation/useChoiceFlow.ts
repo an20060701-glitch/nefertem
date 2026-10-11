@@ -2,30 +2,31 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { isCityKey } from "@/lib/weather/cities";
-import { MOODS } from "@/lib/fragrance/families";
-import type { CityKey, Mood, Occasion, WeatherSnapshot } from "@/types";
+import { isFeeling, isScene } from "@/lib/recommendation/scenes";
+import type { CityKey, Feeling, Scene, WeatherSnapshot } from "@/types";
 
 /**
  * Today's Choice state (architecture §6.1). The URL is the source of truth —
- * `?step=mood&city=taipei&occasion=indoor&mood=mysterious,calm` — so a reload
+ * `?step=feeling&city=taipei&scene=work&feeling=calm` — so a reload
  * keeps the ritual and the browser's back button returns to the previous step.
  * Exact coordinates never go into the URL; "here" means "ask the browser again".
  */
-/** Only occasion and impression are asked; the weather is read, not asked (An, 2026-10-06). */
-export const STEPS = ["occasion", "mood", "result"] as const;
+/**
+ * Where you are going and the feeling you want are asked; the weather is read, not asked
+ * (An, 2026-10-06). The questions follow An's scene guide (2026-10-11).
+ */
+export const STEPS = ["scene", "feeling", "result"] as const;
 export type Step = (typeof STEPS)[number];
 export type Place = CityKey | "here";
-export const MAX_MOODS = 2;
 const PERMISSION_WAIT_MS = 10_000;
 
 export interface Selection {
   place?: Place;
-  occasion?: Occasion;
-  moods: Mood[];
+  scene?: Scene;
+  feeling?: Feeling;
 }
 
 const URL_EVENT = "choiceflow:url";
-const MOOD_KEYS = new Set<string>(MOODS.map((m) => m.key));
 
 function subscribeUrl(callback: () => void) {
   window.addEventListener("popstate", callback);
@@ -43,24 +44,28 @@ function parse(search: string): { requested: Step; selection: Selection } {
   const params = new URLSearchParams(search);
   const city = params.get("city");
   const place: Place | undefined = city === "here" ? "here" : isCityKey(city) ? city : undefined;
-  const occasionParam = params.get("occasion");
-  const occasion = occasionParam === "indoor" || occasionParam === "outdoor" ? occasionParam : undefined;
-  const moods = [...new Set((params.get("mood") ?? "").split(","))]
-    .filter((m): m is Mood => MOOD_KEYS.has(m))
-    .slice(0, MAX_MOODS);
+  const scene = params.get("scene");
+  const feeling = params.get("feeling");
   const stepParam = params.get("step");
-  const requested = (STEPS as readonly string[]).includes(stepParam ?? "") ? (stepParam as Step) : "occasion";
-  return { requested, selection: { place, occasion, moods } };
+  const requested = (STEPS as readonly string[]).includes(stepParam ?? "") ? (stepParam as Step) : "scene";
+  return {
+    requested,
+    selection: {
+      place,
+      scene: isScene(scene) ? scene : undefined,
+      feeling: isFeeling(feeling) ? feeling : undefined,
+    },
+  };
 }
 
 /** The furthest step the selection allows, never past the one requested. */
 function reachableStep(requested: Step, s: Selection): Step {
   const ready: Record<Step, boolean> = {
-    occasion: true,
-    mood: !!s.occasion,
-    result: !!s.occasion && s.moods.length > 0,
+    scene: true,
+    feeling: !!s.scene,
+    result: !!s.scene && !!s.feeling,
   };
-  let step: Step = "occasion";
+  let step: Step = "scene";
   for (const candidate of STEPS) {
     if (!ready[candidate]) break;
     step = candidate;
@@ -73,10 +78,13 @@ function writeUrl(step: Step, s: Selection, mode: "push" | "replace") {
   const params = new URLSearchParams(window.location.search);
   const set = (key: string, value: string | undefined) =>
     value ? params.set(key, value) : params.delete(key);
-  set("step", step === "occasion" ? undefined : step);
+  set("step", step === "scene" ? undefined : step);
   set("city", s.place);
-  set("occasion", s.occasion);
-  set("mood", s.moods.length ? s.moods.join(",") : undefined);
+  set("scene", s.scene);
+  set("feeling", s.feeling);
+  // Answers from before the scene guide (2026-10-11) are dropped from old links.
+  set("occasion", undefined);
+  set("mood", undefined);
   const query = params.toString();
   const url = `${window.location.pathname}${query ? `?${query}` : ""}#todays-choice`;
   if (mode === "push") window.history.pushState(window.history.state, "", url);
@@ -202,7 +210,7 @@ export function useChoiceFlow() {
     [locate],
   );
 
-  const restart = useCallback(() => update({ occasion: undefined, moods: [] }, "occasion"), [update]);
+  const restart = useCallback(() => update({ scene: undefined, feeling: undefined }, "scene"), [update]);
 
   let weatherStatus: WeatherStatus = "idle";
   if (locating || needsCoords) weatherStatus = "locating";
@@ -222,16 +230,8 @@ export function useChoiceFlow() {
       setLocateFailed(false);
       setPlace(city);
     },
-    chooseOccasion: (occasion: Occasion) => update({ occasion }, "mood"),
-    toggleMood: (mood: Mood) => {
-      const current = selection.moods;
-      const moods = current.includes(mood)
-        ? current.filter((m) => m !== mood)
-        : current.length < MAX_MOODS
-          ? [...current, mood]
-          : current;
-      update({ moods }, "mood", "replace");
-    },
+    chooseScene: (scene: Scene) => update({ scene }, "feeling"),
+    chooseFeeling: (feeling: Feeling) => update({ feeling }, "result"),
     restart,
     resume,
   };

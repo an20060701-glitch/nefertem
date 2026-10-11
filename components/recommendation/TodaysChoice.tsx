@@ -9,17 +9,17 @@ import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
 import { saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
+import { FeelingStep } from "./FeelingStep";
 import { FortuneWheel } from "./FortuneWheel";
-import { MoodStep } from "./MoodStep";
-import { OccasionStep } from "./OccasionStep";
 import { RecommendationResult } from "./RecommendationResult";
+import { SceneStep } from "./SceneStep";
 import { STEPS, type Step, useChoiceFlow } from "./useChoiceFlow";
 import { type PickerEntry, TodayPicker } from "./TodayPicker";
 import { WeatherBar } from "./WeatherBar";
 
 const PROGRESS: Record<Step, { zh: string; en: string }> = {
-  occasion: { zh: "場合", en: "OCCASION" },
-  mood: { zh: "印象", en: "IMPRESSION" },
+  scene: { zh: "地點", en: "PLACE" },
+  feeling: { zh: "感覺", en: "FEELING" },
   result: { zh: "今日香氣", en: "TODAY'S SCENT" },
 };
 
@@ -27,7 +27,7 @@ const ALTERNATIVES = 3;
 
 /**
  * Today's Choice ritual: today's weather (read, shown under the title) →
- * occasion → impression → today's scent,
+ * where you are going → the feeling you want → today's scent (An's scene guide, 2026-10-11),
  * with the fortune wheel for undecided days. Picks come only from the member's
  * own cabinet (An, 2026-10-06); an empty cabinet gets a nudge to add scents.
  */
@@ -39,22 +39,22 @@ export function TodaysChoice() {
   const candidates = items;
   const emptyCabinet = ready && items.length === 0;
 
-  const selectionKey = `${weather?.city}|${selection.occasion}|${selection.moods.join(",")}`;
+  const selectionKey = `${weather?.city}|${selection.scene}|${selection.feeling}`;
   const [featured, setFeatured] = useState<{ key: string; id: string }>();
   const [confirmed, setConfirmed] = useState<{ key: string; id: string; viaWheel: boolean }>();
   const [wheelOpen, setWheelOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const ranked = useMemo(() => {
-    if (!weather || !selection.occasion || selection.moods.length === 0) return [];
+    if (!weather || !selection.scene || !selection.feeling) return [];
     return recommend({
       weather,
-      occasion: selection.occasion,
-      moods: selection.moods,
+      scene: selection.scene,
+      feeling: selection.feeling,
       candidates,
       usage,
     });
-  }, [weather, selection.occasion, selection.moods, usage, candidates]);
+  }, [weather, selection.scene, selection.feeling, usage, candidates]);
 
   // A scent chosen earlier today (the usage log follows the account): coming back to the
   // page shows that result again instead of asking (An, 2026-10-07).
@@ -89,7 +89,7 @@ export function TodaysChoice() {
     settling.current = key;
     repo.undoUsage(aside, usage).catch((error: unknown) => console.error("[restart] undo", error));
   }, [ready, restartKnown, restartAt, usage, repo]);
-  const answersKey = `restored|${selection.occasion}|${selection.moods.join(",")}`;
+  const answersKey = `restored|${selection.scene}|${selection.feeling}`;
   const { resume, restart: restartFlow } = flow;
 
   // Follow today's pick as it changes on any device: show it when one is made (here or
@@ -116,8 +116,11 @@ export function TodaysChoice() {
     // On arrival, a link to a particular step is kept (back / forward through the ritual).
     if (initial && new URLSearchParams(window.location.search).has("step")) return;
     // The pick carries its own answers (it may come from another device, or from after a
-    // restart); this device adds only the city it last used today.
-    const answers = new URLSearchParams({ occasion: first.occasion, mood: first.mood.join(",") });
+    // restart); this device adds only the city it last used today. Picks logged before the
+    // scene guide (2026-10-11) carry no scene or feeling, so they open on the questions.
+    const answers = new URLSearchParams();
+    if (first.scene) answers.set("scene", first.scene);
+    if (first.feeling) answers.set("feeling", first.feeling);
     const city = new URLSearchParams(savedSearch() ?? "").get("city");
     if (city) answers.set("city", city);
     const saved = answers.toString();
@@ -126,7 +129,7 @@ export function TodaysChoice() {
       setConfirmed(
         (current) =>
           (current?.id === first.fragranceId ? current : undefined) ?? {
-            key: `restored|${answers.get("occasion")}|${answers.get("mood")}`,
+            key: `restored|${answers.get("scene") ?? undefined}|${answers.get("feeling") ?? undefined}`,
             id: first.fragranceId,
             viaWheel: first.viaWheel,
           },
@@ -166,7 +169,7 @@ export function TodaysChoice() {
 
   const [saveError, setSaveError] = useState<string>();
   const confirm = async (fragranceId: string, viaWheel: boolean) => {
-    if (!weather || !selection.occasion) return;
+    if (!weather || !selection.scene || !selection.feeling) return;
     setSaveError(undefined);
     setWheelOpen(false);
     setPickerOpen(false);
@@ -176,8 +179,8 @@ export function TodaysChoice() {
         weather: weather.condition,
         temperature: weather.temperature,
         city: weather.place ?? weather.city,
-        occasion: selection.occasion,
-        mood: selection.moods,
+        scene: selection.scene,
+        feeling: selection.feeling,
         viaWheel,
       });
       // A second pick is layered on today's scent, which stays the one shown.
@@ -326,15 +329,11 @@ export function TodaysChoice() {
               }}
             >
               {emptyCabinet && step !== "result" && <FirstVisit />}
-              {!emptyCabinet && step === "occasion" && (
-                <OccasionStep occasion={selection.occasion} onChoose={flow.chooseOccasion} />
+              {!emptyCabinet && step === "scene" && (
+                <SceneStep scene={selection.scene} onChoose={flow.chooseScene} />
               )}
-              {!emptyCabinet && step === "mood" && (
-                <MoodStep
-                  moods={selection.moods}
-                  onToggle={flow.toggleMood}
-                  onReveal={() => flow.goTo("result")}
-                />
+              {!emptyCabinet && step === "feeling" && (
+                <FeelingStep feeling={selection.feeling} onChoose={flow.chooseFeeling} />
               )}
               {step === "result" &&
                 (emptyCabinet ? (
@@ -345,13 +344,13 @@ export function TodaysChoice() {
                     </p>
                     <ButtonLink href="/collection">前往香水櫃 · MY COLLECTION</ButtonLink>
                   </div>
-                ) : top && weather && selection.occasion ? (
+                ) : top && weather && selection.scene && selection.feeling ? (
                   <RecommendationResult
                     featured={top}
                     explanation={explain(top, {
                       weather,
-                      occasion: selection.occasion,
-                      moods: selection.moods,
+                      scene: selection.scene,
+                      feeling: selection.feeling,
                     })}
                     alternatives={ranked.filter((r) => r !== top).slice(0, ALTERNATIVES)}
                     canSpin={ranked.length >= WHEEL_MIN}
@@ -380,7 +379,7 @@ export function TodaysChoice() {
                     }}
                     onChoose={() => setPickerOpen(true)}
                     onOpenWheel={() => setWheelOpen(true)}
-                    onEditMood={() => flow.goTo("mood")}
+                    onEditMood={() => flow.goTo("feeling")}
                     onRestart={() => {
                       const now = Date.now();
                       shownPick.current = undefined;
