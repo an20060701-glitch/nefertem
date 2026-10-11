@@ -95,12 +95,9 @@ export function TodaysChoice() {
   // Follow today's pick as it changes on any device: show it when one is made (here or
   // elsewhere), and go back to the questions when it is set aside by 重新開始.
   const shownPick = useRef<string>(undefined);
-  const firstLook = useRef(true);
   const first = picks[0];
   useEffect(() => {
     if (!ready || !restartKnown) return;
-    const initial = firstLook.current;
-    firstLook.current = false;
     if (!first) {
       if (shownPick.current === undefined) return;
       shownPick.current = undefined;
@@ -113,15 +110,18 @@ export function TodaysChoice() {
     }
     if (shownPick.current === first.id) return;
     shownPick.current = first.id;
-    // On arrival, a link to a particular step is kept (back / forward through the ritual).
-    if (initial && new URLSearchParams(window.location.search).has("step")) return;
+    // Today's pick always wins over the page's own history (An, 2026-10-11): arriving with an
+    // old step in the address (back button, a reopened tab, signing in again), or showing other
+    // answers when a pick is made on another device, all open on the chosen scent.
     // The pick carries its own answers (it may come from another device, or from after a
-    // restart); this device adds only the city it last used today. Picks logged before the
-    // scene guide (2026-10-11) carry no scene or feeling, so they open on the questions.
+    // restart); this device adds only its city. Picks logged before the scene guide
+    // (2026-10-11) carry no scene or feeling, so they open on the questions.
     const answers = new URLSearchParams();
     if (first.scene) answers.set("scene", first.scene);
     if (first.feeling) answers.set("feeling", first.feeling);
-    const city = new URLSearchParams(savedSearch() ?? "").get("city");
+    const city =
+      new URLSearchParams(window.location.search).get("city") ??
+      new URLSearchParams(savedSearch() ?? "").get("city");
     if (city) answers.set("city", city);
     const saved = answers.toString();
     // After this render, so the state change is not part of the effect itself.
@@ -134,7 +134,6 @@ export function TodaysChoice() {
             viaWheel: first.viaWheel,
           },
       );
-      if (!initial && new URLSearchParams(window.location.search).get("step") === "result") return;
       resume(saved);
     }, 0);
   }, [ready, restartKnown, first, resume, restartFlow]);
