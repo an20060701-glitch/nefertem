@@ -4,6 +4,7 @@ import { GrainOverlay } from "@/components/brand/GrainOverlay";
 import { CollectionProvider } from "@/components/collection/CollectionProvider";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { LoadingRitual } from "@/components/hero/LoadingRitual";
+import { MemberLanding } from "@/components/hero/MemberLanding";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { CustomCursor } from "@/components/navigation/CustomCursor";
 import { DesktopNav } from "@/components/navigation/DesktopNav";
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <LoadingRitual />
         <CollectionProvider>
+          <MemberLanding />
           <DesktopNav />
           <MobileTopBar />
           <main id="main" className="pb-[calc(var(--nav-mobile-height)+env(safe-area-inset-bottom))] md:pb-0">

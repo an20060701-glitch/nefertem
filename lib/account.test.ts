@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { afterSignIn, loginHref, RITUAL_HOME, safeNext } from "./account";
+import { afterOpening, afterSignIn, loginHref, RITUAL_HOME, safeNext } from "./account";
 
 describe("safeNext", () => {
   it("keeps same-site paths", () => {
@@ -38,5 +38,23 @@ describe("afterSignIn", () => {
     expect(afterSignIn("/collection", false)).toBe("/collection");
     expect(afterSignIn("/shopping", true)).toBe("/shopping");
     expect(afterSignIn("/shopping", false)).toBe("/shopping");
+  });
+});
+
+describe("afterOpening", () => {
+  it("opens every section on 香水選擇 for a member with scents, whatever page was reloaded", () => {
+    for (const path of ["/", "/collection", "/collection/demo-1", "/shopping"])
+      expect(afterOpening(path, true)).toBe(RITUAL_HOME);
+    expect(afterOpening(RITUAL_HOME, true)).toBeUndefined();
+  });
+
+  it("opens on the cabinet while it is empty, so a new member adds scents first", () => {
+    for (const path of ["/", RITUAL_HOME, "/shopping"]) expect(afterOpening(path, false)).toBe("/collection");
+    expect(afterOpening("/collection", false)).toBeUndefined();
+  });
+
+  it("leaves sign-in and other pages alone", () => {
+    for (const path of ["/login", "/login/line", "/admin", "/choicex"])
+      expect(afterOpening(path, true)).toBeUndefined();
   });
 });

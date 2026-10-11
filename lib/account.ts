@@ -27,3 +27,17 @@ export function afterSignIn(next: string, hasScents: boolean): string {
   if (next !== "/collection" && next !== RITUAL_HOME) return next;
   return hasScents ? RITUAL_HOME : "/collection";
 }
+
+/** The cover and the three sections: the pages a member can open the site on. */
+const OPENING_PAGES = /^\/(?:$|choice(?:\/|$)|collection(?:\/|$)|shopping(?:\/|$))/;
+
+/**
+ * Where a signed-in member lands when the site is opened, reloaded or a closed tab is
+ * reopened (An, 2026-10-11): always 香水選擇, or 我的香水櫃 while the cabinet is empty.
+ * Undefined when they are already there, or on a page outside the sections (sign-in, admin).
+ */
+export function afterOpening(pathname: string, hasScents: boolean): string | undefined {
+  if (!OPENING_PAGES.test(pathname)) return undefined;
+  const target = afterSignIn(RITUAL_HOME, hasScents);
+  return pathname === target ? undefined : target;
+}
