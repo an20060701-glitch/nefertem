@@ -13,6 +13,7 @@ import { HEAVEN_LAFA } from "@/data/heaven-lafa";
 import { TAMBURINS } from "@/data/tamburins";
 import { BRAND_LISTS } from "@/data/brand-lists";
 import { CALVIN_KLEIN } from "@/data/calvin-klein";
+import { PERFUME_1976 } from "@/data/perfume-1976";
 import { cn } from "@/lib/cn";
 import { cleanKeyword, MAX_KEYWORD_LENGTH } from "@/lib/shopping/links";
 import { familySearchKeyword, matchSearch } from "@/lib/shopping/normalize";
@@ -39,6 +40,7 @@ export function ShoppingSearch({ query }: { query: string }) {
       ...TAMBURINS,
       ...CALVIN_KLEIN,
       ...BRAND_LISTS,
+      ...PERFUME_1976,
     ];
   }, [items]);
   const ownedIds = useMemo(() => new Set(items.map((i) => i.id)), [items]);

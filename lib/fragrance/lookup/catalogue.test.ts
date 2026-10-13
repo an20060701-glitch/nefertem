@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { BRANDS } from "@/data/brands";
 import { CATALOGUE, CATALOGUE_SOURCE } from "@/data/catalogue";
@@ -6,8 +8,9 @@ import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { DEMO_FRAGRANCES } from "@/data/fragrances";
 import { NAME_ZH_COUNT } from "@/data/name-zh";
-import { matchSearch } from "@/lib/shopping/normalize";
+import { brandForName, fold, matchSearch } from "@/lib/shopping/normalize";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
+import { PERFUME_1976, PERFUME_1976_SOURCE } from "@/data/perfume-1976";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
 import { catalogueFragranceProvider, nameSuggestions } from "./catalogue";
@@ -212,5 +215,40 @@ describe("Chinese names", () => {
     expect(nameSuggestions("Jo Malone", "黑莓與").map((s) => s.name)).toContain("Blackberry & Bay");
     expect(matchSearch("香奈兒 摩登COCO", [...CATALOGUE])?.fragrance?.name).toBe("Coco Mademoiselle");
     expect(matchSearch("希臘無花果", [...CATALOGUE])?.fragrance?.brand).toBe("Diptyque");
+  });
+});
+
+describe("香水1976 A–Z import", () => {
+  it("adds only new perfumes, each with a known brand, dictionary notes and its 香水1976 picture", () => {
+    expect(PERFUME_1976.length).toBeGreaterThan(1000);
+    expect(new Set(PERFUME_1976.map((f) => f.id)).size).toBe(PERFUME_1976.length);
+    const earlier = [...CATALOGUE, ...HEAVEN_LAFA, ...TAMBURINS, ...CALVIN_KLEIN, ...BRAND_LISTS];
+    const ids = new Set(earlier.map((f) => f.id));
+    // The same brand + name + concentration would show the member two copies of one bottle.
+    const bottle = (f: (typeof earlier)[number]) =>
+      `${brandForName(f.brand)?.key ?? fold(f.brand)}|${fold(f.name)}|${f.concentration ?? ""}`;
+    const bottles = new Set(earlier.map(bottle));
+    for (const f of PERFUME_1976) {
+      expect(ids.has(f.id), f.id).toBe(false);
+      expect(bottles.has(bottle(f)), f.id).toBe(false);
+      expect(
+        BRANDS.some((b) => b.name === f.brand),
+        f.brand,
+      ).toBe(true);
+      expect(f.topNotes.length + f.heartNotes.length + f.baseNotes.length, f.id).toBeGreaterThan(0);
+      for (const n of [...f.topNotes, ...f.heartNotes, ...f.baseNotes])
+        expect(noteInfo(n), `${f.id}: ${n}`).toBeDefined();
+      // Every imported perfume carries its product picture, credited to the page it came from.
+      expect(f.imageSource, f.id).toMatch(/^https:\/\/www\.1976\.com\.tw\/prod\/\d+$/);
+      expect(existsSync(join(process.cwd(), "public", f.imageUrl!)), f.imageUrl).toBe(true);
+    }
+  });
+
+  it("is found by smart lookup in English or Chinese, under a brand new to the list", async () => {
+    const r = await lookup({ brand: "Anna Sui", name: "Secret Wish" });
+    expect(r?.confidence).toBe("high");
+    expect(r?.sources).toEqual([PERFUME_1976_SOURCE]);
+    expect((await lookup({ brand: "安娜蘇", name: "許願精靈" }))?.fragrance.name).toBe("Secret Wish");
+    expect((await lookup({ brand: "雅男士", name: "Aramis" }))?.fragrance.brand).toBe("Aramis");
   });
 });

@@ -4,6 +4,7 @@ import { HEAVEN_LAFA, HEAVEN_LAFA_SOURCE } from "@/data/heaven-lafa";
 import { TAMBURINS, TAMBURINS_SOURCE } from "@/data/tamburins";
 import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
+import { PERFUME_1976, PERFUME_1976_SOURCE } from "@/data/perfume-1976";
 import { zhNames } from "@/data/name-zh";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
@@ -79,6 +80,7 @@ const LISTS: readonly (readonly [readonly Fragrance[], string])[] = [
   [TAMBURINS, TAMBURINS_SOURCE],
   [CALVIN_KLEIN, CALVIN_KLEIN_SOURCE],
   [BRAND_LISTS, BRAND_LISTS_SOURCE],
+  [PERFUME_1976, PERFUME_1976_SOURCE],
   [DEMO_FRAGRANCES, DEMO_SOURCE],
 ];
 
@@ -160,6 +162,7 @@ export function nameSuggestions(brand: string, typed: string): NameSuggestion[] 
     ...TAMBURINS,
     ...CALVIN_KLEIN,
     ...BRAND_LISTS,
+    ...PERFUME_1976,
     ...DEMO_FRAGRANCES,
   ].filter((f) => {
     const fb = brandKey(f.brand);
