@@ -7,6 +7,7 @@ import type { FragranceLookupResult } from "@/lib/fragrance/lookup/types";
 import { MAX_QUERY_LENGTH } from "@/lib/fragrance/lookup/types";
 import type { Fragrance } from "@/types";
 import { FragranceForm, type FragranceFormResult } from "./FragranceForm";
+import { BrandSuggestInput } from "./BrandSuggestInput";
 import { NameSuggestInput } from "./NameSuggestInput";
 
 type Step =
@@ -141,13 +142,12 @@ export function SmartLookupFlow({
       <form onSubmit={search} noValidate className="grid gap-10 desk:grid-cols-2 desk:gap-x-16">
         <label className="block">
           <span className="label text-muted">品牌 BRAND</span>
-          <input
+          <BrandSuggestInput
             value={brand}
-            onChange={(e) => setBrand(e.target.value)}
+            onChange={setBrand}
             maxLength={MAX_QUERY_LENGTH}
             placeholder="例如 Creed"
             className={fieldClass}
-            autoComplete="off"
           />
         </label>
         <label className="block">
