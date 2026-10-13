@@ -5,6 +5,7 @@ import { CATALOGUE } from "@/data/catalogue";
 import { OFFICIAL_PAGES, OFFICIAL_PICTURES } from "@/data/official-pages";
 import { BRAND_LISTS } from "@/data/brand-lists";
 import { CALVIN_KLEIN } from "@/data/calvin-klein";
+import { PERFUME_1976 } from "@/data/perfume-1976";
 import { TAMBURINS } from "@/data/tamburins";
 import { brandHomeLink, productPageLink } from "./mock";
 
@@ -54,7 +55,7 @@ describe("official links", () => {
   });
 
   it("lists only known perfumes, each on an https page", () => {
-    const ids = new Set([...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN, ...BRAND_LISTS].map((f) => f.id));
+    const ids = new Set([...CATALOGUE, ...TAMBURINS, ...CALVIN_KLEIN, ...BRAND_LISTS, ...PERFUME_1976].map((f) => f.id));
     for (const [id, url] of Object.entries(OFFICIAL_PAGES)) {
       expect(ids.has(id), id).toBe(true);
       expect(url.startsWith("https://"), id).toBe(true);
