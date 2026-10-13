@@ -9,6 +9,7 @@ import type { FragranceDraft } from "@/lib/collection/types";
 import { FAMILIES, MOODS } from "@/lib/fragrance/families";
 import { deriveMoods, tagToMood } from "@/lib/scent-tags";
 import type { Fragrance, FragranceFamily, Mood } from "@/types";
+import { BrandSuggestInput } from "./BrandSuggestInput";
 import { NameSuggestInput } from "./NameSuggestInput";
 import { NoteInput } from "./NoteInput";
 
@@ -114,12 +115,11 @@ export function FragranceForm({ initial, allowImage, submitLabel, onSubmit, onCa
   return (
     <form onSubmit={submit} noValidate className="grid gap-10 desk:grid-cols-2 desk:gap-x-16">
       <Field label="品牌 BRAND" error={errors.brand}>
-        <input
+        <BrandSuggestInput
           value={brand}
-          onChange={(e) => setBrand(e.target.value)}
+          onChange={setBrand}
           placeholder="例如 Le Labo"
           className={fieldClass}
-          autoComplete="off"
         />
       </Field>
       <Field label="香水名稱 NAME" error={errors.name}>

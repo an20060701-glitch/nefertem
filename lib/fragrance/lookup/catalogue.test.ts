@@ -13,7 +13,7 @@ import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { PERFUME_1976, PERFUME_1976_SOURCE } from "@/data/perfume-1976";
 import { noteInfo } from "@/data/notes";
 import { brandHomeLink } from "@/lib/shopping/official/mock";
-import { catalogueFragranceProvider, nameSuggestions } from "./catalogue";
+import { brandSuggestions, catalogueFragranceProvider, nameSuggestions } from "./catalogue";
 import { DEMO_SOURCE } from "./mock";
 
 const lookup = catalogueFragranceProvider.lookup;
@@ -250,5 +250,34 @@ describe("香水1976 A–Z import", () => {
     expect(r?.sources).toEqual([PERFUME_1976_SOURCE]);
     expect((await lookup({ brand: "安娜蘇", name: "許願精靈" }))?.fragrance.name).toBe("Secret Wish");
     expect((await lookup({ brand: "雅男士", name: "Aramis" }))?.fragrance.brand).toBe("Aramis");
+  });
+});
+
+describe("brand suggestions", () => {
+  it("lists every brand the database knows before anything is typed", () => {
+    const all = brandSuggestions("").map((b) => b.value);
+    expect(all.length).toBeGreaterThanOrEqual(BRANDS.length);
+    // Each perfume's brand can be picked, so the name field then lists its perfumes.
+    const spellings = new Set([
+      ...all.map(fold),
+      ...BRANDS.flatMap((b) => [b.zh, ...(b.aliases ?? [])])
+        .filter((n): n is string => !!n)
+        .map(fold),
+    ]);
+    const missing = [...new Set([...CATALOGUE, ...PERFUME_1976].map((f) => f.brand))].filter(
+      (brand) => !spellings.has(fold(brand)),
+    );
+    expect(missing).toEqual([]);
+    expect(new Set(all.map(fold)).size).toBe(all.length);
+  });
+
+  it("narrows by English or Chinese name, names that start with it first", () => {
+    expect(brandSuggestions("香奈").map((b) => b.value)).toContain("Chanel");
+    const s = brandSuggestions("di").map((b) => b.value);
+    expect(s).toContain("Dior");
+    expect(s.every((v, i) => i === 0 || !fold(v).startsWith("di") || fold(s[i - 1]).startsWith("di"))).toBe(
+      true,
+    );
+    expect(brandSuggestions("zzzz-not-a-brand")).toEqual([]);
   });
 });

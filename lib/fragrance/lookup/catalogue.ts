@@ -6,6 +6,7 @@ import { BRAND_LISTS, BRAND_LISTS_SOURCE } from "@/data/brand-lists";
 import { CALVIN_KLEIN, CALVIN_KLEIN_SOURCE } from "@/data/calvin-klein";
 import { PERFUME_1976, PERFUME_1976_SOURCE } from "@/data/perfume-1976";
 import { zhNames } from "@/data/name-zh";
+import { BRANDS } from "@/data/brands";
 import { brandForName } from "@/lib/shopping/normalize";
 import type { Fragrance } from "@/types";
 import { DEMO_SOURCE } from "./mock";
@@ -195,4 +196,50 @@ export function nameSuggestions(brand: string, typed: string): NameSuggestion[] 
       (x.at === 0) === (y.at === 0) ? x.s.value.localeCompare(y.s.value) : x.at === 0 ? -1 : 1,
     )
     .map((x) => x.s);
+}
+
+export interface BrandSuggestion {
+  /** What goes in the brand field. */
+  value: string;
+  zh?: string;
+}
+
+/**
+ * Every brand the database knows: the brand list, then any brand that only the
+ * perfume lists name. Alphabetical; built once.
+ */
+type BrandOption = { s: BrandSuggestion; names: string[] };
+let BRAND_OPTIONS: BrandOption[] | undefined;
+function brandOptions() {
+  if (BRAND_OPTIONS) return BRAND_OPTIONS;
+  const out = BRANDS.map((b): BrandOption => ({
+    s: { value: b.name, zh: b.zh },
+    names: [b.name, b.zh, ...(b.aliases ?? [])].filter((n): n is string => !!n).map(fold),
+  }));
+  const seen = new Set(out.flatMap((o) => o.names));
+  for (const [list] of LISTS) {
+    for (const f of list) {
+      const k = fold(f.brand);
+      if (!k || seen.has(k)) continue; // already listed under one of its spellings
+      seen.add(k);
+      out.push({ s: { value: f.brand }, names: [k] });
+    }
+  }
+  BRAND_OPTIONS = out.sort((x, y) => x.s.value.localeCompare(y.s.value));
+  return BRAND_OPTIONS;
+}
+
+/**
+ * The database's brands for the brand field: all of them at first, then those whose
+ * name, Chinese name or other spelling contains what was typed, starts-with first.
+ */
+export function brandSuggestions(typed: string): BrandSuggestion[] {
+  const q = fold(typed);
+  if (!q) return brandOptions().map((o) => o.s);
+  const out: { s: BrandSuggestion; at: number }[] = [];
+  for (const o of brandOptions()) {
+    const at = Math.min(...o.names.map((n) => n.indexOf(q)).map((i) => (i < 0 ? Infinity : i)));
+    if (at !== Infinity) out.push({ s: o.s, at });
+  }
+  return out.sort((x, y) => ((x.at === 0) === (y.at === 0) ? 0 : x.at === 0 ? -1 : 1)).map((x) => x.s);
 }
