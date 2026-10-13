@@ -22,7 +22,8 @@ export interface CollectionRepo {
   /** Records a wear; also bumps usageCount / lastUsedAt when the scent is in the collection. */
   logUsage(entry: UsageDraft): Promise<UsageLog>;
   /**
-   * Takes back wears (重新開始 sets today's pick aside, An 2026-10-07): the logs go, and
+   * Takes back wears (重新開始 sets today's pick aside, An 2026-10-07; the 使用紀錄 X and
+   * 全部刪除, An 2026-10-13): the logs go, and
    * each scent's usageCount / lastUsedAt fall back to what the remaining `usage` says.
    */
   undoUsage(logs: readonly UsageLog[], usage: readonly UsageLog[]): Promise<void>;
