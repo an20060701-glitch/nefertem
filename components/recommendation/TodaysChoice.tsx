@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 import { ease, transition } from "@/lib/motion";
 import { explain, recommend, WHEEL_MIN, wheelCandidates } from "@/lib/recommendation";
 import { saveSearch, savedSearch, todaysPicks } from "@/lib/recommendation/today";
+import { classify } from "@/lib/weather/types";
 import { FeelingStep } from "./FeelingStep";
 import { FortuneWheel } from "./FortuneWheel";
 import { RecommendationResult } from "./RecommendationResult";
@@ -33,28 +34,17 @@ const ALTERNATIVES = 3;
  */
 export function TodaysChoice() {
   const flow = useChoiceFlow();
-  const { step, selection, weather } = flow;
+  const { step, selection } = flow;
   const reduce = useReducedMotion();
   const { items, usage, repo, ready } = useCollection();
   const candidates = items;
   const emptyCabinet = ready && items.length === 0;
 
-  const selectionKey = `${weather?.city}|${selection.scene}|${selection.feeling}`;
+  const selectionKey = `${flow.weather?.city}|${selection.scene}|${selection.feeling}`;
   const [featured, setFeatured] = useState<{ key: string; id: string }>();
   const [confirmed, setConfirmed] = useState<{ key: string; id: string; viaWheel: boolean }>();
   const [wheelOpen, setWheelOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-
-  const ranked = useMemo(() => {
-    if (!weather || !selection.scene || !selection.feeling) return [];
-    return recommend({
-      weather,
-      scene: selection.scene,
-      feeling: selection.feeling,
-      candidates,
-      usage,
-    });
-  }, [weather, selection.scene, selection.feeling, usage, candidates]);
 
   // A scent chosen earlier today (the usage log follows the account): coming back to the
   // page shows that result again instead of asking (An, 2026-10-07).
@@ -96,6 +86,36 @@ export function TodaysChoice() {
   // elsewhere), and go back to the questions when it is set aside by 重新開始.
   const shownPick = useRef<string>(undefined);
   const first = picks[0];
+  // Today's weather, or — where this device cannot read it yet (no place known, location
+  // refused) — the weather recorded with today's pick, so the chosen scent still shows
+  // straight away instead of asking for a city first (An, 2026-10-11).
+  const pickedHere = !!first && first.scene === selection.scene && first.feeling === selection.feeling;
+  const weather = useMemo(
+    () =>
+      flow.weather ??
+      (pickedHere && first
+        ? classify({
+            city: first.city ?? "",
+            temperature: first.temperature,
+            condition: first.weather,
+            humidity: 0,
+            source: "mock",
+          })
+        : undefined),
+    [flow.weather, pickedHere, first],
+  );
+
+  const ranked = useMemo(() => {
+    if (!weather || !selection.scene || !selection.feeling) return [];
+    return recommend({
+      weather,
+      scene: selection.scene,
+      feeling: selection.feeling,
+      candidates,
+      usage,
+    });
+  }, [weather, selection.scene, selection.feeling, usage, candidates]);
+
   useEffect(() => {
     if (!ready || !restartKnown) return;
     if (!first) {
@@ -250,7 +270,7 @@ export function TodaysChoice() {
           </h2>
           <WeatherBar
             place={selection.place}
-            weather={weather}
+            weather={flow.weather}
             status={flow.weatherStatus}
             locateFailed={flow.locateFailed}
             onLocate={flow.locate}
