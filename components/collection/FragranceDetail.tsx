@@ -41,6 +41,9 @@ export function FragranceDetail({ id }: { id: string }) {
   const [confirming, setConfirming] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [removeError, setRemoveError] = useState<string>();
+  const [clearing, setClearing] = useState(false);
+  const [deletingLogs, setDeletingLogs] = useState(false);
+  const [historyError, setHistoryError] = useState<string>();
 
   const f = items.find((i) => i.id === id);
 
@@ -72,6 +75,21 @@ export function FragranceDetail({ id }: { id: string }) {
   const guide = guideForFamily(f.family);
   const shown = withSuppliedImage(f);
   const credit = shown.imageUrl ? imageCredit(shown.imageSource) : undefined;
+
+  /** Deletes wears from the log (An, 2026-10-13); the scent's wear count follows. */
+  async function deleteLogs(logs: typeof history) {
+    setDeletingLogs(true);
+    setHistoryError(undefined);
+    try {
+      await repo.undoUsage(logs, usage);
+      setClearing(false);
+    } catch (error) {
+      console.error("[collection] usage delete failed", error);
+      setHistoryError("刪除沒有完成，請再試一次。");
+    } finally {
+      setDeletingLogs(false);
+    }
+  }
 
   async function remove() {
     setRemoving(true);
@@ -185,6 +203,23 @@ export function FragranceDetail({ id }: { id: string }) {
                 使用紀錄 <span className="text-faint">WORN · {f.usageCount}</span>
               </span>
             </HairlineHeading>
+            {history.length > 0 && (
+              <div className="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setClearing(true)}
+                  disabled={deletingLogs}
+                  className="label min-h-11 text-danger transition-opacity hover:opacity-80 disabled:opacity-50"
+                >
+                  全部刪除
+                </button>
+              </div>
+            )}
+            {historyError && (
+              <p role="alert" className="mt-2 text-small text-danger">
+                {historyError}
+              </p>
+            )}
             {history.length === 0 ? (
               <p className="mt-6 text-muted">
                 還沒有使用紀錄。在「香水選擇」按下「就決定是你了」就會記在這裡。
@@ -192,16 +227,24 @@ export function FragranceDetail({ id }: { id: string }) {
             ) : (
               <ul className="mt-2">
                 {history.slice(0, 8).map((log) => (
-                  <li
-                    key={log.id}
-                    className="flex flex-wrap justify-between gap-x-6 border-b border-line py-4 text-small"
-                  >
-                    <span className="text-ink">{dateFormat.format(log.timestamp)}</span>
-                    <span className="text-muted">
-                      {cityLabel(log.city)} · {Math.round(log.temperature)}°C ·{" "}
-                      {CONDITION_LABELS[log.weather]?.zh} ·{" "}
-                      {log.scene ? sceneInfo(log.scene).zh : log.occasion === "indoor" ? "室內" : "戶外"}
-                      {log.viaWheel ? " · 輪盤" : ""}
+                  <li key={log.id} className="flex items-center gap-x-3 border-b border-line py-4 text-small">
+                    <button
+                      type="button"
+                      onClick={() => deleteLogs([log])}
+                      disabled={deletingLogs}
+                      className="press-soft -my-2 flex size-9 shrink-0 items-center justify-center rounded-full text-lead text-muted transition-colors hover:bg-black/5 hover:text-danger disabled:opacity-50"
+                      aria-label={`刪除 ${dateFormat.format(log.timestamp)} 的使用紀錄`}
+                    >
+                      <span aria-hidden>×</span>
+                    </button>
+                    <span className="flex flex-1 flex-wrap justify-between gap-x-6">
+                      <span className="text-ink">{dateFormat.format(log.timestamp)}</span>
+                      <span className="text-muted">
+                        {cityLabel(log.city)} · {Math.round(log.temperature)}°C ·{" "}
+                        {CONDITION_LABELS[log.weather]?.zh} ·{" "}
+                        {log.scene ? sceneInfo(log.scene).zh : log.occasion === "indoor" ? "室內" : "戶外"}
+                        {log.viaWheel ? " · 輪盤" : ""}
+                      </span>
                     </span>
                   </li>
                 ))}
@@ -237,6 +280,35 @@ export function FragranceDetail({ id }: { id: string }) {
                 setEditing(false);
               }}
             />
+          </Sheet>
+        )}
+        {clearing && (
+          <Sheet
+            key="clear-history"
+            label="CLEAR HISTORY"
+            title={`刪除 ${f.name} 的全部使用紀錄？`}
+            onClose={() => setClearing(false)}
+          >
+            <p className="text-muted">{history.length} 筆紀錄會一起刪除，無法復原。</p>
+            <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4">
+              <button
+                type="button"
+                onClick={() => deleteLogs(history)}
+                disabled={deletingLogs}
+                aria-busy={deletingLogs}
+                className="label inline-flex h-14 items-center justify-center bg-danger px-8 text-inverse transition-colors hover:bg-[#7f2424] disabled:opacity-60"
+              >
+                {deletingLogs ? "刪除中…" : "確定全部刪除"}
+              </button>
+              <Button variant="text" onClick={() => setClearing(false)}>
+                取消
+              </Button>
+            </div>
+            {historyError && (
+              <p role="alert" className="mt-4 text-small text-danger">
+                {historyError}
+              </p>
+            )}
           </Sheet>
         )}
         {confirming && (
