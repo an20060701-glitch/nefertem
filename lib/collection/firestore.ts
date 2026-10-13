@@ -197,13 +197,19 @@ export function createAccountRepo(db: Firestore, store: FirebaseStorage | null, 
         for (const l of logs) if ((await tx.get(doc(usageLogs, l.id))).exists()) present.push(l);
         if (!present.length) return;
         const after = usageAfterUndo(present, usage);
-        const owned = new Map<string, boolean>();
-        for (const id of after.keys()) owned.set(id, (await tx.get(doc(fragrances, id))).exists());
+        // Current counts, so a count never drops below 0 (wears logged before a scent
+        // was added again under the same id show in its history but were never counted).
+        const owned = new Map<string, number>();
+        for (const id of after.keys()) {
+          const snap = await tx.get(doc(fragrances, id));
+          if (snap.exists()) owned.set(id, Number(snap.get("usageCount")) || 0);
+        }
         for (const l of present) tx.delete(doc(usageLogs, l.id));
         for (const [fragranceId, e] of after) {
-          if (!owned.get(fragranceId)) continue;
+          const count = owned.get(fragranceId);
+          if (count === undefined) continue;
           tx.update(doc(fragrances, fragranceId), {
-            usageCount: increment(-e.count),
+            usageCount: Math.max(0, count - e.count),
             lastUsedAt: e.lastUsedAt ?? deleteField(),
           });
         }
