@@ -44,14 +44,14 @@ export function Hero() {
     <section
       ref={ref}
       aria-labelledby="hero-title"
-      className="page-x relative flex flex-col overflow-x-clip pb-20 desk:min-h-svh desk:justify-center desk:pb-16 desk:pt-[var(--nav-desktop-height)]"
+      className="page-x relative flex flex-col overflow-x-clip pb-20 desk:min-h-svh desk:justify-center desk:pb-16 desk:pt-[var(--nav-desktop-height)] tab-land:min-h-svh tab-land:justify-center tab-land:pb-10 tab-land:pt-[var(--nav-desktop-height)]"
     >
-      {/* The art: full-bleed behind the text on desktop, a block above it on phones and tablets */}
+      {/* The art: full-bleed behind the text on desktop and sideways tablets, a block above it on phones and upright tablets */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: reduce ? 0.2 : 2, delay, ease: ease.editorial }}
-        className="cover-art relative -mx-[var(--gutter)] aspect-square overflow-hidden md:aspect-[16/10] desk:absolute desk:inset-0 desk:-z-10 desk:mx-0 desk:aspect-auto"
+        className="cover-art relative -mx-[var(--gutter)] aspect-square overflow-hidden md:aspect-[16/10] desk:absolute desk:inset-0 desk:-z-10 desk:mx-0 desk:aspect-auto tab-land:absolute tab-land:inset-0 tab-land:-z-10 tab-land:mx-0 tab-land:aspect-auto"
       >
         <motion.div className="absolute inset-0" style={{ y: imageY }}>
           <Image
@@ -60,13 +60,13 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[94%_50%] md:object-[70%_40%] desk:object-[72%_top]"
+            className="object-cover object-[94%_50%] md:object-[70%_40%] desk:object-[72%_top] tab-land:object-[72%_top]"
           />
         </motion.div>
         {/* Ivory wash on the left edge so the type sits on paper, not on the watercolour (§0.1) */}
         <div
           aria-hidden
-          className="absolute inset-y-0 left-0 hidden w-[58%] bg-linear-to-r from-surface via-surface/80 to-transparent desk:block"
+          className="absolute inset-y-0 left-0 hidden w-[58%] bg-linear-to-r from-surface via-surface/80 to-transparent desk:block tab-land:block"
         />
         {/* Vapour rising from the bottle in Nefertem's hand, and a few gold motes (§4.4) */}
         <SmokeLayer className="absolute bottom-[18%] left-[50%] hidden h-[62%] w-auto opacity-70 desk:block" />
@@ -78,7 +78,7 @@ export function Hero() {
         initial="hidden"
         animate="visible"
         variants={staggerChildren(delay + 0.3, 0.12)}
-        className="relative z-10 mt-10 flex flex-col desk:mt-[5vh] desk:w-[40%] desk:max-w-[36rem]"
+        className="relative z-10 mt-10 flex flex-col desk:mt-[5vh] desk:w-[40%] desk:max-w-[36rem] tab-land:mt-0 tab-land:w-[46%]"
       >
         <motion.p variants={item} className="label text-muted">
           {BRAND.museLine}

@@ -128,6 +128,9 @@
   --breakpoint-wide: 100rem;
 }
 
+/* Tablet held sideways (768–1199px wide, landscape): the cover sets its text on the art like desktop (An, 2026-10-14). */
+@custom-variant tab-land (@media (min-width: 48rem) and (max-width: 74.99rem) and (orientation: landscape));
+
 /* ── Base ─────────────────────────────────────────────────────── */
 
 @layer base {
