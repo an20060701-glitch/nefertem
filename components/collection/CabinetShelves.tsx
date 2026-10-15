@@ -132,26 +132,23 @@ function ShelfPanel({
         <span aria-hidden>×</span>
       </button>
 
-      <div className="relative grid grid-cols-4 items-end gap-2 [perspective:900px] sm:gap-4">
+      {/* Room above the frames for the × (frames now reach the top of their place). */}
+      <div className="relative mt-7 grid grid-cols-4 items-end gap-2 [perspective:900px] sm:mt-5 sm:gap-4">
         {shown.map((f) => (
           <Link
             key={f.id}
             href={`/collection/${encodeURIComponent(f.id)}`}
             aria-label={`${f.brand} ${f.name}`}
-            className="group relative flex aspect-[3/5] items-end justify-center outline-offset-4"
+            className="group relative block aspect-[5/7] outline-offset-4"
           >
-            <span
-              aria-hidden
-              className="absolute bottom-0 left-1/2 h-2.5 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/25 blur-[6px] transition-all duration-700 group-hover:w-[56%] group-hover:opacity-60"
-            />
-            <FragranceVisual
-              fragrance={f}
-              className="relative max-h-full w-[86%] origin-bottom object-bottom transition-transform duration-700 ease-[var(--ease-editorial)] motion-safe:group-hover:[transform:translateY(-6px)_rotateY(-14deg)]"
-            />
+            {/* Every picture in the same 5:7 frame, the whole bottle shown (An, 2026-10-15). */}
+            <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[6px] bg-[#fbf8f1] p-[8%] shadow-[0_8px_16px_-10px_rgb(57_38_19/0.45),inset_0_0_0_1px_rgb(47_34_19/0.12)] transition-transform duration-700 ease-[var(--ease-editorial)] motion-safe:group-hover:-translate-y-1.5">
+              <FragranceVisual fragrance={f} />
+            </span>
           </Link>
         ))}
         {Array.from({ length: empty }, (_, i) => (
-          <span key={`empty-${i}`} aria-hidden className="flex aspect-[3/5] items-center justify-center">
+          <span key={`empty-${i}`} aria-hidden className="flex aspect-[5/7] items-center justify-center">
             <span className="size-3 rounded-full opacity-45" style={{ background: shelf.color }} />
           </span>
         ))}
