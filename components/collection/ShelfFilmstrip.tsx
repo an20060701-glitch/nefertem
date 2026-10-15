@@ -355,21 +355,22 @@ export function ShelfFilmstrip({
                 }}
                 href={`/collection/${encodeURIComponent(f.id)}`}
                 aria-label={`${f.brand} ${f.nameZh ?? f.name}`}
-                className="group absolute left-1/2 top-1/2 aspect-[0.72] w-[clamp(150px,22%,220px)] overflow-hidden rounded-[6px] border border-[rgb(47_34_19/0.35)] bg-[#fbf8f1] p-[7px] outline-none [--focus:0] [box-shadow:0_calc(10px+var(--focus)*24px)_calc(18px+var(--focus)*36px)_rgb(57_38_19/calc(0.18+var(--focus)*0.24)),inset_0_0_0_1px_rgb(255_255_255/0.7)] [will-change:transform,opacity,filter] focus-visible:ring-4 focus-visible:ring-gold/40 max-[560px]:w-[clamp(140px,44%,180px)]"
+                className="group absolute left-1/2 top-1/2 flex w-[clamp(150px,22%,220px)] flex-col overflow-hidden rounded-[6px] border border-[rgb(47_34_19/0.35)] bg-[#fbf8f1] p-[7px] outline-none [--focus:0] [box-shadow:0_calc(10px+var(--focus)*24px)_calc(18px+var(--focus)*36px)_rgb(57_38_19/calc(0.18+var(--focus)*0.24)),inset_0_0_0_1px_rgb(255_255_255/0.7)] [will-change:transform,opacity,filter] focus-visible:ring-4 focus-visible:ring-gold/40 max-[560px]:w-[clamp(140px,44%,180px)]"
                 style={{ transform: "translate(-50%, -50%) scale(0.6)", opacity: 0 }}
               >
+                {/* The picture in a fixed 5:7 frame, the whole bottle shown (An, 2026-10-15). */}
                 <span
-                  className="absolute inset-x-[7px] bottom-[25%] top-[7px] flex items-end justify-center overflow-hidden p-3"
+                  className="flex aspect-[5/7] items-center justify-center overflow-hidden p-3"
                   style={{
                     background: `radial-gradient(circle at 50% 38%, #fffdf8, color-mix(in oklab, ${shelf.color} 26%, #f3efe6))`,
                   }}
                 >
                   <FragranceVisual
                     fragrance={f}
-                    className="max-h-full object-bottom [transform:scale(calc(1.02+(1-var(--focus))*0.05))] [filter:saturate(calc(0.7+var(--focus)*0.3))]"
+                    className="[transform:scale(calc(1.02+(1-var(--focus))*0.05))] [filter:saturate(calc(0.7+var(--focus)*0.3))]"
                   />
                 </span>
-                <span className="absolute inset-x-[7px] bottom-[7px] grid h-[calc(25%-7px)] grid-cols-[auto_1fr] items-center gap-2.5 bg-ink px-3 text-left">
+                <span className="grid h-16 grid-cols-[auto_1fr] items-center gap-2.5 bg-ink px-3 text-left">
                   <span
                     className="grid size-7 place-items-center rounded-full border font-mono text-[0.625rem] lining-nums"
                     style={{
