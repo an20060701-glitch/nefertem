@@ -43,12 +43,33 @@ window.addEventListener('message', ev => {
 parent.postMessage({ glassMetal: 'ready' }, '*');`;
 
 // Off screen the shader skips its drawing (the rim's clock stands still) instead of being torn down.
-const PAUSE = "function frame(now){\n  if(window.__paused){ last = now; requestAnimationFrame(frame); return; }";
+// At rest (no pointer, press or ripple) it draws every other frame: the rim only drifts slowly
+// then, and two of these on the sign-in page at full rate made the cursor stutter on desktop.
+const PAUSE = `function frame(now){
+  // A computer that can't keep up (30 frames in a row slower than ~30 fps) draws at 1x, not 2x.
+  const gap = now - (window.__prev || now); window.__prev = now;
+  window.__slow = gap > 34 && gap < 500 ? (window.__slow || 0) + 1 : 0;
+  if(window.__slow > 30 && !window.__dpr1){ window.__dpr1 = true; needResize = true; }
+  if(window.__paused){ last = now; requestAnimationFrame(frame); return; }
+  const idle = hoverTarget === 0 && hover === 0 && press === 0 && ptrAmt === 0 && !RIP.some(r => r.on);
+  window.__odd = idle && !window.__odd;
+  if(window.__odd){ requestAnimationFrame(frame); return; }`;
 
 const PAGE = LIQUID_METAL_HTML.replace(/<link[^>]*>\n?/g, "") // no Google Fonts: the label is ours
   .replace("</style>", GLASS_CSS)
   .replace("function frame(now){", PAUSE)
+  .replace("DPR = Math.min(window.devicePixelRatio || 1, 2);", "DPR = window.__dpr1 ? 1 : Math.min(window.devicePixelRatio || 1, 2);")
   .replace("window.__seek   = v => { clock = v; drawn = null; };", BRIDGE);
+
+/** Runs `fn` when the browser is idle (or after a short wait where it can't say); returns a cancel. */
+function whenIdle(fn: () => void): () => void {
+  if ("requestIdleCallback" in window) {
+    const id = window.requestIdleCallback(fn, { timeout: 1000 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = setTimeout(fn, 300);
+  return () => clearTimeout(id);
+}
 
 /** The stage keeps a margin of 900/516 of the button's height round it for the glow. */
 const MARGIN = 900 / 516;
@@ -95,11 +116,13 @@ export function GlassMetalButton({
   useEffect(() => {
     const el = box.current;
     if (!el) return;
+    let cancelBuild = () => {};
     const ro = new ResizeObserver(() => setSize({ w: el.offsetWidth, h: el.offsetHeight }));
     const io = new IntersectionObserver(
       ([e]) => {
         setInView(e.isIntersecting);
-        if (e.isIntersecting) setSeen(true);
+        // Build the shader once the page has settled, so it doesn't stall a page change.
+        if (e.isIntersecting) cancelBuild = whenIdle(() => setSeen(true));
       },
       { rootMargin: "80px" },
     );
@@ -117,6 +140,7 @@ export function GlassMetalButton({
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.clearTimeout(settle);
+      cancelBuild();
     };
   }, []);
 
